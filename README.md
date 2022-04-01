@@ -92,5 +92,5 @@ Delete the elastic-post-setup job before upgrading - otherwise the correcnt temp
 ### Manual removal
 
 ```
-k delete ns lsdmop ; k delete clusterrole lsdmop-kube-state-metrics elastic-beat-autodiscover elastic-operator elastic-operator-edit elastic-operator-view lsdmop-grafana-clusterrole lsdmop-kube-state-metrics lsdmop-prometheus-alertmanager lsdmop-prometheus-server ; k delete psp lsdmop-grafana lsdmop-grafana-test lsdmop-prometheus-blackbox-exporter-psp ; kubectl delete ClusterRoleBinding lsdmop-grafana-clusterrolebinding lsdmop-kube-state-metrics lsdmop-prometheus-alertmanager lsdmop-prometheus-server  ; k delete ClusterRoleBinding elastic-operator elastic-beat-autodiscover-binding
+k delete ns lsdmop ; k delete clusterrole heartbeat lsdmop-kube-state-metrics elastic-beat-autodiscover elastic-operator elastic-operator-edit elastic-operator-view lsdmop-grafana-clusterrole lsdmop-kube-state-metrics lsdmop-prometheus-alertmanager lsdmop-prometheus-server ; k delete psp lsdmop-grafana lsdmop-grafana-test lsdmop-prometheus-blackbox-exporter-psp ; kubectl delete ClusterRoleBinding lsdmop-grafana-clusterrolebinding lsdmop-kube-state-metrics lsdmop-prometheus-alertmanager lsdmop-prometheus-server  ; k delete ClusterRoleBinding elastic-operator elastic-beat-autodiscover-binding
 ```
