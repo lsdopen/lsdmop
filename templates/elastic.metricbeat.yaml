@@ -54,7 +54,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: {{ .Release.Name }}-metricbeat
-  namespace: lsdmop
+  namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
   name: {{ .Release.Name }}-metricbeat
