@@ -1,14 +1,9 @@
 {
-  "order": 2,
-  "index_patterns": [
-    "filebeat-7.17.1-lsdo-*"
-  ],
-  "settings": {
-    "index": {
-      "lifecycle": {
-        "name": "filebeat-lsdo",
-        "rollover_alias": "filebeat-7.17.1-lsdo"
-      }
+    "index_patterns": ["filebeat-8.2.2-lsdo"],
+    "data_stream": { },
+    "composed_of": [ "filebeat-8.2.2", "filebeat-lsdo" ],
+    "priority": 500,
+    "_meta": {
+      "description": "Template for general lsdo"
     }
   }
-}

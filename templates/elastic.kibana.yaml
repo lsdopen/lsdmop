@@ -13,6 +13,62 @@ spec:
   count: {{ .Values.lsdmop.elastic.kibana.count }}
   elasticsearchRef:
     name: {{ .Release.Name }}
+  config:
+    monitoring.ui.ccs.enabled: false
+    # xpack.fleet.agents.elasticsearch.hosts: ["https://lsdmop-es-http.lsdmop.svc:9200"]
+    # xpack.fleet.agents.fleet_server.hosts: ["https://fleet-server-lsdmop-agent-http.lsdmop.svc:8220"]
+    # xpack.fleet.packages:
+    #   - name: system
+    #     version: latest
+    #   - name: elastic_agent
+    #     version: latest
+    #   - name: fleet_server
+    #     version: latest
+    #   - name: kubernetes
+    #     version: latest
+    # xpack.fleet.agentPolicies:
+    #   - name: Fleet Server on ECK policy
+    #     id: eck-fleet-server
+    #     is_default_fleet_server: true
+    #     namespace: {{ .Release.Name }}
+    #     monitoring_enabled:
+    #       - logs
+    #       - metrics
+    #     package_policies:
+    #     - name: fleet_server-1
+    #       id: fleet_server-1
+    #       package:
+    #         name: fleet_server
+    #   - name: Elastic Agent on ECK policy
+    #     id: eck-agent
+    #     namespace: {{ .Release.Name }}
+    #     monitoring_enabled:
+    #       - logs
+    #       - metrics
+    #     unenroll_timeout: 900
+    #     is_default: true
+    #     package_policies:
+    #       - name: system-1
+    #         id: system-1
+    #         package:
+    #           name: system    
+    #       - name: kubernetes-2
+    #         id: kubernetes-2
+    #         package:
+    #           name: kubernetes  
+    #   # - name: Kubernetes Monitoring on ECK policy
+    #   #   id: eck-agent-k8s
+    #   #   namespace: {{ .Release.Name }}
+    #   #   monitoring_enabled:
+    #   #     - logs
+    #   #     - metrics
+    #   #   unenroll_timeout: 900
+    #   #   is_default: true
+    #   #   package_policies:
+    #   #     - name: kubernetes-2
+    #   #       id: kubernetes-2
+    #   #       package:
+    #   #         name: kubernetes  
   podTemplate:
     spec:
       containers:
@@ -20,14 +76,24 @@ spec:
         resources:
           requests:
             memory: 1Gi
-            cpu: 50m
+            cpu: 500m
           limits:
             memory: 2Gi
-            cpu: 250m
+            cpu: 4000m
+      tolerations:
+        - effect: NoSchedule
+          key: dedicated
+          operator: Exists
   http:
     tls:
+      #selfSignedCertificate:
+        #disabled: true
       selfSignedCertificate:
-        disabled: true
+        #secretName: {{ .Values.lsdmop.elastic.kibana.ingress.tls.secretName }}
+        subjectAltNames:
+        #- ip: 160.46.176.15
+        - dns: {{ .Values.lsdmop.elastic.kibana.ingress.url }}
+        
 ---
 {{- end }}
 
@@ -40,11 +106,19 @@ metadata:
   annotations:
     meta.helm.sh/release-name: {{ .Release.Name }}
     meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+    cert-manager.io/cluster-issuer: {{ .Values.lsdmop.elastic.kibana.ingress.annotations.certmanagerioclusterissuer }}
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    service.alpha.kubernetes.io/app-protocols: '{"https":"HTTPS"}'    
   labels:
     app: kibana
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"    
   name: lsdmop-kb
 spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - {{ .Values.lsdmop.kibanaURL }}
+      secretName: {{ .Values.lsdmop.elastic.kibana.ingress.tls.secretName }}
   rules:
   - host: {{ .Values.lsdmop.elastic.kibana.ingress.url }}
     http:

@@ -11,12 +11,183 @@ spec:
   version: "{{ .Values.lsdmop.elastic.version }}"
   image: "{{ .Values.lsdmop.elastic.image }}"
   nodeSets:
+    # EXAMPLE BASE CONFIG WITH ALL ROLES ADDED
+    # - config:
+    #     node.store.allow_mmap: false
+    #     #path.repo: /usr/share/elasticsearch/snapshots
+    #     node.roles: ["master", "data_content", "data", "ml", "transform", "remote_cluster_client", "ingest"]
+    #   count: 1
+    #   name: default
+    #   podTemplate:
+    #     metadata:
+    #       creationTimestamp: null
+    #     spec:
+    #       containers:
+    #         - env:
+    #             - name: ES_JAVA_OPTS
+    #               value: '-Xms8g -Xmx8g -Dlog4j2.formatMsgNoLookups=true'
+    #           name: elasticsearch
+    #           resources:
+    #             limits:
+    #               cpu: '4000m'
+    #               memory: 4Gi
+    #             requests:
+    #               cpu: '4000m'
+    #               memory: 4Gi
+    #       tolerations:
+    #         - effect: NoSchedule
+    #           key: dedicated
+    #           operator: Equal
+    #           value: warm
+    #       affinity:
+    #         nodeAffinity:
+    #           requiredDuringSchedulingIgnoredDuringExecution:
+    #             nodeSelectorTerms:
+    #             - matchExpressions:
+    #               - key: node.type
+    #                 operator: In
+    #                 values:
+    #                 - warm                              
+    #   volumeClaimTemplates:
+    #     - metadata:
+    #         creationTimestamp: null
+    #         name: elasticsearch-data
+    #       spec:
+    #         accessModes:
+    #           - ReadWriteOnce
+    #         resources:
+    #           requests:
+    #             storage: 10Gi
+    #         storageClassName: standard
     - config:
         node.store.allow_mmap: false
         #path.repo: /usr/share/elasticsearch/snapshots
-        node.roles: ["master"]
-      count: 1
-      name: default
+        node.roles: ["master", "data_hot", "data", "transform", "remote_cluster_client", "ingest"]
+        node.attr.data: hot
+      count: 3
+      name: hot-data
+      podTemplate:
+        metadata:
+          creationTimestamp: null
+        spec:
+          serviceAccountName: {{ .Release.Name }}-elasticsearch     
+          topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: topology.kubernetes.io/zone
+              whenUnsatisfiable: DoNotSchedule
+              labelSelector:
+                matchLabels:
+                  elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
+                  elasticsearch.k8s.elastic.co/statefulset-name: {{ .Release.Name }}-es-hot-data
+          containers:
+            - env:
+                - name: ES_JAVA_OPTS
+                  value: '-Xms16g -Xmx16g -Dlog4j2.formatMsgNoLookups=true'
+                - name: ZONE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.annotations['topology.kubernetes.io/zone']                  
+              name: elasticsearch
+              resources:
+                limits:
+                  cpu: '4000m'
+                  memory: 30Gi
+                requests:
+                  cpu: '500m'
+                  memory: 24Gi
+          tolerations:
+            - effect: NoSchedule
+              key: dedicated
+              operator: Equal
+              value: elastic-hot
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: node.type
+                    operator: In
+                    values:
+                    - hot                  
+      volumeClaimTemplates:
+        - metadata:
+            creationTimestamp: null
+            name: elasticsearch-data
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 560Gi
+            storageClassName: ebs-gp3
+    - config:
+        node.store.allow_mmap: false
+        #path.repo: /usr/share/elasticsearch/snapshots
+        node.roles: ["master", "data_warm", "data", "data_content", "transform", "remote_cluster_client", "ingest"]
+        node.attr.data: warm
+      count: 2
+      name: warm-data
+      podTemplate:
+        metadata:
+          creationTimestamp: null
+        spec:
+          serviceAccountName: {{ .Release.Name }}-elasticsearch
+          topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: topology.kubernetes.io/zone
+              whenUnsatisfiable: DoNotSchedule
+              labelSelector:
+                matchLabels:
+                  elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
+                  elasticsearch.k8s.elastic.co/statefulset-name: {{ .Release.Name }}-es-warm-data
+          containers:
+            - env:
+                - name: ES_JAVA_OPTS
+                  value: '-Xms16g -Xmx16g -Dlog4j2.formatMsgNoLookups=true'
+                - name: ZONE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.annotations['topology.kubernetes.io/zone']                  
+              name: elasticsearch
+              resources:
+                limits:
+                  cpu: '4000m'
+                  memory: 30Gi
+                requests:
+                  cpu: '500m'
+                  memory: 24Gi
+          tolerations:
+            - effect: NoSchedule
+              key: dedicated
+              operator: Equal
+              value: elastic-warm
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: node.type
+                    operator: In
+                    values:
+                    - warm                 
+      volumeClaimTemplates:
+        - metadata:
+            creationTimestamp: null
+            name: elasticsearch-data
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 2760Gi
+            storageClassName: ebs-gp3
+    - config:
+        node.store.allow_mmap: false
+        #path.repo: /usr/share/elasticsearch/snapshots
+        node.roles: ["ml"]
+        #node.attr.data: ml
+      count: 2
+      name: ml
       podTemplate:
         metadata:
           creationTimestamp: null
@@ -24,15 +195,29 @@ spec:
           containers:
             - env:
                 - name: ES_JAVA_OPTS
-                  value: '-Xms1g -Xmx1g -Dlog4j2.formatMsgNoLookups=true'
+                  value: '-Xms8g -Xmx8g -Dlog4j2.formatMsgNoLookups=true'
               name: elasticsearch
               resources:
                 limits:
-                  cpu: '1000m'
-                  memory: 2Gi
+                  cpu: '4000m'
+                  memory: 16Gi
                 requests:
                   cpu: '500m'
-                  memory: 1Gi
+                  memory: 16Gi
+          # tolerations:
+          #   - effect: NoSchedule
+          #     key: dedicated
+          #     operator: Equal
+          #     value: elastic-warm
+          # affinity:
+          #   nodeAffinity:
+          #     requiredDuringSchedulingIgnoredDuringExecution:
+          #       nodeSelectorTerms:
+          #       - matchExpressions:
+          #         - key: node.type
+          #           operator: In
+          #           values:
+          #           - warm                 
       volumeClaimTemplates:
         - metadata:
             creationTimestamp: null
@@ -43,76 +228,14 @@ spec:
             resources:
               requests:
                 storage: 1Gi
-            storageClassName: longhorn
-          status: {}
-    - config:
-        node.store.allow_mmap: false
-        #path.repo: /usr/share/elasticsearch/snapshots
-        node.roles: ["data"]
-        node.attr.data: hot
-      count: 1
-      name: hot-data
-      podTemplate:
-        metadata:
-          creationTimestamp: null
-        spec:
-          containers:
-            - env:
-                - name: ES_JAVA_OPTS
-                  value: '-Xms5g -Xmx5g -Dlog4j2.formatMsgNoLookups=true'
-              name: elasticsearch
-              resources:
-                limits:
-                  cpu: '4000m'
-                  memory: 8Gi
-                requests:
-                  cpu: '500m'
-                  memory: 8Gi
-      volumeClaimTemplates:
-        - metadata:
-            creationTimestamp: null
-            name: elasticsearch-data
-          spec:
-            accessModes:
-              - ReadWriteOnce
-            resources:
-              requests:
-                storage: 20Gi
-            storageClassName: longhorn
-          status: {}
-    - config:
-        node.store.allow_mmap: false
-        #path.repo: /usr/share/elasticsearch/snapshots
-        node.roles: ["data"]
-        node.attr.data: warm
-      count: 1
-      name: warm-data
-      podTemplate:
-        metadata:
-          creationTimestamp: null
-        spec:
-          containers:
-            - env:
-                - name: ES_JAVA_OPTS
-                  value: '-Xms1g -Xmx1g -Dlog4j2.formatMsgNoLookups=true'
-              name: elasticsearch
-              resources:
-                limits:
-                  cpu: '1000m'
-                  memory: 2Gi
-                requests:
-                  cpu: '500m'
-                  memory: 2Gi
-      volumeClaimTemplates:
-        - metadata:
-            creationTimestamp: null
-            name: elasticsearch-data
-          spec:
-            accessModes:
-              - ReadWriteOnce
-            resources:
-              requests:
-                storage: 50Gi
-            storageClassName: longhorn
-          status: {}          
+            storageClassName: ebs-gp3
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: {{ .Release.Name }}
+  name: {{ .Release.Name }}-elasticsearch
+  annotations:
+    eks.amazonaws.com/role-arn: {{ .Values.lsdmop.elastic.serviceAccount.annotations.eksAmazonawsComRoleArn }}
+---              
 {{- end }}

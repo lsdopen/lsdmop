@@ -1,0 +1,34 @@
+
+# Elasticsearch Ingress
+{{- if or (eq .Values.lsdmop.clusterType "gke") (eq .Values.lsdmop.clusterType "rancher") -}}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+    cert-manager.io/cluster-issuer: {{ .Values.lsdmop.elastic.ingress.annotations.certmanagerioclusterissuer }}
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    service.alpha.kubernetes.io/app-protocols: '{"https":"HTTPS"}'    
+  labels:
+    app: apm-server
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"    
+  name: lsdmop-apm
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - {{ .Values.lsdmop.apmURL }}
+      secretName: {{ .Values.lsdmop.elastic.apm.ingress.tls.secretName }}
+  rules:
+  - host: {{ .Values.lsdmop.elastic.apm.ingress.url }}
+    http:
+      paths:
+      - backend:
+          serviceName: lsdmop-apm-http
+          servicePort: 8200
+        path: /
+        pathType: ImplementationSpecific
+---
+{{- end }}

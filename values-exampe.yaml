@@ -3,33 +3,35 @@ lsdmop:
   # There are your options clusterType: openshift | gke | rancher
   clusterType: "rancher"
   #eckNamespace: &anchoreckNamespace "lsdmop" 
-  eckOperatorVersion: &anchoreckOperatorVersion "1.9.1"
-  eckVersion: &anchoreckVersion "7.17.1"
-  eckElasticsearchImage: &anchoreckElasticsearchImage "docker.elastic.co/elasticsearch/elasticsearch:7.17.1"
-  eckKibanaImage: &anchoreckKibanaImage "docker.elastic.co/kibana/kibana:7.17.1"
-  eckApmImage: &anchoreckApmImage "docker.elastic.co/apm/apm-server:7.17.1"
-  eckFilebeatImage: &anchoreckFilebeatImage "docker.elastic.co/beats/filebeat:7.17.1"
-  eckMetricbeatImage: &anchoreckMetricbeatImage "docker.elastic.co/beats/metricbeat:7.17.1"
+  eckOperatorVersion: &anchoreckOperatorVersion "2.0.0"
+  eckVersion: &anchoreckVersion "8.2.2"
+  eckElasticsearchImage: &anchoreckElasticsearchImage "docker.elastic.co/elasticsearch/elasticsearch:8.2.2"
+  eckKibanaImage: &anchoreckKibanaImage "docker.elastic.co/kibana/kibana:8.2.2"
+  eckApmImage: &anchoreckApmImage "docker.elastic.co/apm/apm-server:8.2.2"
+  eckFilebeatImage: &anchoreckFilebeatImage "docker.elastic.co/beats/filebeat:8.2.2"
+  eckMetricbeatImage: &anchoreckMetricbeatImage "docker.elastic.co/beats/metricbeat:8.2.2"
   elasticClusterSize: &anchorelasticClusterSize "1"
-  kibanaURL: &anchorkibanaURL "kibana.rancher.my.org"
+  kibanaURL: &anchorkibanaURL "kibana.domain.example"
+  elasticURL: &anchorelasticURL "elastic.domain.example"
+  apmURL: &anchorapmURL "apm.domain.example"
   logstashJavaOpts: &anchorlogstashJavaOpts "-Xms1g -Xmx1g"
   grafanaUsername: &anchorgrafanaUsername "admin"
   grafanaPassword: &anchorgrafanaPassword "ChangeMe-PasswordForGrafana"
   grafanaVersion: &anchorgrafanaVersion "7.5.2"
-  grafanaURL: &anchorgrafanaURL "grafana.rancher.my.org"
+  grafanaURL: &anchorgrafanaURL "grafana.domain.example"
   prometheusRenention: &anchorprometheusRenention "30d"
-  prometheusURL: &anchorprometheusURL "prometheus.rancher.my.org"
-  prometheusHttpURL: &anchorprometheusHttpURL "https://prometheus.rancher.my.org"
+  prometheusURL: &anchorprometheusURL "prometheus.domain.example"
+  prometheusHttpURL: &anchorprometheusHttpURL "https://prometheus.domain.example"
   prometheusStorageSize: &anchorprometheusStorageSize "25Gi"
-  alertmanagerURL: &anchoralertmanagerURL "alertmanager.rancher.my.org"
-  alertmanagerHttpURL: &anchoralertmanagerHttpURL "https://alertmanager.rancher.my.org"
+  alertmanagerURL: &anchoralertmanagerURL "alertmanager.domain.example"
+  alertmanagerHttpURL: &anchoralertmanagerHttpURL "https://alertmanager.domain.example"
   smtpHost: &anchorsmtpHost "smtp.lsdopen.io"
   smtpPort: &anchorsmtpPort "25"
   smtpSmartHost: &anchorsmtpSmartHost "smtp.lsdopen.io:25"
   supportAddress: &anchorsupportAddress "address-that-must-receive-alerts@lsdopen.io"
   fromAddress: &anchorfromAddress "lsdmop+noreply+infra-01.qa.lsdopen.io@lsdopen.io"
   fromName: &anchorfromName "LSDobserve - LSD - k8s-01.qa.lsdopen.io@lsdopen.io"
-  storageClass: &anchorstorageClass "longhorn"
+  storageClass: &anchorstorageClass "ebs-gp3"
   #storageClass: &anchorstorageClass "local"
   curl:
     image: docker.io/curlimages/curl:7.74.0
@@ -44,21 +46,50 @@ lsdmop:
     count: *anchorelasticClusterSize
     storage: "50Gi"
     storageClassName: *anchorstorageClass
-    filebeat:
-      enabled: true
-      image: *anchoreckFilebeatImage
-      version: *anchoreckVersion
-    ## Metricbeat as a Daemonset to collect metrics from Nodes
+    ingress:
+      annotations:
+        certmanagerioclusterissuer: letsencrypt
+      tls:
+        secretName: elastic-purple-ingress-tls
+      url: *anchorelasticURL
+    serviceAccount:
+      annotations:
+        eksAmazonawsComRoleArn: arn:aws:iam::***:role/S3-cluster-elastic-storage      
+        #eksAmazonawsComRoleArn: arn:aws:s3:::elastic-storage
+
+
+    #Kibana
     kibana:
       enabled: true
       image: *anchoreckKibanaImage
       version: *anchoreckVersion
-      count: "1"
+      count: "2"
       ingress:
         url: *anchorkibanaURL
+        enabled: true
+        className: nginx
+        annotations:
+          certmanagerioclusterissuer: letsencrypt
+        hosts:
+          *anchorkibanaURL
+        tls:
+          secretName: kibana-purple-ingress-tls
+          hosts:
+            *anchorkibanaURL
+
+    filebeat:
+      enabled: true
+      image: *anchoreckFilebeatImage
+      version: *anchoreckVersion
+
+    ## Metricbeat as a Daemonset to collect metrics from Nodes
     metricbeat:
       enabled: true
       image: *anchoreckMetricbeatImage
+      version: *anchoreckVersion
+    ## Fleet agents as a Daemonset to collect metrics/logs from Nodes (replaces metricbeat and filebeat)
+    fleet:
+      enabled: false
       version: *anchoreckVersion
     ## Metricbeat to connect to Prometheus
     metricbeatPrometheus:
@@ -66,9 +97,17 @@ lsdmop:
       image: *anchoreckMetricbeatImage
       version: *anchoreckVersion
     apm:
-      enabled: false
+      enabled: true
       image: *anchoreckApmImage
       version: *anchoreckVersion
+      count: 2
+      ingress:
+        annotations:
+          certmanagerioclusterissuer: letsencrypt
+        tls:
+          secretName: apm-purple-ingress-tls
+        url: *anchorapmURL
+
 
 # Logstash
 logstash:
@@ -154,14 +193,29 @@ eck-operator:
   resources:
     limits:
       cpu: 200m
-      memory: 512Mi
+      memory: 768Mi
     requests:
       cpu: 20m
       memory: 150Mi
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Grafana
 # To get a latest values you can run:
 # helm show values grafana/grafana
+
 grafana:
   adminUser: *anchorgrafanaUsername
   adminPassword: *anchorgrafanaPassword
@@ -169,9 +223,10 @@ grafana:
     repository: grafana/grafana
     tag: *anchorgrafanaVersion
   # If you want to install on specific nodes, for example Infra nodes on Openshift
-  nodeSelector:
-    node-role.kubernetes.io/worker: "true"
-  replicas: 0
+  #nodeSelector:
+    #node-role.kubernetes.io/worker: "true"
+    #kubernetes.io/os: linux
+  replicas: 1
   deploymentStrategy: { "type": "Recreate" }
   # ingress is disable because it is created via the lsd-observe template
   ingress:
@@ -236,13 +291,27 @@ grafana:
         cpu: 50m
         memory: 50Mi
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Prometheus
 # To get a latest values you can run:
 # helm show values prometheus-community/prometheus
+
 prometheus:
   configmapReload:
     prometheus:
-      enabled: false
+      enabled: true
       name: configmap-reload
       image:
         repository: jimmidyson/configmap-reload
@@ -255,7 +324,7 @@ prometheus:
         tag: v0.4.0
   # https://kubernetes.github.io/kube-state-metrics
   kubeStateMetrics:
-    enabled: false
+    enabled: true
     image:
       repository: quay.io/coreos/kube-state-metrics
       tag: v1.9.7
@@ -263,7 +332,7 @@ prometheus:
     image:
       repository: quay.io/prometheus/prometheus
       tag: v2.26.0
-    replicaCount: 1
+    replicaCount: 0
     baseURL: *anchorprometheusHttpURL
     retention: *anchorprometheusRenention
     statefulSet:
@@ -326,8 +395,8 @@ prometheus:
       - key: "node-role.kubernetes.io/master"
         operator: "Exists"
   alertmanager:
-    enabled: false
-    replicaCount: 3
+    enabled: true
+    replicaCount: 1
     prefixURL: ""
     baseURL: *anchoralertmanagerHttpURL
     service:
@@ -520,3 +589,7 @@ prometheus:
               annotations:
                 description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} has been in a non-ready state for longer than 30 minutes"
                 message: "Pod {{ $labels.namespace }}/{{ $labels.pod }} has been in a non-ready state for longer than 30 minutes"
+
+
+
+

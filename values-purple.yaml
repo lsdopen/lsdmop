@@ -2,37 +2,41 @@
 lsdmop:
   # There are your options clusterType: openshift | gke | rancher
   clusterType: "rancher"
-  eckOperatorVersion: &anchoreckOperatorVersion "1.6.0"
-  eckVersion: &anchoreckVersion "7.10.2"
-  eckElasticsearchImage: &anchoreckElasticsearchImage "docker.elastic.co/elasticsearch/elasticsearch:7.10.2"
-  eckKibanaImage: &anchoreckKibanaImage "docker.elastic.co/kibana/kibana:7.10.2"
-  eckApmImage: &anchoreckApmImage "docker.elastic.co/apm/apm-server:7.10.2"
-  eckFilebeatImage: &anchoreckFilebeatImage "docker.elastic.co/beats/filebeat:7.10.2"
-  eckMetricbeatImage: &anchoreckMetricbeatImage "docker.elastic.co/beats/metricbeat:7.10.2"
+  #eckNamespace: &anchoreckNamespace "lsdmop" 
+  eckOperatorVersion: &anchoreckOperatorVersion "2.0.0"
+  eckVersion: &anchoreckVersion "8.2.2"
+  eckElasticsearchImage: &anchoreckElasticsearchImage "docker.elastic.co/elasticsearch/elasticsearch:8.2.2"
+  eckKibanaImage: &anchoreckKibanaImage "docker.elastic.co/kibana/kibana:8.2.2"
+  eckApmImage: &anchoreckApmImage "docker.elastic.co/apm/apm-server:8.2.2"
+  eckFilebeatImage: &anchoreckFilebeatImage "docker.elastic.co/beats/filebeat:8.2.2"
+  eckMetricbeatImage: &anchoreckMetricbeatImage "docker.elastic.co/beats/metricbeat:8.2.2"
   elasticClusterSize: &anchorelasticClusterSize "1"
-  kibanaURL: &anchorkibanaURL "kibana.apps.k8s-01.qa.lsdopen.io"
+  kibanaURL: &anchorkibanaURL "kibana.observability.openeasy.io"
+  elasticURL: &anchorelasticURL "elastic.observability.openeasy.io"
+  apmURL: &anchorapmURL "apm.observability.openeasy.io"
   logstashJavaOpts: &anchorlogstashJavaOpts "-Xms1g -Xmx1g"
   grafanaUsername: &anchorgrafanaUsername "admin"
   grafanaPassword: &anchorgrafanaPassword "ChangeMe-PasswordForGrafana"
   grafanaVersion: &anchorgrafanaVersion "7.5.2"
-  grafanaURL: &anchorgrafanaURL "grafana.apps.k8s-01.qa.lsdopen.io"
+  grafanaURL: &anchorgrafanaURL "grafana.observability.openeasy.io"
   prometheusRenention: &anchorprometheusRenention "30d"
-  prometheusURL: &anchorprometheusURL "prometheus.apps.k8s-01.qa.lsdopen.io"
-  prometheusHttpURL: &anchorprometheusHttpURL "https://prometheus.apps.k8s-01.qa.lsdopen.io"
+  prometheusURL: &anchorprometheusURL "prometheus.observability.openeasy.io"
+  prometheusHttpURL: &anchorprometheusHttpURL "https://prometheus.observability.openeasy.io"
   prometheusStorageSize: &anchorprometheusStorageSize "25Gi"
-  alertmanagerURL: &anchoralertmanagerURL "alertmanager.apps.k8s-01.qa.lsdopen.io"
-  alertmanagerHttpURL: &anchoralertmanagerHttpURL "https://alertmanager.apps.k8s-01.qa.lsdopen.io"
+  alertmanagerURL: &anchoralertmanagerURL "alertmanager.observability.openeasy.io"
+  alertmanagerHttpURL: &anchoralertmanagerHttpURL "https://alertmanager.observability.openeasy.io"
   smtpHost: &anchorsmtpHost "smtp.lsdopen.io"
   smtpPort: &anchorsmtpPort "25"
   smtpSmartHost: &anchorsmtpSmartHost "smtp.lsdopen.io:25"
   supportAddress: &anchorsupportAddress "address-that-must-receive-alerts@lsdopen.io"
-  fromAddress: &anchorfromAddress "lsdmop+noreply+k8s-01.qa.lsdopen.io@lsdopen.io"
+  fromAddress: &anchorfromAddress "lsdmop+noreply+infra-01.qa.lsdopen.io@lsdopen.io"
   fromName: &anchorfromName "LSDobserve - LSD - k8s-01.qa.lsdopen.io@lsdopen.io"
-  storageClass: &anchorstorageClass "standard"
+  storageClass: &anchorstorageClass "ebs-gp3"
+  #storageClass: &anchorstorageClass "local"
   curl:
     image: docker.io/curlimages/curl:7.74.0
   grafana:
-    enabled: true
+    enabled: false
     ingress:
       url: *anchorgrafanaURL
   elastic:
@@ -42,31 +46,68 @@ lsdmop:
     count: *anchorelasticClusterSize
     storage: "50Gi"
     storageClassName: *anchorstorageClass
-    filebeat:
-      enabled: true
-      image: *anchoreckFilebeatImage
-      version: *anchoreckVersion
-    ## Metricbeat as a Daemonset to collect metrics from Nodes
-    metricbeat:
-      enabled: false
-      image: *anchoreckMetricbeatImage
-      version: *anchoreckVersion
-    ## Metricbeat to connect to Prometheus
-    metricbeatPrometheus:
-      enabled: true
-      image: *anchoreckMetricbeatImage
-      version: *anchoreckVersion
-    apm:
-      enabled: false
-      image: *anchoreckApmImage
-      version: *anchoreckVersion
+    ingress:
+      annotations:
+        certmanagerioclusterissuer: letsencrypt
+      tls:
+        secretName: elastic-purple-ingress-tls
+      url: *anchorelasticURL
+    serviceAccount:
+      annotations:
+        eksAmazonawsComRoleArn: arn:aws:iam::***:role/S3-cluster-elastic-storage      
+        #eksAmazonawsComRoleArn: arn:aws:s3:::elastic-storage
+
+
+    #Kibana
     kibana:
       enabled: true
       image: *anchoreckKibanaImage
       version: *anchoreckVersion
-      count: "1"
+      count: "2"
       ingress:
         url: *anchorkibanaURL
+        enabled: true
+        className: nginx
+        annotations:
+          certmanagerioclusterissuer: letsencrypt
+        hosts:
+          *anchorkibanaURL
+        tls:
+          secretName: kibana-purple-ingress-tls
+          hosts:
+            *anchorkibanaURL
+
+    filebeat:
+      enabled: true
+      image: *anchoreckFilebeatImage
+      version: *anchoreckVersion
+
+    ## Metricbeat as a Daemonset to collect metrics from Nodes
+    metricbeat:
+      enabled: true
+      image: *anchoreckMetricbeatImage
+      version: *anchoreckVersion
+    ## Fleet agents as a Daemonset to collect metrics/logs from Nodes (replaces metricbeat and filebeat)
+    fleet:
+      enabled: false
+      version: *anchoreckVersion
+    ## Metricbeat to connect to Prometheus
+    metricbeatPrometheus:
+      enabled: false
+      image: *anchoreckMetricbeatImage
+      version: *anchoreckVersion
+    apm:
+      enabled: true
+      image: *anchoreckApmImage
+      version: *anchoreckVersion
+      count: 2
+      ingress:
+        annotations:
+          certmanagerioclusterissuer: letsencrypt
+        tls:
+          secretName: apm-purple-ingress-tls
+        url: *anchorapmURL
+
 
 # Logstash
 logstash:
@@ -152,25 +193,39 @@ eck-operator:
   resources:
     limits:
       cpu: 200m
-      memory: 512Mi
+      memory: 768Mi
     requests:
       cpu: 20m
       memory: 150Mi
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Grafana
 # To get a latest values you can run:
 # helm show values grafana/grafana
+
 grafana:
   adminUser: *anchorgrafanaUsername
   adminPassword: *anchorgrafanaPassword
-  testFramework:   
-    enabled: false 
   image:
     repository: grafana/grafana
     tag: *anchorgrafanaVersion
   # If you want to install on specific nodes, for example Infra nodes on Openshift
-  nodeSelector:
-    node-role.kubernetes.io/worker: "true"
+  #nodeSelector:
+    #node-role.kubernetes.io/worker: "true"
+    #kubernetes.io/os: linux
   replicas: 1
   deploymentStrategy: { "type": "Recreate" }
   # ingress is disable because it is created via the lsd-observe template
@@ -188,25 +243,6 @@ grafana:
     type: pvc
     size: 1Gi
     storageClassName: *anchorstorageClass
-  grafana.ini:
-    analytics:
-      check_for_updates: true
-    smtp:
-      enabled: true
-      host: *anchorsmtpSmartHost
-      skip_verify: true
-      from_address: *anchorfromAddress
-      from_name: *anchorfromName
-    emails:
-      welcome_email_on_sign_up: true
-      templates_pattern: emails/*.html
-    log:
-      mode: console
-    paths:
-      data: /var/lib/grafana/data
-      logs: /var/log/grafana
-      plugins: /var/lib/grafana/plugins
-      provisioning: /etc/grafana/provisioning
   datasources:
     datasources.yaml:
       apiVersion: 1
@@ -219,46 +255,14 @@ grafana:
     dashboardproviders.yaml:
       apiVersion: 1
       providers:
-        - disableDeletion: false
+        - name: "ds-01"
+          orgId: 1
+          folder: "LSDcontainer"
+          type: file
+          disableDeletion: false
           editable: false
-          folder: LSDcontainer
-          name: ds-01
           options:
             path: /var/lib/grafana/dashboards/ds-01
-          orgId: 1
-          type: file
-        - disableDeletion: false
-          editable: false
-          folder: LSDcontainer
-          name: ds-02
-          options:
-            path: /var/lib/grafana/dashboards/ds-02
-          orgId: 1
-          type: file
-        - disableDeletion: false
-          editable: false
-          folder: LSDcontainer
-          name: ds-03
-          options:
-            path: /var/lib/grafana/dashboards/ds-03
-          orgId: 1
-          type: file
-        - disableDeletion: false
-          editable: false
-          folder: LSDcontainer
-          name: ds-04
-          options:
-            path: /var/lib/grafana/dashboards/ds-04
-          orgId: 1
-          type: file
-        - disableDeletion: false
-          editable: false
-          folder: LSDcontainer
-          name: ds-05
-          options:
-            path: /var/lib/grafana/dashboards/ds-05
-          orgId: 1
-          type: file
   dashboardsConfigMaps:
     ds-01: "grafana-dashboard-kubernetes-overview"
     ds-02: "grafana-dashboard-namespace-details"
@@ -287,9 +291,23 @@ grafana:
         cpu: 50m
         memory: 50Mi
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Prometheus
 # To get a latest values you can run:
 # helm show values prometheus-community/prometheus
+
 prometheus:
   configmapReload:
     prometheus:
@@ -314,7 +332,7 @@ prometheus:
     image:
       repository: quay.io/prometheus/prometheus
       tag: v2.26.0
-    replicaCount: 1
+    replicaCount: 0
     baseURL: *anchorprometheusHttpURL
     retention: *anchorprometheusRenention
     statefulSet:
@@ -341,7 +359,7 @@ prometheus:
     image:
       repository: quay.io/prometheus/node-exporter
       tag: v1.0.1
-    enabled: true
+    enabled: false
     hostNetwork: true
     hostPID: true
     name: node-exporter
@@ -378,7 +396,7 @@ prometheus:
         operator: "Exists"
   alertmanager:
     enabled: true
-    replicaCount: 3
+    replicaCount: 1
     prefixURL: ""
     baseURL: *anchoralertmanagerHttpURL
     service:
@@ -571,3 +589,7 @@ prometheus:
               annotations:
                 description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} has been in a non-ready state for longer than 30 minutes"
                 message: "Pod {{ $labels.namespace }}/{{ $labels.pod }} has been in a non-ready state for longer than 30 minutes"
+
+
+
+

@@ -1,10 +1,10 @@
 apiVersion: v2
 name: lsdmop
-version: "1.0.86"
+version: "1.0.91"
 appVersion: "1.0.2"
 # Disabling kubeVersion because GKE is dumb
 # kubeVersion: ">=v1.11.0"
-description: A Helm chart for LSDobserve
+description: A Helm chart for LSDMOP
 keywords:
   - lsdmop
   - kubernetes
@@ -29,11 +29,11 @@ dependencies:
   version: "5.3.1"
   repository: https://prometheus-community.github.io/helm-charts
 - name: eck-operator
-  version: "1.9.1"
+  version: "2.0.0"
   repository: https://helm.elastic.co
 - name: grafana
   version: "6.21.1"
   repository: https://grafana.github.io/helm-charts
 - name: logstash
-  version: "7.17.1"
+  version: "8.2.2"
   repository: https://helm.elastic.co

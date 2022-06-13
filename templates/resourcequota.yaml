@@ -5,15 +5,15 @@ metadata:
   name: lsdmop
 spec:
   hard:
-    requests.cpu: "8"
-    limits.cpu: "20"
-    requests.memory: "32Gi"
-    limits.memory: "60Gi"
-    requests.storage: "1Ti"
+    requests.cpu: "32"
+    limits.cpu: "128"
+    requests.memory: "200Gi"
+    limits.memory: "400Gi"
+    requests.storage: "10Ti"
     persistentvolumeclaims: "20"
     requests.nvidia.com/gpu: 4
-    configmaps: "50"
-    pods: "100"
+    configmaps: "150"
+    pods: "150"
     replicationcontrollers: "50"
     secrets: "100"
     services: "100"
@@ -26,8 +26,8 @@ metadata:
 spec:
   limits:
   - max:
-      cpu: "8"
-      memory: 8Gi
+      cpu: "16"
+      memory: 64Gi
     min:
       cpu: 10m
       memory: 4Mi
@@ -39,10 +39,10 @@ spec:
       cpu: 50m
       memory: 128Mi
     max:
-      cpu: "8"
-      memory: 12Gi
+      cpu: "6"
+      memory: 32Gi
     maxLimitRequestRatio:
-      cpu: "50"
+      cpu: "500"
     min:
       cpu: 10m
       memory: 4Mi

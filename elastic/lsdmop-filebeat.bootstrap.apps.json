@@ -1,6 +1,6 @@
 {
   "aliases": {
-    "filebeat-7.17.1-apps": {
+    "filebeat-8.2.2-apps": {
       "is_write_index": true
     }
   }

@@ -1,6 +1,6 @@
 {
   "aliases": {
-    "filebeat-7.17.1-lsdo": {
+    "filebeat-8.2.2-lsdo": {
       "is_write_index": true
     }
   }

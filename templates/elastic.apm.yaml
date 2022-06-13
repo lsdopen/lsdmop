@@ -8,7 +8,9 @@ metadata:
 spec:
   version: {{ .Values.lsdmop.elastic.apm.version }}
   image: {{ .Values.lsdmop.elastic.apm.image }}
-  count: 1
+  count: {{ .Values.lsdmop.elastic.apm.count }}
   elasticsearchRef:
+    name: lsdmop
+  kibanaRef:
     name: lsdmop
 {{- end }}

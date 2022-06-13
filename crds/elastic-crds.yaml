@@ -14,7 +14,7 @@ metadata:
   namespace: elastic-system
   labels:
     control-plane: elastic-operator
-    app.kubernetes.io/version: "1.6.0"
+    app.kubernetes.io/version: "2.0.0"
 ---
 # Source: eck-operator/templates/webhook.yaml
 apiVersion: v1
@@ -24,7 +24,7 @@ metadata:
   namespace: elastic-system
   labels:
     control-plane: elastic-operator
-    app.kubernetes.io/version: "1.6.0"
+    app.kubernetes.io/version: "2.0.0"
 ---
 # Source: eck-operator/templates/configmap.yaml
 apiVersion: v1
@@ -34,7 +34,7 @@ metadata:
   namespace: elastic-system
   labels:
     control-plane: elastic-operator
-    app.kubernetes.io/version: "1.6.0"
+    app.kubernetes.io/version: "2.0.0"
 data:
   eck.yaml: |-
     log-verbosity: 0
@@ -60,11 +60,10 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.5.0
-  creationTimestamp: null
   labels:
     app.kubernetes.io/instance: 'elastic-operator'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '1.6.0'
+    app.kubernetes.io/version: '2.0.0'
   name: agents.agent.k8s.elastic.co
 spec:
   additionalPrinterColumns:
@@ -352,11 +351,10 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.5.0
-  creationTimestamp: null
   labels:
     app.kubernetes.io/instance: 'elastic-operator'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '1.6.0'
+    app.kubernetes.io/version: '2.0.0'
   name: apmservers.apm.k8s.elastic.co
 spec:
   additionalPrinterColumns:
@@ -940,11 +938,10 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.5.0
-  creationTimestamp: null
   labels:
     app.kubernetes.io/instance: 'elastic-operator'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '1.6.0'
+    app.kubernetes.io/version: '2.0.0'
   name: beats.beat.k8s.elastic.co
 spec:
   additionalPrinterColumns:
@@ -1261,11 +1258,10 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.5.0
-  creationTimestamp: null
   labels:
     app.kubernetes.io/instance: 'elastic-operator'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '1.6.0'
+    app.kubernetes.io/version: '2.0.0'
   name: elasticmapsservers.maps.k8s.elastic.co
 spec:
   additionalPrinterColumns:
@@ -1786,11 +1782,10 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.5.0
-  creationTimestamp: null
   labels:
     app.kubernetes.io/instance: 'elastic-operator'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '1.6.0'
+    app.kubernetes.io/version: '2.0.0'
   name: elasticsearches.elasticsearch.k8s.elastic.co
 spec:
   additionalPrinterColumns:
@@ -3087,11 +3082,10 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.5.0
-  creationTimestamp: null
   labels:
     app.kubernetes.io/instance: 'elastic-operator'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '1.6.0'
+    app.kubernetes.io/version: '2.0.0'
   name: enterprisesearches.enterprisesearch.k8s.elastic.co
 spec:
   additionalPrinterColumns:
@@ -3616,11 +3610,10 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.5.0
-  creationTimestamp: null
   labels:
     app.kubernetes.io/instance: 'elastic-operator'
     app.kubernetes.io/name: 'eck-operator-crds'
-    app.kubernetes.io/version: '1.6.0'
+    app.kubernetes.io/version: '2.0.0'
   name: kibanas.kibana.k8s.elastic.co
 spec:
   additionalPrinterColumns:
@@ -4169,7 +4162,7 @@ metadata:
   name: elastic-operator
   labels:
     control-plane: elastic-operator
-    app.kubernetes.io/version: "1.6.0"
+    app.kubernetes.io/version: "2.0.0"
 rules:
 - apiGroups:
   - "authorization.k8s.io"
@@ -4354,7 +4347,7 @@ metadata:
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
     control-plane: elastic-operator
-    app.kubernetes.io/version: "1.6.0"
+    app.kubernetes.io/version: "2.0.0"
 rules:
 - apiGroups: ["elasticsearch.k8s.elastic.co"]
   resources: ["elasticsearches"]
@@ -4387,7 +4380,7 @@ metadata:
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
     control-plane: elastic-operator
-    app.kubernetes.io/version: "1.6.0"
+    app.kubernetes.io/version: "2.0.0"
 rules:
 - apiGroups: ["elasticsearch.k8s.elastic.co"]
   resources: ["elasticsearches"]
@@ -4418,7 +4411,7 @@ metadata:
   name: elastic-operator
   labels:
     control-plane: elastic-operator
-    app.kubernetes.io/version: "1.6.0"
+    app.kubernetes.io/version: "2.0.0"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -4426,17 +4419,17 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: elastic-operator
-  namespace: elastic-system
+  namespace: lsdmop
 ---
 # Source: eck-operator/templates/webhook.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: elastic-webhook-server
-  namespace: elastic-system
+  namespace: lsdmop
   labels:
     control-plane: elastic-operator
-    app.kubernetes.io/version: "1.6.0"
+    app.kubernetes.io/version: "2.0.0"
 spec:
   ports:
   - name: https
@@ -4450,10 +4443,10 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: elastic-operator
-  namespace: elastic-system
+  namespace: lsdmop
   labels:
     control-plane: elastic-operator
-    app.kubernetes.io/version: "1.6.0"
+    app.kubernetes.io/version: "2.0.0"
 spec:
   selector:
     matchLabels:
@@ -4475,7 +4468,7 @@ spec:
       securityContext:
         runAsNonRoot: true
       containers:
-      - image: "docker.elastic.co/eck/eck-operator:1.6.0"
+      - image: "docker.elastic.co/eck/eck-operator:2.0.0"
         imagePullPolicy: IfNotPresent
         name: manager
         args:
@@ -4527,13 +4520,13 @@ metadata:
   name: elastic-webhook.k8s.elastic.co
   labels:
     control-plane: elastic-operator
-    app.kubernetes.io/version: "1.6.0"
+    app.kubernetes.io/version: "2.0.0"
 webhooks:
 - clientConfig:
     caBundle: Cg==
     service:
       name: elastic-webhook-server
-      namespace: elastic-system
+      namespace: lsdmop
       path: /validate-agent-k8s-elastic-co-v1alpha1-agent
   failurePolicy: Ignore
   name: elastic-agent-validation-v1alpha1.k8s.elastic.co
@@ -4551,7 +4544,7 @@ webhooks:
     caBundle: Cg==
     service:
       name: elastic-webhook-server
-      namespace: elastic-system
+      namespace: lsdmop
       path: /validate-apm-k8s-elastic-co-v1-apmserver
   failurePolicy: Ignore
   name: elastic-apm-validation-v1.k8s.elastic.co
@@ -4569,7 +4562,7 @@ webhooks:
     caBundle: Cg==
     service:
       name: elastic-webhook-server
-      namespace: elastic-system
+      namespace: lsdmop
       path: /validate-apm-k8s-elastic-co-v1beta1-apmserver
   failurePolicy: Ignore
   name: elastic-apm-validation-v1beta1.k8s.elastic.co
@@ -4587,7 +4580,7 @@ webhooks:
     caBundle: Cg==
     service:
       name: elastic-webhook-server
-      namespace: elastic-system
+      namespace: lsdmop
       path: /validate-beat-k8s-elastic-co-v1beta1-beat
   failurePolicy: Ignore
   name: elastic-beat-validation-v1beta1.k8s.elastic.co
@@ -4605,7 +4598,7 @@ webhooks:
     caBundle: Cg==
     service:
       name: elastic-webhook-server
-      namespace: elastic-system
+      namespace: lsdmop
       path: /validate-enterprisesearch-k8s-elastic-co-v1-enterprisesearch
   failurePolicy: Ignore
   name: elastic-ent-validation-v1.k8s.elastic.co
@@ -4623,7 +4616,7 @@ webhooks:
     caBundle: Cg==
     service:
       name: elastic-webhook-server
-      namespace: elastic-system
+      namespace: lsdmop
       path: /validate-enterprisesearch-k8s-elastic-co-v1beta1-enterprisesearch
   failurePolicy: Ignore
   name: elastic-ent-validation-v1beta1.k8s.elastic.co
@@ -4641,7 +4634,7 @@ webhooks:
     caBundle: Cg==
     service:
       name: elastic-webhook-server
-      namespace: elastic-system
+      namespace: lsdmop
       path: /validate-elasticsearch-k8s-elastic-co-v1-elasticsearch
   failurePolicy: Ignore
   name: elastic-es-validation-v1.k8s.elastic.co
@@ -4659,7 +4652,7 @@ webhooks:
     caBundle: Cg==
     service:
       name: elastic-webhook-server
-      namespace: elastic-system
+      namespace: lsdmop
       path: /validate-elasticsearch-k8s-elastic-co-v1beta1-elasticsearch
   failurePolicy: Ignore
   name: elastic-es-validation-v1beta1.k8s.elastic.co
@@ -4677,7 +4670,7 @@ webhooks:
     caBundle: Cg==
     service:
       name: elastic-webhook-server
-      namespace: elastic-system
+      namespace: lsdmop
       path: /validate-kibana-k8s-elastic-co-v1-kibana
   failurePolicy: Ignore
   name: elastic-kb-validation-v1.k8s.elastic.co
@@ -4695,7 +4688,7 @@ webhooks:
     caBundle: Cg==
     service:
       name: elastic-webhook-server
-      namespace: elastic-system
+      namespace: lsdmop
       path: /validate-kibana-k8s-elastic-co-v1beta1-kibana
   failurePolicy: Ignore
   name: elastic-kb-validation-v1beta1.k8s.elastic.co

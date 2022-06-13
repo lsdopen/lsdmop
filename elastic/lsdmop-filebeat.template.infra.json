@@ -1,14 +1,9 @@
 {
-  "order": 2,
-  "index_patterns": [
-    "filebeat-7.17.1-infra-*"
-  ],
-  "settings": {
-    "index": {
-      "lifecycle": {
-        "name": "filebeat-infra",
-        "rollover_alias": "filebeat-7.17.1-infra"
-      }
+    "index_patterns": ["filebeat-8.2.2-infra"],
+    "data_stream": { },
+    "composed_of": [ "filebeat-8.2.2", "filebeat-infra" ],
+    "priority": 500,
+    "_meta": {
+      "description": "Template for general infra"
     }
   }
-}
