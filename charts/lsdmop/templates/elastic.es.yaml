@@ -70,7 +70,8 @@ spec:
         metadata:
           creationTimestamp: null
         spec:
-          serviceAccountName: {{ .Release.Name }}-elasticsearch     
+          serviceAccountName: {{ .Release.Name }}-elastic
+          serviceAccount: {{ .Release.Name }}-elastic
           topologySpreadConstraints:
             - maxSkew: 1
               topologyKey: topology.kubernetes.io/zone
@@ -131,7 +132,8 @@ spec:
         metadata:
           creationTimestamp: null
         spec:
-          serviceAccountName: {{ .Release.Name }}-elasticsearch
+          serviceAccountName: {{ .Release.Name }}-elastic
+          serviceAccount: {{ .Release.Name }}-elastic
           topologySpreadConstraints:
             - maxSkew: 1
               topologyKey: topology.kubernetes.io/zone
@@ -192,6 +194,8 @@ spec:
         metadata:
           creationTimestamp: null
         spec:
+          serviceAccountName: {{ .Release.Name }}-elastic
+          serviceAccount: {{ .Release.Name }}-elastic
           containers:
             - env:
                 - name: ES_JAVA_OPTS
@@ -234,7 +238,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   namespace: {{ .Release.Name }}
-  name: {{ .Release.Name }}-elasticsearch
+  name: {{ .Release.Name }}-elastic
   annotations:
     eks.amazonaws.com/role-arn: {{ .Values.lsdmop.elastic.serviceAccount.annotations.eksAmazonawsComRoleArn }}
 ---              
