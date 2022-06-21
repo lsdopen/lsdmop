@@ -50,7 +50,7 @@ lsdmop:
       annotations:
         certmanagerioclusterissuer: letsencrypt
       tls:
-        secretName: elastic-purple-ingress-tls
+        secretName: elastic-ingress-tls
       url: *anchorelasticURL
     serviceAccount:
       annotations:
@@ -73,7 +73,7 @@ lsdmop:
         hosts:
           *anchorkibanaURL
         tls:
-          secretName: kibana-purple-ingress-tls
+          secretName: kibana-ingress-tls
           hosts:
             *anchorkibanaURL
 
@@ -105,7 +105,7 @@ lsdmop:
         annotations:
           certmanagerioclusterissuer: letsencrypt
         tls:
-          secretName: apm-purple-ingress-tls
+          secretName: apm-ingress-tls
         url: *anchorapmURL
 
 
