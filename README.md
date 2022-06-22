@@ -3,7 +3,7 @@
 ## Quick and Dirty Install
 
 ```
-helm repo add lsdopen https://lsdopen.github.io/charts
+helm repo add lsdopen https://lsdopen.github.io/lsdmop
 helm repo update
 ```
 
