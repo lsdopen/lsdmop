@@ -14,6 +14,7 @@ lsdmop:
   kibanaURL: &anchorkibanaURL "kibana.domain.example"
   elasticURL: &anchorelasticURL "elastic.domain.example"
   apmURL: &anchorapmURL "apm.domain.example"
+  fleetURL: &anchorfleetURL "fleet.observability.openeasy.io"
   logstashJavaOpts: &anchorlogstashJavaOpts "-Xms1g -Xmx1g"
   grafanaUsername: &anchorgrafanaUsername "admin"
   grafanaPassword: &anchorgrafanaPassword "ChangeMe-PasswordForGrafana"
@@ -91,6 +92,14 @@ lsdmop:
     fleet:
       enabled: false
       version: *anchoreckVersion
+      fleetURL: *anchorfleetURL
+      ingress:
+        annotations:
+          certmanagerioclusterissuer: letsencrypt
+        tls:
+          secretName: fleet-ingress-tls
+        url: *anchorfleetURL
+
     ## Metricbeat to connect to Prometheus
     metricbeatPrometheus:
       enabled: false
