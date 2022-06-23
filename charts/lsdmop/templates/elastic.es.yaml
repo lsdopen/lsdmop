@@ -67,7 +67,7 @@ spec:
         node.roles: ["master", "data_hot", "data", "transform", "remote_cluster_client", "ingest"]
         node.attr.data: hot
         xpack.security.authc.api_key.enabled: true #required for fleet
-      count: 1
+      count: 3
       name: hot-data
       podTemplate:
         metadata:
@@ -104,7 +104,7 @@ spec:
           containers:
             - env:
                 - name: ES_JAVA_OPTS
-                  value: '-Xms1g -Xmx1g -Dlog4j2.formatMsgNoLookups=true'
+                  value: '-Xms16g -Xmx16g -Dlog4j2.formatMsgNoLookups=true'
                 - name: ZONE
                   valueFrom:
                     fieldRef:
@@ -113,10 +113,10 @@ spec:
               resources:
                 limits:
                   cpu: '4000m'
-                  memory: 2Gi
+                  memory: 30Gi
                 requests:
                   cpu: '500m'
-                  memory: 2Gi    
+                  memory: 30Gi    
           tolerations:
             - effect: NoSchedule
               key: dedicated
@@ -140,7 +140,7 @@ spec:
               - ReadWriteOnce
             resources:
               requests:
-                storage: 5Gi
+                storage: 560Gi
             storageClassName: ebs-gp3
     #WARM DATA NODES            
     - config:
@@ -149,7 +149,7 @@ spec:
         node.roles: ["master", "data_warm", "data", "data_content", "transform", "remote_cluster_client", "ingest"]
         node.attr.data: warm
         xpack.security.authc.api_key.enabled: true #required for fleet
-      count: 1
+      count: 2
       name: warm-data
       podTemplate:
         metadata:
@@ -186,7 +186,7 @@ spec:
           containers:
             - env:
                 - name: ES_JAVA_OPTS
-                  value: '-Xms1g -Xmx1g -Dlog4j2.formatMsgNoLookups=true'
+                  value: '-Xms16g -Xmx16g -Dlog4j2.formatMsgNoLookups=true'
                 - name: ZONE
                   valueFrom:
                     fieldRef:
@@ -195,10 +195,10 @@ spec:
               resources:
                 limits:
                   cpu: '4000m'
-                  memory: 2Gi
+                  memory: 24Gi
                 requests:
                   cpu: '500m'
-                  memory: 2Gi
+                  memory: 24Gi
           tolerations:
             - effect: NoSchedule
               key: dedicated
