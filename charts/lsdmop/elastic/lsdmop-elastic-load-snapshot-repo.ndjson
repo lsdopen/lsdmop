@@ -1,0 +1,6 @@
+{
+  "type": "s3",
+  "settings": {
+    "bucket": "elastic-storage"
+  }
+}

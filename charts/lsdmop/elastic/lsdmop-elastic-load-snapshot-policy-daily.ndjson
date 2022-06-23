@@ -1,0 +1,10 @@
+{
+      "name" : "<cluster-state-daily-{now/d}>",
+      "schedule" : "0 30 1 * * ?",
+      "repository" : "s3_repository",
+      "config" : { },
+      "retention" : {
+        "expire_after" : "2d",
+        "min_count" : 1
+      }
+}

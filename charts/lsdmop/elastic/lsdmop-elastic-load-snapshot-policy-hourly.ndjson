@@ -1,0 +1,17 @@
+{
+    "name" : "<log-data-hourly-{now}>",
+    "schedule" : "0 0 * * * ?",
+    "repository" : "s3_repository",
+    "config" : {
+      "include_global_state" : false,
+      "indices" : [
+        "filebeat-8.2.0-apps",
+        "filebeat-8.2.0-infra",
+        "filebeat-8.2.0-lsdo"
+      ]
+    },
+    "retention" : {
+      "expire_after" : "90d",
+      "min_count" : 1
+    }
+}

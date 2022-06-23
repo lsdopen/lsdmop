@@ -58,13 +58,16 @@ spec:
     #         resources:
     #           requests:
     #             storage: 10Gi
-    #         storageClassName: standard
+    #         storageClassName: ebs-gp3
+
+    # HOT DATA NODES
     - config:
         node.store.allow_mmap: false
         #path.repo: /usr/share/elasticsearch/snapshots
         node.roles: ["master", "data_hot", "data", "transform", "remote_cluster_client", "ingest"]
         node.attr.data: hot
-      count: 3
+        xpack.security.authc.api_key.enabled: true #required for fleet
+      count: 1
       name: hot-data
       podTemplate:
         metadata:
@@ -72,44 +75,40 @@ spec:
         spec:
           serviceAccountName: {{ .Release.Name }}-elastic
           serviceAccount: {{ .Release.Name }}-elastic
-          topologySpreadConstraints:
-            - maxSkew: 1
-              topologyKey: topology.kubernetes.io/zone
-              whenUnsatisfiable: DoNotSchedule
-              labelSelector:
-                matchLabels:
-                  elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
-                  elasticsearch.k8s.elastic.co/statefulset-name: {{ .Release.Name }}-es-hot-data
+          automountServiceAccountToken: true
+          initContainers:
+            - name: set-s3-bucket-web-token-dir
+              command:
+              - mkdir
+              - -p
+              - /usr/share/elasticsearch/config/repository-s3
+            - name: remove-s3-bucket-web-token-symlink
+              command:
+              - rm
+              - -rf
+              - /usr/share/elasticsearch/config/repository-s3/aws-web-identity-token-file
+            - name: set-s3-bucket-web-token-symlink
+              command:
+              - ln
+              - -s
+              - /var/run/secrets/eks.amazonaws.com/serviceaccount/token 
+              - "/usr/share/elasticsearch/config/repository-s3/aws-web-identity-token-file"
           containers:
             - env:
                 - name: ES_JAVA_OPTS
-                  value: '-Xms16g -Xmx16g -Dlog4j2.formatMsgNoLookups=true'
+                  value: '-Xms1g -Xmx1g -Dlog4j2.formatMsgNoLookups=true'
                 - name: ZONE
                   valueFrom:
                     fieldRef:
-                      fieldPath: metadata.annotations['topology.kubernetes.io/zone']                  
+                      fieldPath: metadata.annotations['topology.kubernetes.io/zone']           
               name: elasticsearch
               resources:
                 limits:
                   cpu: '4000m'
-                  memory: 30Gi
+                  memory: 2Gi
                 requests:
                   cpu: '500m'
-                  memory: 24Gi
-          tolerations:
-            - effect: NoSchedule
-              key: dedicated
-              operator: Equal
-              value: elastic-hot
-          affinity:
-            nodeAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                nodeSelectorTerms:
-                - matchExpressions:
-                  - key: node.type
-                    operator: In
-                    values:
-                    - hot                  
+                  memory: 2Gi    
       volumeClaimTemplates:
         - metadata:
             creationTimestamp: null
@@ -119,14 +118,16 @@ spec:
               - ReadWriteOnce
             resources:
               requests:
-                storage: 560Gi
+                storage: 5Gi
             storageClassName: ebs-gp3
+    #WARM DATA NODES            
     - config:
         node.store.allow_mmap: false
         #path.repo: /usr/share/elasticsearch/snapshots
         node.roles: ["master", "data_warm", "data", "data_content", "transform", "remote_cluster_client", "ingest"]
         node.attr.data: warm
-      count: 2
+        xpack.security.authc.api_key.enabled: true #required for fleet
+      count: 1
       name: warm-data
       podTemplate:
         metadata:
@@ -134,18 +135,28 @@ spec:
         spec:
           serviceAccountName: {{ .Release.Name }}-elastic
           serviceAccount: {{ .Release.Name }}-elastic
-          topologySpreadConstraints:
-            - maxSkew: 1
-              topologyKey: topology.kubernetes.io/zone
-              whenUnsatisfiable: DoNotSchedule
-              labelSelector:
-                matchLabels:
-                  elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
-                  elasticsearch.k8s.elastic.co/statefulset-name: {{ .Release.Name }}-es-warm-data
+          automountServiceAccountToken: true          
+          initContainers:
+            - name: set-s3-bucket-web-token-dir
+              command:
+              - mkdir
+              - -p
+              - /usr/share/elasticsearch/config/repository-s3
+            - name: remove-s3-bucket-web-token-symlink
+              command:
+              - rm
+              - -rf
+              - /usr/share/elasticsearch/config/repository-s3/aws-web-identity-token-file
+            - name: set-s3-bucket-web-token-symlink
+              command:
+              - ln
+              - -s
+              - /var/run/secrets/eks.amazonaws.com/serviceaccount/token 
+              - "/usr/share/elasticsearch/config/repository-s3/aws-web-identity-token-file"
           containers:
             - env:
                 - name: ES_JAVA_OPTS
-                  value: '-Xms16g -Xmx16g -Dlog4j2.formatMsgNoLookups=true'
+                  value: '-Xms1g -Xmx1g -Dlog4j2.formatMsgNoLookups=true'
                 - name: ZONE
                   valueFrom:
                     fieldRef:
@@ -154,24 +165,10 @@ spec:
               resources:
                 limits:
                   cpu: '4000m'
-                  memory: 30Gi
+                  memory: 2Gi
                 requests:
                   cpu: '500m'
-                  memory: 24Gi
-          tolerations:
-            - effect: NoSchedule
-              key: dedicated
-              operator: Equal
-              value: elastic-warm
-          affinity:
-            nodeAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                nodeSelectorTerms:
-                - matchExpressions:
-                  - key: node.type
-                    operator: In
-                    values:
-                    - warm                 
+                  memory: 2Gi
       volumeClaimTemplates:
         - metadata:
             creationTimestamp: null
@@ -183,12 +180,15 @@ spec:
               requests:
                 storage: 2760Gi
             storageClassName: ebs-gp3
+
+    # MACHINE LEARNING NODES            
     - config:
         node.store.allow_mmap: false
         #path.repo: /usr/share/elasticsearch/snapshots
         node.roles: ["ml"]
         #node.attr.data: ml
-      count: 2
+        xpack.security.authc.api_key.enabled: true #required for fleet
+      count: 1
       name: ml
       podTemplate:
         metadata:
@@ -196,18 +196,19 @@ spec:
         spec:
           serviceAccountName: {{ .Release.Name }}-elastic
           serviceAccount: {{ .Release.Name }}-elastic
+          automountServiceAccountToken: true          
           containers:
             - env:
                 - name: ES_JAVA_OPTS
-                  value: '-Xms8g -Xmx8g -Dlog4j2.formatMsgNoLookups=true'
+                  value: '-Xms1g -Xmx1g -Dlog4j2.formatMsgNoLookups=true'
               name: elasticsearch
               resources:
                 limits:
                   cpu: '4000m'
-                  memory: 16Gi
+                  memory: 2Gi
                 requests:
                   cpu: '500m'
-                  memory: 16Gi
+                  memory: 2Gi
           # tolerations:
           #   - effect: NoSchedule
           #     key: dedicated

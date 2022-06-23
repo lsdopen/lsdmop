@@ -27,4 +27,10 @@ data:
 {{ .Files.Get "elastic/lsdmop-filebeat.component.template.apps.json" | indent 4}}
   lsdmop-elastic-load-sample-dashboard.ndjson: |-
 {{ .Files.Get "elastic/lsdmop-elastic-load-sample-dashboard.ndjson" | indent 4}}
+  lsdmop-elastic-load-snapshot-repo.ndjson: |-
+{{ .Files.Get "elastic/lsdmop-elastic-load-snapshot-repo.ndjson" | indent 4}}
+  lsdmop-elastic-load-snapshot-policy-daily.ndjson: |-
+{{ .Files.Get "elastic/lsdmop-elastic-load-snapshot-policy-daily.ndjson" | indent 4}}
+  lsdmop-elastic-load-snapshot-policy-hourly.ndjson: |-
+{{ .Files.Get "elastic/lsdmop-elastic-load-snapshot-policy-hourly.ndjson" | indent 4}}
 ---
