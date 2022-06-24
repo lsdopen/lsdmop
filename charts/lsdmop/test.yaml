@@ -1,6 +1,6 @@
 Release "lsdmop" has been upgraded. Happy Helming!
 NAME: lsdmop
-LAST DEPLOYED: Fri Jun 24 12:30:58 2022
+LAST DEPLOYED: Fri Jun 24 12:36:36 2022
 NAMESPACE: lsdmop
 STATUS: pending-upgrade
 REVISION: 45
@@ -63184,7 +63184,7 @@ spec:
           containers:
             - env:
                 - name: ES_JAVA_OPTS
-                  value: '-Xms16g -Xmx16g -Dlog4j2.formatMsgNoLookups=true'
+                  value: "-Xms15g -Xmx15g"
                 - name: ZONE
                   valueFrom:
                     fieldRef:
@@ -63266,7 +63266,7 @@ spec:
           containers:
             - env:
                 - name: ES_JAVA_OPTS
-                  value: '-Xms16g -Xmx16g -Dlog4j2.formatMsgNoLookups=true'
+                  value: "-Xms15g -Xmx15g"
                 - name: ZONE
                   valueFrom:
                     fieldRef:

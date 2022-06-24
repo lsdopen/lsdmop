@@ -104,7 +104,8 @@ spec:
           containers:
             - env:
                 - name: ES_JAVA_OPTS
-                  value: "-Xms{{ div .Values.lsdmop.elastic.cluster.hot.mem 2 }}g -Xmx{{ div .Values.lsdmop.elastic.cluster.hot.mem 2}}g"                - name: ZONE
+                  value: "-Xms{{ div .Values.lsdmop.elastic.cluster.hot.mem 2 }}g -Xmx{{ div .Values.lsdmop.elastic.cluster.hot.mem 2}}g"
+                - name: ZONE
                   valueFrom:
                     fieldRef:
                       fieldPath: metadata.annotations['topology.kubernetes.io/zone']           
