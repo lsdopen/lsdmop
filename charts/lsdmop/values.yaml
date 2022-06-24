@@ -10,7 +10,7 @@ lsdmop:
   eckApmImage: &anchoreckApmImage "docker.elastic.co/apm/apm-server:8.2.2"
   eckFilebeatImage: &anchoreckFilebeatImage "docker.elastic.co/beats/filebeat:8.2.2"
   eckMetricbeatImage: &anchoreckMetricbeatImage "docker.elastic.co/beats/metricbeat:8.2.2"
-  elasticClusterSize: &anchorelasticClusterSize "1"
+  #elasticClusterSize: &anchorelasticClusterSize "1"
   kibanaURL: &anchorkibanaURL "kibana.domain.example"
   elasticURL: &anchorelasticURL "elastic.domain.example"
   apmURL: &anchorapmURL "apm.domain.example"
@@ -44,9 +44,6 @@ lsdmop:
     enabled: true
     image: *anchoreckElasticsearchImage
     version: *anchoreckVersion
-    count: *anchorelasticClusterSize
-    storage: "50Gi"
-    storageClassName: *anchorstorageClass
     ingress:
       annotations:
         certmanagerioclusterissuer: letsencrypt
@@ -56,7 +53,46 @@ lsdmop:
     serviceAccount:
       annotations:
         eksAmazonawsComRoleArn: arn:aws:iam::***:role/S3-cluster-elastic-storage      
-        #eksAmazonawsComRoleArn: arn:aws:s3:::elastic-storage
+    cluster:
+      hot:
+        count: 3
+        mem: 30Gi
+        cpureq: 500m
+        cpulim: 4000m
+        tolerations: elastic-hot
+        storagesize: 560Gi
+        storageclass: ebs-gp3
+      warm:
+        count: 2
+        mem: 30Gi
+        cpureq: 500m
+        cpulim: 4000m
+        tolerations: elastic-warm
+        storagesize: 2760Gi
+        storageclass: ebs-gp3
+      cold:
+        count: 0
+        mem: 30Gi
+        cpureq: 500m
+        cpulim: 4000m
+        tolerations: elastic-cold
+        storagesize: 560Gi
+        storageclass: ebs-gp3
+      frozen:
+        count: 0
+        mem: 30Gi
+        cpureq: 500m
+        cpulim: 4000m
+        tolerations: elastic-frozen
+        storagesize: 560Gi
+        storageclass: ebs-gp3
+      ml:
+        count: 2
+        mem: 16Gi
+        cpureq: 500m
+        cpulim: 4000m
+        storagesize: 1Gi
+        storageclass: ebs-gp3
 
 
     #Kibana

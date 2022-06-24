@@ -67,7 +67,7 @@ spec:
         node.roles: ["master", "data_hot", "data", "transform", "remote_cluster_client", "ingest"]
         node.attr.data: hot
         xpack.security.authc.api_key.enabled: true #required for fleet
-      count: 3
+      count: {{ .Values.elastic.cluster.hot.count }}
       name: hot-data
       podTemplate:
         metadata:
@@ -112,16 +112,16 @@ spec:
               name: elasticsearch
               resources:
                 limits:
-                  cpu: '4000m'
-                  memory: 30Gi
+                  cpu: {{ .Values.elastic.cluster.hot.cpulim }}
+                  memory: {{ .Values.elastic.cluster.hot.mem }}
                 requests:
-                  cpu: '500m'
-                  memory: 30Gi    
+                  cpu: {{ .Values.elastic.cluster.hot.cpureq }}
+                  memory: {{ .Values.elastic.cluster.hot.mem }}
           tolerations:
             - effect: NoSchedule
               key: dedicated
               operator: Equal
-              value: elastic-hot
+              value: {{ .Values.elastic.cluster.hot.tolerations }}
           affinity:
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
@@ -140,8 +140,8 @@ spec:
               - ReadWriteOnce
             resources:
               requests:
-                storage: 560Gi
-            storageClassName: ebs-gp3
+                storage: {{ .Values.elastic.cluster.hot.storagesize }}
+            storageClassName: {{ .Values.elastic.cluster.hot.storageclass }}
     #WARM DATA NODES            
     - config:
         node.store.allow_mmap: false
@@ -149,7 +149,7 @@ spec:
         node.roles: ["master", "data_warm", "data", "data_content", "transform", "remote_cluster_client", "ingest"]
         node.attr.data: warm
         xpack.security.authc.api_key.enabled: true #required for fleet
-      count: 2
+      count: {{ .Values.elastic.cluster.warm.count }}
       name: warm-data
       podTemplate:
         metadata:
@@ -194,16 +194,16 @@ spec:
               name: elasticsearch
               resources:
                 limits:
-                  cpu: '4000m'
-                  memory: 24Gi
+                  cpu: {{ .Values.elastic.cluster.warm.cpulim }}
+                  memory: {{ .Values.elastic.cluster.warm.mem }}
                 requests:
-                  cpu: '500m'
-                  memory: 24Gi
+                  cpu: {{ .Values.elastic.cluster.warm.cpureq }}
+                  memory: {{ .Values.elastic.cluster.warm.mem }}
           tolerations:
             - effect: NoSchedule
               key: dedicated
               operator: Equal
-              value: elastic-warm
+              value: {{ .Values.elastic.cluster.warm.tolerations }}
           affinity:
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
@@ -222,8 +222,8 @@ spec:
               - ReadWriteOnce
             resources:
               requests:
-                storage: 2760Gi
-            storageClassName: ebs-gp3
+                storage: {{ .Values.elastic.cluster.warm.storagesize }}
+            storageClassName: {{ .Values.elastic.cluster.warm.storageclass }}
 
     # MACHINE LEARNING NODES            
     - config:
@@ -232,7 +232,7 @@ spec:
         node.roles: ["ml"]
         #node.attr.data: ml
         xpack.security.authc.api_key.enabled: true #required for fleet
-      count: 1
+      count: {{ .Values.elastic.cluster.warm.count }}
       name: ml
       podTemplate:
         metadata:
@@ -248,25 +248,11 @@ spec:
               name: elasticsearch
               resources:
                 limits:
-                  cpu: '4000m'
-                  memory: 2Gi
+                  cpu: {{ .Values.elastic.cluster.warm.cpulim }}
+                  memory: {{ .Values.elastic.cluster.warm.mem }}
                 requests:
-                  cpu: '500m'
-                  memory: 2Gi
-          # tolerations:
-          #   - effect: NoSchedule
-          #     key: dedicated
-          #     operator: Equal
-          #     value: elastic-warm
-          # affinity:
-          #   nodeAffinity:
-          #     requiredDuringSchedulingIgnoredDuringExecution:
-          #       nodeSelectorTerms:
-          #       - matchExpressions:
-          #         - key: node.type
-          #           operator: In
-          #           values:
-          #           - warm                 
+                  cpu: {{ .Values.elastic.cluster.warm.cpureq }}
+                  memory: {{ .Values.elastic.cluster.warm.mem }}
       volumeClaimTemplates:
         - metadata:
             creationTimestamp: null
@@ -276,8 +262,8 @@ spec:
               - ReadWriteOnce
             resources:
               requests:
-                storage: 1Gi
-            storageClassName: ebs-gp3
+                storage: {{ .Values.elastic.cluster.warm.storagesize }}
+            storageClassName: {{ .Values.elastic.cluster.warm.storageclass }}
 ---
 apiVersion: v1
 kind: ServiceAccount
