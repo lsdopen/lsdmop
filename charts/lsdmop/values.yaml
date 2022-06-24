@@ -14,7 +14,7 @@ lsdmop:
   kibanaURL: &anchorkibanaURL "kibana.domain.example"
   elasticURL: &anchorelasticURL "elastic.domain.example"
   apmURL: &anchorapmURL "apm.domain.example"
-  fleetURL: &anchorfleetURL "fleet.observability.openeasy.io"
+  fleetURL: &anchorfleetURL "fleet.domain.example"
   logstashJavaOpts: &anchorlogstashJavaOpts "-Xms1g -Xmx1g"
   grafanaUsername: &anchorgrafanaUsername "admin"
   grafanaPassword: &anchorgrafanaPassword "ChangeMe-PasswordForGrafana"
