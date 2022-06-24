@@ -56,7 +56,7 @@ lsdmop:
     cluster:
       hot:
         count: 3
-        mem: 30Gi
+        mem: 30
         cpureq: 500m
         cpulim: 4000m
         tolerations: elastic-hot
@@ -64,7 +64,7 @@ lsdmop:
         storageclass: ebs-gp3
       warm:
         count: 2
-        mem: 30Gi
+        mem: 30
         cpureq: 500m
         cpulim: 4000m
         tolerations: elastic-warm
@@ -72,7 +72,7 @@ lsdmop:
         storageclass: ebs-gp3
       cold:
         count: 0
-        mem: 30Gi
+        mem: 30
         cpureq: 500m
         cpulim: 4000m
         tolerations: elastic-cold
@@ -80,7 +80,7 @@ lsdmop:
         storageclass: ebs-gp3
       frozen:
         count: 0
-        mem: 30Gi
+        mem: 30
         cpureq: 500m
         cpulim: 4000m
         tolerations: elastic-frozen
@@ -88,7 +88,7 @@ lsdmop:
         storageclass: ebs-gp3
       ml:
         count: 2
-        mem: 16Gi
+        mem: 16
         cpureq: 500m
         cpulim: 4000m
         storagesize: 1Gi

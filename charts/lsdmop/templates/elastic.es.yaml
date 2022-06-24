@@ -104,8 +104,7 @@ spec:
           containers:
             - env:
                 - name: ES_JAVA_OPTS
-                  value: '-Xms16g -Xmx16g -Dlog4j2.formatMsgNoLookups=true'
-                - name: ZONE
+                  value: "-Xms{{ div .Values.lsdmop.elastic.cluster.hot.mem 2 }}g -Xmx{{ div .Values.lsdmop.elastic.cluster.hot.mem 2}}g"                - name: ZONE
                   valueFrom:
                     fieldRef:
                       fieldPath: metadata.annotations['topology.kubernetes.io/zone']           
@@ -113,10 +112,10 @@ spec:
               resources:
                 limits:
                   cpu: {{ .Values.lsdmop.elastic.cluster.hot.cpulim }}
-                  memory: {{ .Values.lsdmop.elastic.cluster.hot.mem }}
+                  memory: {{ .Values.lsdmop.elastic.cluster.hot.mem }}Gi
                 requests:
                   cpu: {{ .Values.lsdmop.elastic.cluster.hot.cpureq }}
-                  memory: {{ .Values.lsdmop.elastic.cluster.hot.mem }}
+                  memory: {{ .Values.lsdmop.elastic.cluster.hot.mem }}Gi
           tolerations:
             - effect: NoSchedule
               key: dedicated
@@ -186,7 +185,7 @@ spec:
           containers:
             - env:
                 - name: ES_JAVA_OPTS
-                  value: '-Xms16g -Xmx16g -Dlog4j2.formatMsgNoLookups=true'
+                  value: "-Xms{{ div .Values.lsdmop.elastic.cluster.warm.mem 2 }}g -Xmx{{ div .Values.lsdmop.elastic.cluster.warm.mem 2}}g"
                 - name: ZONE
                   valueFrom:
                     fieldRef:
@@ -195,10 +194,10 @@ spec:
               resources:
                 limits:
                   cpu: {{ .Values.lsdmop.elastic.cluster.warm.cpulim }}
-                  memory: {{ .Values.lsdmop.elastic.cluster.warm.mem }}
+                  memory: {{ .Values.lsdmop.elastic.cluster.warm.mem }}Gi
                 requests:
                   cpu: {{ .Values.lsdmop.elastic.cluster.warm.cpureq }}
-                  memory: {{ .Values.lsdmop.elastic.cluster.warm.mem }}
+                  memory: {{ .Values.lsdmop.elastic.cluster.warm.mem }}Gi
           tolerations:
             - effect: NoSchedule
               key: dedicated
@@ -232,7 +231,7 @@ spec:
         node.roles: ["ml"]
         #node.attr.data: ml
         xpack.security.authc.api_key.enabled: true #required for fleet
-      count: {{ .Values.lsdmop.elastic.cluster.warm.count }}
+      count: {{ .Values.lsdmop.elastic.cluster.ml.count }}
       name: ml
       podTemplate:
         metadata:
@@ -245,15 +244,15 @@ spec:
             - env:
                 - name: ES_JAVA_OPTS
                   #value: '-Xms1g -Xmx1g -Dlog4j2.formatMsgNoLookups=true'
-                  value: "-Xms{{ .Values.lsdmop.elastic.cluster.warm.mem }}g -Xmx{{ .Values.lsdmop.elastic.cluster.warm.mem }}g"
+                  value: "-Xms{{ div .Values.lsdmop.elastic.cluster.ml.mem 2 }}g -Xmx{{ div .Values.lsdmop.elastic.cluster.ml.mem 2}}g"
               name: elasticsearch
               resources:
                 limits:
-                  cpu: {{ .Values.lsdmop.elastic.cluster.warm.cpulim }}
-                  memory: {{ .Values.lsdmop.elastic.cluster.warm.mem }}
+                  cpu: {{ .Values.lsdmop.elastic.cluster.ml.cpulim }}
+                  memory: {{ .Values.lsdmop.elastic.cluster.ml.mem }}Gi
                 requests:
-                  cpu: {{ .Values.lsdmop.elastic.cluster.warm.cpureq }}
-                  memory: {{ .Values.lsdmop.elastic.cluster.warm.mem }}
+                  cpu: {{ .Values.lsdmop.elastic.cluster.ml.cpureq }}
+                  memory: {{ .Values.lsdmop.elastic.cluster.ml.mem }}Gi
       volumeClaimTemplates:
         - metadata:
             creationTimestamp: null
@@ -263,8 +262,8 @@ spec:
               - ReadWriteOnce
             resources:
               requests:
-                storage: {{ .Values.lsdmop.elastic.cluster.warm.storagesize }}
-            storageClassName: {{ .Values.lsdmop.elastic.cluster.warm.storageclass }}
+                storage: {{ .Values.lsdmop.elastic.cluster.ml.storagesize }}
+            storageClassName: {{ .Values.lsdmop.elastic.cluster.ml.storageclass }}
 ---
 apiVersion: v1
 kind: ServiceAccount
