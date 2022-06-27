@@ -1,11 +1,4 @@
 # Source: eck-operator/templates/operator-namespace.yaml
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: lsdpmop
-  labels:
-    name: lsdmop
----
 
 apiVersion: v1
 kind: Namespace
@@ -14,6 +7,15 @@ metadata:
   labels:
     name: elastic-system
 ---
+
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: lsdpmop
+#   labels:
+#     name: lsdmop
+# ---
+
 # Source: eck-operator/templates/service-account.yaml
 apiVersion: v1
 kind: ServiceAccount

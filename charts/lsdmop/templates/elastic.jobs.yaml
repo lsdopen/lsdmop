@@ -7,6 +7,14 @@ metadata:
 spec:
   template:
     spec:
+      #VOLUMES FOR CONFIG MAPS - always at end
+      restartPolicy: Never
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: elastic-filebeat-custom-files
+        name: elastic-filebeat-custom-files     
+
       initContainers:
       #WAIT FOR ELASTIC TO START ACCEPTING API CALLS
       - args:
@@ -348,6 +356,7 @@ spec:
           name: elastic-filebeat-custom-files
 
 
+{{- if .Values.lsdmop.elastic.s3snapshot.enabled }}
 
       #LOAD S3 Repo Config for Snapshots    
       - args:
@@ -366,7 +375,6 @@ spec:
         volumeMounts:
         - mountPath: /opt/elastic/
           name: elastic-filebeat-custom-files
-
 
 
       #LOAD S3 Daily Policy Config for Snapshots    
@@ -405,17 +413,11 @@ spec:
         volumeMounts:
         - mountPath: /opt/elastic/
           name: elastic-filebeat-custom-files   
+{{- end }}
 
 
 
 
-      #VOLUMES FOR CONFIG MAPS - always at end
-      restartPolicy: Never
-      volumes:
-      - configMap:
-          defaultMode: 420
-          name: elastic-filebeat-custom-files
-        name: elastic-filebeat-custom-files          
 
 
 ---

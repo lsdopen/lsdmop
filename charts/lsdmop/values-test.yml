@@ -141,6 +141,8 @@ lsdmop:
       enabled: false
       image: *anchoreckMetricbeatImage
       version: *anchoreckVersion
+
+    #APM servers  
     apm:
       enabled: true
       image: *anchoreckApmImage
@@ -152,6 +154,10 @@ lsdmop:
         tls:
           secretName: apm-ingress-tls
         url: *anchorapmURL
+
+    #S3 bucket storage for snapshots    
+    s3snapshot:
+      enabled: false
 
 
 # Logstash
