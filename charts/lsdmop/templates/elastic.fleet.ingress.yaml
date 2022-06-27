@@ -1,6 +1,9 @@
 
 # Elasticsearch Ingress
 {{- if or (eq .Values.lsdmop.clusterType "gke") (eq .Values.lsdmop.clusterType "rancher") -}}
+{{- if .Values.lsdmop.elastic.fleet.enabled -}}
+
+
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -31,4 +34,5 @@ spec:
         path: /
         pathType: ImplementationSpecific
 ---
+{{- end }}
 {{- end }}

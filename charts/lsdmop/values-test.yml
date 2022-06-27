@@ -126,7 +126,7 @@ lsdmop:
       version: *anchoreckVersion
     ## Fleet agents as a Daemonset to collect metrics/logs from Nodes (replaces metricbeat and filebeat)
     fleet:
-      enabled: false
+      enabled: true
       version: *anchoreckVersion
       fleetURL: *anchorfleetURL
       ingress:
