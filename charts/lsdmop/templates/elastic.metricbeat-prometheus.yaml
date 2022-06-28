@@ -6,6 +6,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-metricbeat-prometheus-config
+  namespace: {{ .Release.Namespace }}
   labels:
     name: {{ .Release.Name }}-metricbeat-prometheus
 data:
@@ -84,6 +85,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}-metricbeat-prometheus
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Release.Name }}-metricbeat-prometheus
 spec:
@@ -176,7 +178,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: {{ .Release.Name }}-metricbeat
-  namespace: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
   name: metricbeat
@@ -229,6 +231,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: {{ .Release.Name }}-metricbeat
+  namespace: {{ .Release.Namespace }}
   labels:
     k8s-app: {{ .Release.Name }}-metricbeat
 ---

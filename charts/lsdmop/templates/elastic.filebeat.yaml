@@ -6,7 +6,7 @@ kind: ClusterRole
 metadata:
   annotations:
     meta.helm.sh/release-name: {{ .Release.Name }}
-    meta.helm.sh/release-namespace: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/managed-by: Helm
   name: elastic-beat-autodiscover
@@ -34,7 +34,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: {{ .Release.Name }}-filebeat
-  namespace: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -45,6 +45,7 @@ apiVersion: beat.k8s.elastic.co/v1beta1
 kind: Beat
 metadata:
   name: {{ .Release.Name }}-filebeat
+  namespace: {{ .Release.Namespace }}
 spec:
   type: filebeat
   version: {{ .Values.lsdmop.elastic.filebeat.version }}

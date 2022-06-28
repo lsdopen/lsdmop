@@ -4,6 +4,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: elastic-filebeat-custom-files
+  namespace: {{ .Release.Namespace }}
 data:
   lsdmop-filebeat.template.infra.json: |-
 {{ .Files.Get "elastic/lsdmop-filebeat.template.infra.json" | indent 4}}

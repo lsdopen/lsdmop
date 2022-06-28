@@ -45,14 +45,12 @@ lsdmop:
     image: *anchoreckElasticsearchImage
     version: *anchoreckVersion
     ingress:
-      annotations:
-        certmanagerioclusterissuer: letsencrypt
+      annotations: {}
       tls:
         secretName: elastic-ingress-tls
       url: *anchorelasticURL
     serviceAccount:
-      annotations:
-        eksAmazonawsComRoleArn: arn:aws:iam::***:role/S3-cluster-elastic-storage      
+      annotations: {}    
     cluster:
       hot:
         count: 3
@@ -105,8 +103,7 @@ lsdmop:
         url: *anchorkibanaURL
         enabled: true
         className: nginx
-        annotations:
-          certmanagerioclusterissuer: letsencrypt
+        annotations: {}
         hosts:
           *anchorkibanaURL
         tls:
@@ -130,8 +127,7 @@ lsdmop:
       version: *anchoreckVersion
       fleetURL: *anchorfleetURL
       ingress:
-        annotations:
-          certmanagerioclusterissuer: letsencrypt
+        annotations: {}
         tls:
           secretName: fleet-ingress-tls
         url: *anchorfleetURL
@@ -149,8 +145,7 @@ lsdmop:
       version: *anchoreckVersion
       count: 2
       ingress:
-        annotations:
-          certmanagerioclusterissuer: letsencrypt
+        annotations: {}
         tls:
           secretName: apm-ingress-tls
         url: *anchorapmURL

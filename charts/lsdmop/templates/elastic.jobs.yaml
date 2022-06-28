@@ -4,6 +4,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: elastic-post-setup
+  namespace: {{ .Release.Namespace }}
 spec:
   template:
     spec:

@@ -5,7 +5,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-metricbeat-daemonset-config
-  namespace: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
   labels:
     k8s-app: metricbeat
 data:
@@ -80,7 +80,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-metricbeat-daemonset-modules
-  namespace: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
   labels:
     k8s-app: metricbeat
 data:
@@ -141,7 +141,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ .Release.Name }}-metricbeat
-  namespace: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
   labels:
     k8s-app: metricbeat
 spec:
@@ -249,7 +249,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: {{ .Release.Name }}-metricbeat
-  namespace: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
   name: {{ .Release.Name }}-metricbeat
@@ -259,11 +259,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: {{ .Release.Name }}-metricbeat
-  namespace: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
 subjects:
   - kind: ServiceAccount
     name: {{ .Release.Name }}-metricbeat
-    namespace: {{ .Release.Name }}
+    namespace: {{ .Release.Namespace }}
 roleRef:
   kind: Role
   name: {{ .Release.Name }}-metricbeat
@@ -273,11 +273,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: {{ .Release.Name }}-metricbeat-kubeadm-config
-  namespace: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
 subjects:
   - kind: ServiceAccount
     name: {{ .Release.Name }}-metricbeat
-    namespace: {{ .Release.Name }}
+    namespace: {{ .Release.Namespace }}
 roleRef:
   kind: Role
   name: {{ .Release.Name }}-metricbeat-kubeadm-config
@@ -337,7 +337,7 @@ kind: Role
 metadata:
   name: {{ .Release.Name }}-metricbeat
   # should be the namespace where metricbeat is running
-  namespace: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
   labels:
     k8s-app: metricbeat
 rules:
@@ -351,7 +351,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: {{ .Release.Name }}-metricbeat-kubeadm-config
-  namespace: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
   labels:
     k8s-app: metricbeat
 rules:
@@ -366,7 +366,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: {{ .Release.Name }}-metricbeat
-  namespace: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
   labels:
     k8s-app: metricbeat
 ---

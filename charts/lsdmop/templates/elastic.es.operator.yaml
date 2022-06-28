@@ -1,0 +1,56 @@
+# Elasticsearch
+{ { - if .Values.lsdmop.elastic.enabled - } }
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: { { .Release.Namespace } }
+  labels:
+    name: { { .Release.Namespace } }
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: elastic-operator
+  namespace: { { .Release.Namespace } }
+  labels:
+    control-plane: elastic-operator
+    app.kubernetes.io/version: "2.0.0"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: elastic-webhook-server-cert
+  namespace: { { .Release.Namespace } }
+  labels:
+    control-plane: elastic-operator
+    app.kubernetes.io/version: "2.0.0"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elastic-operator
+  namespace: { { .Release.Namespace } }
+  labels:
+    control-plane: elastic-operator
+    app.kubernetes.io/version: "2.0.0"
+data:
+  eck.yaml: |-
+    log-verbosity: 0
+    metrics-port: 0
+    container-registry: docker.elastic.co
+    max-concurrent-reconciles: 3
+    ca-cert-validity: 8760h
+    ca-cert-rotate-before: 24h
+    cert-validity: 8760h
+    cert-rotate-before: 24h
+    set-default-security-context: true
+    kube-client-timeout: 60s
+    elasticsearch-client-timeout: 180s
+    disable-telemetry: false
+    validate-storage-class: true
+    enable-webhook: true
+    webhook-name: elastic-webhook.k8s.elastic.co
+    namespaces: {{ .Release.Namespace }}
+---
+{ { - end } }

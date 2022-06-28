@@ -1,23 +1,20 @@
 
 # Elasticsearch Ingress
-{{- if or (eq .Values.lsdmop.clusterType "gke") (eq .Values.lsdmop.clusterType "rancher") -}}
 {{- if .Values.lsdmop.elastic.fleet.enabled -}}
-
-
+{{- if or (eq .Values.lsdmop.clusterType "gke") (eq .Values.lsdmop.clusterType "rancher") -}}
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  annotations:
-    meta.helm.sh/release-name: {{ .Release.Name }}
-    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
-    cert-manager.io/cluster-issuer: {{ .Values.lsdmop.elastic.fleet.ingress.annotations.certmanagerioclusterissuer }}
-    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-    service.alpha.kubernetes.io/app-protocols: '{"https":"HTTPS"}'    
+  {{- with .Values.lsdmop.elastic.ingress.annotations }}
+    annotations:
+  {{ toYaml . | indent 4 }}
+  {{- end }}  
   labels:
     app: fleet-server-{{ .Release.Name }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"    
   name: fleet-server-{{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
 spec:
   ingressClassName: nginx
   tls:

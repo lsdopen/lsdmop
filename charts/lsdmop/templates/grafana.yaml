@@ -6,13 +6,12 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  annotations:
-    meta.helm.sh/release-name: {{ .Release.Name }}
-    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+  annotations: {}
   labels:
     app: grafana
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"    
   name: lsdmop-grafana
+  namespace: {{ .Release.Namespace }}
 spec:
   rules:
   - host: {{ .Values.lsdmop.grafana.ingress.url }}
