@@ -1,3 +1,28 @@
+# Elastic Operator
+# To get a latest values you can run:
+# helm show values elastic/eck-operator
+eck-operator:
+  # installCRDs must be disabled because CRDs are put into the Helm chart
+  installCRDs: false
+  managedNamespaces: []
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 1
+      memory: 1Gi
+    requests:
+      cpu: 100m
+      memory: 150Mi
+  # tracing:
+  #   # enabled specifies whether APM tracing is enabled for the operator.
+  #   enabled: false
+  #   # config is a map of APM Server configuration variables that should be set in the environment.
+  #   config:
+  #     ELASTIC_APM_SERVER_URL: http://localhost:8200
+  #     ELASTIC_APM_SERVER_TIMEOUT: 30s
+  config:
+    setDefaultSecurityContext: "auto-detect"
+
 # LSDobserve
 lsdmop:
   # There are your options clusterType: openshift | gke | rancher
@@ -222,30 +247,7 @@ logstash:
     - mountPath: /usr/share/logstash/patterns
       name: logstash-patterns
 
-# Elastic Operator
-# To get a latest values you can run:
-# helm show values elastic/eck-operator
-eck-operator:
-  # installCRDs must be disabled because CRDs are put into the Helm chart
-  installCRDs: true
-  managedNamespaces: []
-  replicaCount: 1
-  resources:
-    limits:
-      cpu: 1
-      memory: 1Gi
-    requests:
-      cpu: 100m
-      memory: 150Mi
-  # tracing:
-  #   # enabled specifies whether APM tracing is enabled for the operator.
-  #   enabled: false
-  #   # config is a map of APM Server configuration variables that should be set in the environment.
-  #   config:
-  #     ELASTIC_APM_SERVER_URL: http://localhost:8200
-  #     ELASTIC_APM_SERVER_TIMEOUT: 30s
-  config:
-    setDefaultSecurityContext: "auto-detect"
+
 
 
 
