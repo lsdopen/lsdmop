@@ -19,7 +19,6 @@ maintainers:
     email: support@lsdopen.io
     url: https://lsdopen.io
 deprecated: false
-tillerVersion: ">=v3.2.1"
 
 dependencies:
 - name: prometheus

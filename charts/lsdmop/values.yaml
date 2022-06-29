@@ -153,6 +153,7 @@ lsdmop:
     #S3 bucket storage for snapshots    
     s3snapshot:
       enabled: true
+      bucket: "elastic-storage"
 
 
 # Logstash
