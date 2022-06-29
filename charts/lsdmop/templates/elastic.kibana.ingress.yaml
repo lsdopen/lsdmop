@@ -26,8 +26,10 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: lsdmop-kb-http
-          servicePort: 5601
+          service:
+            name: lsdmop-kb-http
+            port:
+              number: 5601
         path: /
         pathType: ImplementationSpecific
 ---
