@@ -3,6 +3,44 @@ entries:
   lsdmop:
   - apiVersion: v2
     appVersion: 1.0.2
+    created: "2022-06-29T09:52:50.171648509Z"
+    dependencies:
+    - name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 15.1.1
+    - name: prometheus-blackbox-exporter
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 5.3.1
+    - name: eck-operator
+      repository: https://helm.elastic.co
+      version: 2.0.0
+    - name: grafana
+      repository: https://grafana.github.io/helm-charts
+      version: 6.21.1
+    - name: logstash
+      repository: https://helm.elastic.co
+      version: 7.17.3
+    description: A Helm chart for LSDMOP
+    digest: 1bfce1a030422b2f234216b6f404afb049728a6399e4cb56b99ca92357eaf2c0
+    home: https://github.com/lsdopen/charts
+    keywords:
+    - lsdmop
+    - kubernetes
+    - grafana
+    - prometheus
+    - elastic
+    maintainers:
+    - email: support@lsdopen.io
+      name: LSD
+      url: https://lsdopen.io
+    name: lsdmop
+    sources:
+    - https://github.com/lsdopen
+    urls:
+    - https://github.com/lsdopen/lsdmop/releases/download/lsdmop-2.1.1/lsdmop-2.1.1.tgz
+    version: 2.1.1
+  - apiVersion: v2
+    appVersion: 1.0.2
     created: "2022-06-28T14:27:47.694921667Z"
     dependencies:
     - name: prometheus
@@ -495,4 +533,4 @@ entries:
     urls:
     - https://github.com/lsdopen/lsdmop/releases/download/lsdmop-1.0.92/lsdmop-1.0.92.tgz
     version: 1.0.92
-generated: "2022-06-28T14:27:47.695193579Z"
+generated: "2022-06-29T09:52:50.171939812Z"
