@@ -2,15 +2,12 @@
 lsdmop:
   # There are your options clusterType: openshift | gke | rancher
   clusterType: "rancher"
-  #eckNamespace: &anchoreckNamespace "lsdmop" 
-  eckOperatorVersion: &anchoreckOperatorVersion "2.0.0"
   eckVersion: &anchoreckVersion "8.2.2"
   eckElasticsearchImage: &anchoreckElasticsearchImage "docker.elastic.co/elasticsearch/elasticsearch:8.2.2"
   eckKibanaImage: &anchoreckKibanaImage "docker.elastic.co/kibana/kibana:8.2.2"
   eckApmImage: &anchoreckApmImage "docker.elastic.co/apm/apm-server:8.2.2"
   eckFilebeatImage: &anchoreckFilebeatImage "docker.elastic.co/beats/filebeat:8.2.2"
   eckMetricbeatImage: &anchoreckMetricbeatImage "docker.elastic.co/beats/metricbeat:8.2.2"
-  #elasticClusterSize: &anchorelasticClusterSize "1"
   kibanaURL: &anchorkibanaURL "kibana.domain.example"
   elasticURL: &anchorelasticURL "elastic.domain.example"
   apmURL: &anchorapmURL "apm.domain.example"
@@ -229,21 +226,31 @@ logstash:
 # To get a latest values you can run:
 # helm show values elastic/eck-operator
 eck-operator:
-  image:
-    # repository is the container image prefixed by the registry name.
-    # skopeo copy --all docker://docker.elastic.co/eck/eck-operator:1.5.0 docker://my.local.registry:5000/eck/eck-operator:1.5.0
-    repository: docker.elastic.co/eck/eck-operator
-    tag: *anchoreckOperatorVersion
-  replicaCount: 1
   # installCRDs must be disabled because CRDs are put into the Helm chart
-  installCRDs: false
+  installCRDs: true
+  managedNamespaces: []
+  replicaCount: 1
   resources:
     limits:
-      cpu: 200m
-      memory: 768Mi
+      cpu: 1
+      memory: 1Gi
     requests:
-      cpu: 20m
+      cpu: 100m
       memory: 150Mi
+  # tracing:
+  #   # enabled specifies whether APM tracing is enabled for the operator.
+  #   enabled: false
+  #   # config is a map of APM Server configuration variables that should be set in the environment.
+  #   config:
+  #     ELASTIC_APM_SERVER_URL: http://localhost:8200
+  #     ELASTIC_APM_SERVER_TIMEOUT: 30s
+  config:
+    setDefaultSecurityContext: "auto-detect"
+
+
+
+
+  
 
 
 
