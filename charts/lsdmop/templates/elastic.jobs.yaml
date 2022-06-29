@@ -362,7 +362,7 @@ spec:
       #LOAD S3 Repo Config for Snapshots    
       - args:
         - -c
-        - "curl -kv -u elastic:$ELASTIC_PASSWORD -H \"Content-Type: application/json\" -X PUT -d '{\"type\": \"s3\",\"settings\": {\"bucket\": \"${{ .Values.lsdmop.elastic.s3snapshot.bucket }}\"}}' https://lsdmop-es-http.lsdmop.svc:9200/_snapshot/s3_repository"
+        - "curl -kv -u elastic:$ELASTIC_PASSWORD -H \"Content-Type: application/json\" -X PUT -d '{\"type\": \"s3\",\"settings\": {\"bucket\": \"{{ .Values.lsdmop.elastic.s3snapshot.bucket }}\"}}' https://lsdmop-es-http.lsdmop.svc:9200/_snapshot/s3_repository"
         command:
         - /bin/sh
         env:
