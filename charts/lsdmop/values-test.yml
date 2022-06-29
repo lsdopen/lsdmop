@@ -1,16 +1,38 @@
+# Elastic Operator
+# To get a latest values you can run:
+# helm show values elastic/eck-operator
+eck-operator:
+  # installCRDs must be disabled because CRDs are put into the Helm chart
+  installCRDs: false
+  managedNamespaces: []
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 1
+      memory: 1Gi
+    requests:
+      cpu: 100m
+      memory: 150Mi
+  # tracing:
+  #   # enabled specifies whether APM tracing is enabled for the operator.
+  #   enabled: false
+  #   # config is a map of APM Server configuration variables that should be set in the environment.
+  #   config:
+  #     ELASTIC_APM_SERVER_URL: http://localhost:8200
+  #     ELASTIC_APM_SERVER_TIMEOUT: 30s
+  config:
+    setDefaultSecurityContext: "auto-detect"
+
 # LSDobserve
 lsdmop:
   # There are your options clusterType: openshift | gke | rancher
   clusterType: "rancher"
-  #eckNamespace: &anchoreckNamespace "lsdmop" 
-  eckOperatorVersion: &anchoreckOperatorVersion "2.0.0"
   eckVersion: &anchoreckVersion "8.2.2"
   eckElasticsearchImage: &anchoreckElasticsearchImage "docker.elastic.co/elasticsearch/elasticsearch:8.2.2"
   eckKibanaImage: &anchoreckKibanaImage "docker.elastic.co/kibana/kibana:8.2.2"
   eckApmImage: &anchoreckApmImage "docker.elastic.co/apm/apm-server:8.2.2"
   eckFilebeatImage: &anchoreckFilebeatImage "docker.elastic.co/beats/filebeat:8.2.2"
   eckMetricbeatImage: &anchoreckMetricbeatImage "docker.elastic.co/beats/metricbeat:8.2.2"
-  #elasticClusterSize: &anchorelasticClusterSize "1"
   kibanaURL: &anchorkibanaURL "kibana.domain.example"
   elasticURL: &anchorelasticURL "elastic.domain.example"
   apmURL: &anchorapmURL "apm.domain.example"
@@ -32,7 +54,7 @@ lsdmop:
   supportAddress: &anchorsupportAddress "address-that-must-receive-alerts@lsdopen.io"
   fromAddress: &anchorfromAddress "lsdmop+noreply+infra-01.qa.lsdopen.io@lsdopen.io"
   fromName: &anchorfromName "LSDobserve - LSD - k8s-01.qa.lsdopen.io@lsdopen.io"
-  storageClass: &anchorstorageClass "standard"
+  storageClass: &anchorstorageClass "ebs-gp3"
   #storageClass: &anchorstorageClass "local"
   curl:
     image: docker.io/curlimages/curl:7.74.0
@@ -45,14 +67,12 @@ lsdmop:
     image: *anchoreckElasticsearchImage
     version: *anchoreckVersion
     ingress:
-      annotations:
-        certmanagerioclusterissuer: letsencrypt
+      annotations: {}
       tls:
         secretName: elastic-ingress-tls
       url: *anchorelasticURL
     serviceAccount:
-      annotations:
-        eksAmazonawsComRoleArn: arn:aws:iam::***:role/S3-cluster-elastic-storage      
+      annotations: {}    
     cluster:
       hot:
         count: 1
@@ -60,8 +80,8 @@ lsdmop:
         cpureq: 500m
         cpulim: 4000m
         tolerations: elastic-hot
-        storagesize: 5Gi
-        storageclass: standard
+        storagesize: 560Gi
+        storageclass: ebs-gp3
       warm:
         count: 1
         mem: 2
@@ -69,7 +89,7 @@ lsdmop:
         cpulim: 4000m
         tolerations: elastic-warm
         storagesize: 2760Gi
-        storageclass: standard
+        storageclass: ebs-gp3
       # cold:
       #   count: 0
       #   mem: 30
@@ -77,7 +97,7 @@ lsdmop:
       #   cpulim: 4000m
       #   tolerations: elastic-cold
       #   storagesize: 560Gi
-      #   storageclass: standard
+      #   storageclass: ebs-gp3
       # frozen:
       #   count: 0
       #   mem: 30
@@ -85,14 +105,14 @@ lsdmop:
       #   cpulim: 4000m
       #   tolerations: elastic-frozen
       #   storagesize: 560Gi
-      #   storageclass: standard
+      #   storageclass: ebs-gp3
       ml:
-        count: 0
-        mem: 16
+        count: 1
+        mem: 1
         cpureq: 500m
         cpulim: 4000m
         storagesize: 1Gi
-        storageclass: standard
+        storageclass: ebs-gp3
 
 
     #Kibana
@@ -100,13 +120,12 @@ lsdmop:
       enabled: true
       image: *anchoreckKibanaImage
       version: *anchoreckVersion
-      count: "1"
+      count: "2"
       ingress:
         url: *anchorkibanaURL
         enabled: true
         className: nginx
-        annotations:
-          certmanagerioclusterissuer: letsencrypt
+        annotations: {}
         hosts:
           *anchorkibanaURL
         tls:
@@ -130,8 +149,7 @@ lsdmop:
       version: *anchoreckVersion
       fleetURL: *anchorfleetURL
       ingress:
-        annotations:
-          certmanagerioclusterissuer: letsencrypt
+        annotations: {}
         tls:
           secretName: fleet-ingress-tls
         url: *anchorfleetURL
@@ -147,17 +165,17 @@ lsdmop:
       enabled: true
       image: *anchoreckApmImage
       version: *anchoreckVersion
-      count: 1
+      count: 2
       ingress:
-        annotations:
-          certmanagerioclusterissuer: letsencrypt
+        annotations: {}
         tls:
           secretName: apm-ingress-tls
         url: *anchorapmURL
 
     #S3 bucket storage for snapshots    
     s3snapshot:
-      enabled: false
+      enabled: true
+      bucket: "elastic-storage"
 
 
 # Logstash
@@ -229,25 +247,12 @@ logstash:
     - mountPath: /usr/share/logstash/patterns
       name: logstash-patterns
 
-# Elastic Operator
-# To get a latest values you can run:
-# helm show values elastic/eck-operator
-eck-operator:
-  image:
-    # repository is the container image prefixed by the registry name.
-    # skopeo copy --all docker://docker.elastic.co/eck/eck-operator:1.5.0 docker://my.local.registry:5000/eck/eck-operator:1.5.0
-    repository: docker.elastic.co/eck/eck-operator
-    tag: *anchoreckOperatorVersion
-  replicaCount: 1
-  # installCRDs must be disabled because CRDs are put into the Helm chart
-  installCRDs: false
-  resources:
-    limits:
-      cpu: 200m
-      memory: 768Mi
-    requests:
-      cpu: 20m
-      memory: 150Mi
+
+
+
+
+
+  
 
 
 
