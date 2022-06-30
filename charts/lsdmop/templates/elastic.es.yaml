@@ -121,15 +121,8 @@ spec:
               key: dedicated
               operator: Equal
               value: {{ .Values.lsdmop.elastic.cluster.hot.tolerations }}
-          affinity:
-            nodeAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                nodeSelectorTerms:
-                - matchExpressions:
-                  - key: node.type
-                    operator: In
-                    values:
-                    - hot                                    
+          nodeSelector:
+            node.type: hot                             
       volumeClaimTemplates:
         - metadata:
             creationTimestamp: null
@@ -203,15 +196,8 @@ spec:
               key: dedicated
               operator: Equal
               value: {{ .Values.lsdmop.elastic.cluster.warm.tolerations }}
-          affinity:
-            nodeAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                nodeSelectorTerms:
-                - matchExpressions:
-                  - key: node.type
-                    operator: In
-                    values:
-                    - warm                                   
+          nodeSelector:
+            node.type: warm                                  
       volumeClaimTemplates:
         - metadata:
             creationTimestamp: null
