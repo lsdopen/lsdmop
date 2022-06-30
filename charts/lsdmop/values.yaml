@@ -79,7 +79,7 @@ lsdmop:
         mem: 30
         cpureq: 500m
         cpulim: 4000m
-        tolerations: elastic-hot
+        tolerations: elastic
         storagesize: 560Gi
         storageclass: ebs-gp3
       warm:
@@ -87,7 +87,7 @@ lsdmop:
         mem: 30
         cpureq: 500m
         cpulim: 4000m
-        tolerations: elastic-warm
+        tolerations: elastic
         storagesize: 2760Gi
         storageclass: ebs-gp3
       # cold:
