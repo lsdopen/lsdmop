@@ -18,10 +18,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - {{ .Values.lsdmop.elastic.fleet.fleetURL }}
+        - {{ .Values.lsdmop.elastic.fleet.ingress.url }}
       secretName: {{ .Values.lsdmop.elastic.fleet.ingress.tls.secretName }}
   rules:
-  - host: {{ .Values.lsdmop.elastic.fleet.fleetURL }}
+  - host: {{ .Values.lsdmop.elastic.fleet.ingress.url }}
     http:
       paths:
       - backend:

@@ -19,7 +19,7 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - {{ .Values.lsdmop.kibanaURL }}
+        - {{ .Values.lsdmop.elastic.kibana.ingress.url }}
       secretName: {{ .Values.lsdmop.elastic.kibana.ingress.tls.secretName }}
   rules:
   - host: {{ .Values.lsdmop.elastic.kibana.ingress.url }}

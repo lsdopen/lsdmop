@@ -126,12 +126,8 @@ lsdmop:
         enabled: true
         className: nginx
         annotations: {}
-        hosts:
-          *anchorkibanaURL
         tls:
           secretName: kibana-ingress-tls
-          hosts:
-            *anchorkibanaURL
 
     filebeat:
       enabled: true
