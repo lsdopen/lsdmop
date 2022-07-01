@@ -54,7 +54,7 @@ lsdmop:
   supportAddress: &anchorsupportAddress "address-that-must-receive-alerts@lsdopen.io"
   fromAddress: &anchorfromAddress "lsdmop+noreply+infra-01.qa.lsdopen.io@lsdopen.io"
   fromName: &anchorfromName "LSDobserve - LSD - k8s-01.qa.lsdopen.io@lsdopen.io"
-  storageClass: &anchorstorageClass "ebs-gp3"
+  storageClass: &anchorstorageClass "standard"
   #storageClass: &anchorstorageClass "local"
   curl:
     image: docker.io/curlimages/curl:7.74.0
@@ -64,6 +64,8 @@ lsdmop:
       url: *anchorgrafanaURL
   elastic:
     enabled: true
+    autoscaling:
+      enabled: false
     image: *anchoreckElasticsearchImage
     version: *anchoreckVersion
     ingress:
@@ -76,20 +78,22 @@ lsdmop:
     cluster:
       hot:
         count: 1
+        maxcount: 1 #autoscaling.enabled must be true otherwise ignored
         mem: 2
         cpureq: 500m
         cpulim: 4000m
         tolerations: elastic-hot
         storagesize: 560Gi
-        storageclass: ebs-gp3
+        storageclass: standard
       warm:
         count: 1
+        maxcount: 1 #autoscaling.enabled must be true otherwise ignored
         mem: 2
         cpureq: 500m
         cpulim: 4000m
         tolerations: elastic-warm
         storagesize: 2760Gi
-        storageclass: ebs-gp3
+        storageclass: standard
       # cold:
       #   count: 0
       #   mem: 30
@@ -97,7 +101,7 @@ lsdmop:
       #   cpulim: 4000m
       #   tolerations: elastic-cold
       #   storagesize: 560Gi
-      #   storageclass: ebs-gp3
+      #   storageclass: standard
       # frozen:
       #   count: 0
       #   mem: 30
@@ -105,14 +109,15 @@ lsdmop:
       #   cpulim: 4000m
       #   tolerations: elastic-frozen
       #   storagesize: 560Gi
-      #   storageclass: ebs-gp3
+      #   storageclass: standard
       ml:
         count: 1
-        mem: 1
+        maxcount: 1 #autoscaling.enabled must be true otherwise ignored
+        mem: 2
         cpureq: 500m
         cpulim: 4000m
         storagesize: 1Gi
-        storageclass: ebs-gp3
+        storageclass: standard
 
 
     #Kibana
