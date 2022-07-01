@@ -22,7 +22,7 @@ spec:
         - /bin/sh
         - -c
         - |
-          set -x; while [ $(curl -u elastic:$ELASTIC_PASSWORD -skvw '%{http_code}' "https://lsdmop-es-http:9200" -o /dev/null) -ne 200 ]; do
+          set -x; while [ $(curl -u elastic:H3181593lz7sr9Hw2USDSuWr -ks https://lsdmop-es-http:9200/_cluster/health?pretty | grep status | sed -r 's/^[^:]*:(.*),+$/\1/' | sed -r 's/[[:space:]\"]*//g') != "green" ]; do
             sleep 5;
           done
         env:
