@@ -122,7 +122,7 @@ spec:
               operator: Equal
               value: {{ .Values.lsdmop.elastic.cluster.hot.tolerations }}
           nodeSelector:
-            dedicated: elastic                         
+            dedicated: elastic-hot
       volumeClaimTemplates:
         - metadata:
             creationTimestamp: null
@@ -197,7 +197,7 @@ spec:
               operator: Equal
               value: {{ .Values.lsdmop.elastic.cluster.warm.tolerations }}
           nodeSelector:
-            dedicated: elastic
+            dedicated: elastic-warm
       volumeClaimTemplates:
         - metadata:
             creationTimestamp: null
