@@ -5,6 +5,8 @@ kind: Job
 metadata:
   name: elastic-post-setup
   namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": post-install
 spec:
   template:
     spec:
