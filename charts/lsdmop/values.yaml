@@ -64,6 +64,8 @@ lsdmop:
       url: *anchorgrafanaURL
   elastic:
     enabled: true
+    autoscaling:
+      enabled: false
     image: *anchoreckElasticsearchImage
     version: *anchoreckVersion
     ingress:
@@ -76,6 +78,7 @@ lsdmop:
     cluster:
       hot:
         count: 3
+        maxcount: 3 #autoscaling.enabled must be true otherwise ignored
         mem: 30
         cpureq: 500m
         cpulim: 4000m
@@ -84,6 +87,7 @@ lsdmop:
         storageclass: ebs-gp3
       warm:
         count: 2
+        maxcount: 2 #autoscaling.enabled must be true otherwise ignored        
         mem: 30
         cpureq: 500m
         cpulim: 4000m
@@ -108,6 +112,7 @@ lsdmop:
       #   storageclass: ebs-gp3
       ml:
         count: 2
+        maxcount: 2 #autoscaling.enabled must be true otherwise ignored        
         mem: 16
         cpureq: 500m
         cpulim: 4000m
