@@ -5,6 +5,13 @@
       "lifecycle": {
         "name": "filebeat-apps"
       }
+    },
+    "routing": {
+      "allocation": {
+        "include": {
+          "_tier_preference": "data_hot"
+        }
+      }
     }
   }
  }
