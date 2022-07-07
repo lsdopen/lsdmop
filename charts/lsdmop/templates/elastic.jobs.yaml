@@ -403,7 +403,7 @@ spec:
       #LOAD S3 Hourly Policy Config for Snapshots    
       - args:
         - -c
-        - "curl -kv -u elastic:$ELASTIC_PASSWORD -H \"Content-Type: application/json\" -d @/opt/elastic/lsdmop-elastic-load-snapshot-policy-hourly.ndjson https://lsdmop-es-http.lsdmop.svc:9200/_slm/policy/cluster-state-hourly"
+        - "curl -kv -u elastic:$ELASTIC_PASSWORD -H \"Content-Type: application/json\" -X PUT -d @/opt/elastic/lsdmop-elastic-load-snapshot-policy-hourly.ndjson https://lsdmop-es-http.lsdmop.svc:9200/_slm/policy/cluster-state-hourly"
         command:
         - /bin/sh
         env:
