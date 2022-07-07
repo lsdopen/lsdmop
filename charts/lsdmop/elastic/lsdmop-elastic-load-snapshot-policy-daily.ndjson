@@ -2,7 +2,22 @@
       "name" : "<cluster-state-daily-{now/d}>",
       "schedule" : "0 30 1 * * ?",
       "repository" : "s3_repository",
-      "config" : { },
+      "config" : {
+        "indices" : [
+          ".logs-deprecation.elasticsearch-default",
+          ".slm-history-5",
+          "ilm-history-5",
+          ".apm-agent-configuration",
+          ".apm-custom-link",
+          ".fleet-enrollment-api-keys-7",
+          ".fleet-policies-7",
+          ".kibana-event-log-8.2.2-000001",
+          ".kibana_8.2.2_001",
+          ".kibana_security_session_1",
+          ".kibana_task_manager_8.2.2_001",
+          ".security-7"
+        ]
+      },
       "retention" : {
         "expire_after" : "2d",
         "min_count" : 1
