@@ -5,9 +5,7 @@
     "config" : {
       "include_global_state" : false,
       "indices" : [
-        "filebeat-8.2.0-apps",
-        "filebeat-8.2.0-infra",
-        "filebeat-8.2.0-lsdo"
+        ".ds-*"
       ]
     },
     "retention" : {
