@@ -101,8 +101,10 @@ spec:
               key: dedicated
               operator: Equal
               value: {{ .Values.lsdmop.elastic.cluster.hot.tolerations }}
-          # nodeSelector:
-          #   dedicated: elastic-hot
+          {{- with .Values.lsdmop.elastic.cluster.hot.nodeSelector }}
+          nodeSelector:
+          {{ toYaml . | indent 12 }}
+          {{- end }}
       volumeClaimTemplates:
         - metadata:
             creationTimestamp: null
@@ -177,8 +179,10 @@ spec:
               key: dedicated
               operator: Equal
               value: {{ .Values.lsdmop.elastic.cluster.warm.tolerations }}
-          # nodeSelector:
-          #   dedicated: elastic-warm
+          {{- with .Values.lsdmop.elastic.cluster.warm.nodeSelector }}
+          nodeSelector:
+          {{ toYaml . | indent 12 }}
+          {{- end }}
       volumeClaimTemplates:
         - metadata:
             creationTimestamp: null

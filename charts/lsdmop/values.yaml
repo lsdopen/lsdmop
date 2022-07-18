@@ -85,6 +85,7 @@ lsdmop:
         tolerations: elastic-hot
         storagesize: 560Gi
         storageclass: ebs-gp3
+        nodeSelector: null
       warm:
         count: 2
         maxcount: 2 #autoscaling.enabled must be true otherwise ignored        
@@ -94,6 +95,7 @@ lsdmop:
         tolerations: elastic-warm
         storagesize: 2760Gi
         storageclass: ebs-gp3
+        nodeSelector: null
       # cold:
       #   count: 0
       #   mem: 30
