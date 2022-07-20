@@ -56,7 +56,8 @@ spec:
         - mountPath: /opt/elastic/
           name: elastic-filebeat-custom-files
 
-      #ILM POLICIES
+{{- if .Values.lsdmop.elastic.s3snapshot.enabled }}
+      #ILM POLICIES WITH S3
       - args:
         - -c
         - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.ilm.policy.infra.json \"https://lsdmop-es-http:9200/_ilm/policy/filebeat-infra\""
@@ -107,7 +108,7 @@ spec:
         volumeMounts:
         - mountPath: /opt/elastic/
           name: elastic-filebeat-custom-files
-
+{{- end}}
 
 
 

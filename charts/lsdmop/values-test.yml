@@ -179,7 +179,7 @@ lsdmop:
 
     #S3 bucket storage for snapshots    
     s3snapshot:
-      enabled: true
+      enabled: false
       bucket: "elastic-storage"
 
 
