@@ -46,6 +46,7 @@ spec:
         node.roles: ["master", "data_hot", "data", "transform", "remote_cluster_client", "ingest"]
         node.attr.data: hot
         xpack.security.authc.api_key.enabled: true #required for fleet
+        http.max_content_length: 100mb
       count: {{ .Values.lsdmop.elastic.cluster.hot.count }}
       name: hot-data
       podTemplate:
@@ -124,6 +125,7 @@ spec:
         node.roles: ["master", "data_warm", "data", "data_content", "transform", "remote_cluster_client", "ingest"]
         node.attr.data: warm
         xpack.security.authc.api_key.enabled: true #required for fleet
+        http.max_content_length: 100mb
       count: {{ .Values.lsdmop.elastic.cluster.warm.count }}
       name: warm-data
       podTemplate:
