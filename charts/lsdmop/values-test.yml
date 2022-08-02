@@ -66,10 +66,13 @@ lsdmop:
     enabled: true
     # Active Directory Integration
     ad:
-      enabled: false
+      enabled: true
       host: ldap://domain.example.com:389
       dn: CN={0},CN=Users,DC=example,DC=com
       basedn: DC=example,DC=com
+      userdn: cn=User,ou=example,o=com
+      admindn: cn=Admin,ou=example,o=com
+
     autoscaling:
       enabled: false
     image: *anchoreckElasticsearchImage
@@ -187,7 +190,7 @@ lsdmop:
 
     #S3 bucket storage for snapshots    
     s3snapshot:
-      enabled: true
+      enabled: false
       bucket: "elastic-storage"
 
 
