@@ -78,6 +78,9 @@ spec:
 {{- end }}            
   podTemplate:
     spec:
+      metadata:
+        labels:
+          scrape: kb      
       containers:
       - name: kibana
         resources:

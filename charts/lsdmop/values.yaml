@@ -121,6 +121,14 @@ lsdmop:
         storagesize: 1Gi
         storageclass: ebs-gp3
 
+    # Active Directory Integration
+    ad:
+      enabled: true
+      host: ldap://domain.example.com:389
+      dn: CN={0},CN=Users,DC=example,DC=com
+      basedn: DC=example,DC=com
+      
+
 
     #Kibana
     kibana:

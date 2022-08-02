@@ -56,8 +56,122 @@ spec:
         - mountPath: /opt/elastic/
           name: elastic-filebeat-custom-files
 
+
+{{- if .Values.lsdmop.elastic.s3snapshot.enabled }}
+
+      #LOAD S3 Repo Config for Snapshots    - must happen before ILM S3 policies see #ILM POLICIES WITH S3
+      - args:
+        - -c
+        - "curl -kv -u elastic:$ELASTIC_PASSWORD -H \"Content-Type: application/json\" -X PUT -d '{\"type\": \"s3\",\"settings\": {\"bucket\": \"{{ .Values.lsdmop.elastic.s3snapshot.bucket }}\"}}' https://lsdmop-es-http.lsdmop.svc:9200/_snapshot/s3_repository"
+        command:
+        - /bin/sh
+        env:
+          - name: ELASTIC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: lsdmop-es-elastic-user
+                key: elastic
+        image: {{ .Values.lsdmop.curl.image }}
+        name: elastic-load-snapshot-repo
+        volumeMounts:
+        - mountPath: /opt/elastic/
+          name: elastic-filebeat-custom-files
+
+
+      #LOAD S3 Daily Policy Config for Snapshots    
+      - args:
+        - -c
+        - "curl -kv -u elastic:$ELASTIC_PASSWORD -H \"Content-Type: application/json\" -X PUT -d @/opt/elastic/lsdmop-elastic-load-snapshot-policy-daily.ndjson https://lsdmop-es-http.lsdmop.svc:9200/_slm/policy/cluster-state-daily"
+        command:
+        - /bin/sh
+        env:
+          - name: ELASTIC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: lsdmop-es-elastic-user
+                key: elastic
+        image: {{ .Values.lsdmop.curl.image }}
+        name: elastic-load-snapshot-policy-daily
+        volumeMounts:
+        - mountPath: /opt/elastic/
+          name: elastic-filebeat-custom-files
+
+
+      #LOAD S3 Hourly Policy Config for Snapshots    
+      - args:
+        - -c
+        - "curl -kv -u elastic:$ELASTIC_PASSWORD -H \"Content-Type: application/json\" -X PUT -d @/opt/elastic/lsdmop-elastic-load-snapshot-policy-hourly.ndjson https://lsdmop-es-http.lsdmop.svc:9200/_slm/policy/cluster-state-hourly"
+        command:
+        - /bin/sh
+        env:
+          - name: ELASTIC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: lsdmop-es-elastic-user
+                key: elastic
+        image: {{ .Values.lsdmop.curl.image }}
+        name: elastic-load-snapshot-policy-hourly
+        volumeMounts:
+        - mountPath: /opt/elastic/
+          name: elastic-filebeat-custom-files   
+{{- end }}
+
+
+
 {{- if .Values.lsdmop.elastic.s3snapshot.enabled }}
       #ILM POLICIES WITH S3
+      - args:
+        - -c
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.ilm.policy.infra.s3.json \"https://lsdmop-es-http:9200/_ilm/policy/filebeat-infra\""
+        command:
+        - /bin/sh
+        env:
+          - name: ELASTIC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: lsdmop-es-elastic-user
+                key: elastic
+        image: {{ .Values.lsdmop.curl.image }}
+        name: filebeat-ilm-policy-infra
+        volumeMounts:
+        - mountPath: /opt/elastic/
+          name: elastic-filebeat-custom-files
+
+      - args:
+        - -c
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.ilm.policy.lsdo.s3.json \"https://lsdmop-es-http:9200/_ilm/policy/filebeat-lsdo\""
+        command:
+        - /bin/sh
+        env:
+          - name: ELASTIC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: lsdmop-es-elastic-user
+                key: elastic
+        image: {{ .Values.lsdmop.curl.image }}
+        name: filebeat-ilm-policy-lsdo
+        volumeMounts:
+        - mountPath: /opt/elastic/
+          name: elastic-filebeat-custom-files
+
+      - args:
+        - -c
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.ilm.policy.apps.s3.json \"https://lsdmop-es-http:9200/_ilm/policy/filebeat-apps\""
+        command:
+        - /bin/sh
+        env:
+          - name: ELASTIC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: lsdmop-es-elastic-user
+                key: elastic
+        image: {{ .Values.lsdmop.curl.image }}
+        name: filebeat-ilm-policy-apps
+        volumeMounts:
+        - mountPath: /opt/elastic/
+          name: elastic-filebeat-custom-files
+{{- else}}
+      #ILM POLICIES WITHOUT S3
       - args:
         - -c
         - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.ilm.policy.infra.json \"https://lsdmop-es-http:9200/_ilm/policy/filebeat-infra\""
@@ -109,8 +223,6 @@ spec:
         - mountPath: /opt/elastic/
           name: elastic-filebeat-custom-files
 {{- end}}
-
-
 
 
       #COMPONENT TEMPLATES    
@@ -361,64 +473,6 @@ spec:
           name: elastic-filebeat-custom-files
 
 
-{{- if .Values.lsdmop.elastic.s3snapshot.enabled }}
-
-      #LOAD S3 Repo Config for Snapshots    
-      - args:
-        - -c
-        - "curl -kv -u elastic:$ELASTIC_PASSWORD -H \"Content-Type: application/json\" -X PUT -d '{\"type\": \"s3\",\"settings\": {\"bucket\": \"{{ .Values.lsdmop.elastic.s3snapshot.bucket }}\"}}' https://lsdmop-es-http.lsdmop.svc:9200/_snapshot/s3_repository"
-        command:
-        - /bin/sh
-        env:
-          - name: ELASTIC_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: lsdmop-es-elastic-user
-                key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
-        name: elastic-load-snapshot-repo
-        volumeMounts:
-        - mountPath: /opt/elastic/
-          name: elastic-filebeat-custom-files
-
-
-      #LOAD S3 Daily Policy Config for Snapshots    
-      - args:
-        - -c
-        - "curl -kv -u elastic:$ELASTIC_PASSWORD -H \"Content-Type: application/json\" -X PUT -d @/opt/elastic/lsdmop-elastic-load-snapshot-policy-daily.ndjson https://lsdmop-es-http.lsdmop.svc:9200/_slm/policy/cluster-state-daily"
-        command:
-        - /bin/sh
-        env:
-          - name: ELASTIC_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: lsdmop-es-elastic-user
-                key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
-        name: elastic-load-snapshot-policy-daily
-        volumeMounts:
-        - mountPath: /opt/elastic/
-          name: elastic-filebeat-custom-files
-
-
-      #LOAD S3 Hourly Policy Config for Snapshots    
-      - args:
-        - -c
-        - "curl -kv -u elastic:$ELASTIC_PASSWORD -H \"Content-Type: application/json\" -X PUT -d @/opt/elastic/lsdmop-elastic-load-snapshot-policy-hourly.ndjson https://lsdmop-es-http.lsdmop.svc:9200/_slm/policy/cluster-state-hourly"
-        command:
-        - /bin/sh
-        env:
-          - name: ELASTIC_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: lsdmop-es-elastic-user
-                key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
-        name: elastic-load-snapshot-policy-hourly
-        volumeMounts:
-        - mountPath: /opt/elastic/
-          name: elastic-filebeat-custom-files   
-{{- end }}
 
 
 

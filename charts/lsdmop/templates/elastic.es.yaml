@@ -45,13 +45,37 @@ spec:
         #path.repo: /usr/share/elasticsearch/snapshots
         node.roles: ["master", "data_hot", "data", "transform", "remote_cluster_client", "ingest"]
         node.attr.data: hot
-        xpack.security.authc.api_key.enabled: true #required for fleet
         http.max_content_length: 100mb
+        xpack:
+          security:
+            authc:
+              api_key:
+                enabled: true #required for fleet
+{{- if .Values.lsdmop.elastic.ad.enabled }}
+              realms:
+                native:
+                  native1:
+                    order: 0	  
+                ldap:
+                  ldap1:
+                    order: 1
+                    url: "{{ .Values.lsdmop.elastic.ad.host }}"
+                    user_dn_templates:
+                      #- "cn={0}, ou=users, o=marketing, dc=example, dc=com"
+                      #- "cn={0}, ou=users, o=engineering, dc=example, dc=com"
+                      - "{{.Values.lsdmop.elastic.ad.dn}}"
+                    group_search:
+                      base_dn: "{{ .Values.lsdmop.elastic.basedn }}"
+                    #files:
+                    #  role_mapping: "/mnt/elasticsearch/group_to_role_mapping.yml"
+                    unmapped_groups_as_roles: false
+{{- end}}          
       count: {{ .Values.lsdmop.elastic.cluster.hot.count }}
       name: hot-data
       podTemplate:
         metadata:
-          creationTimestamp: null
+          labels:
+            scrape: es
         spec:
           serviceAccountName: {{ .Release.Name }}-elastic
           serviceAccount: {{ .Release.Name }}-elastic
@@ -124,13 +148,38 @@ spec:
         #path.repo: /usr/share/elasticsearch/snapshots
         node.roles: ["master", "data_warm", "data", "data_content", "transform", "remote_cluster_client", "ingest"]
         node.attr.data: warm
-        xpack.security.authc.api_key.enabled: true #required for fleet
         http.max_content_length: 100mb
+        xpack:
+          security:
+            authc:
+              api_key:
+                enabled: true #required for fleet
+{{- if .Values.lsdmop.elastic.ad.enabled }}
+              realms:
+                native:
+                  native1:
+                    order: 0	  
+                ldap:
+                  ldap1:
+                    order: 1
+                    url: "{{ .Values.lsdmop.elastic.ad.host }}"
+                    user_dn_templates:
+                      #- "cn={0}, ou=users, o=marketing, dc=example, dc=com"
+                      #- "cn={0}, ou=users, o=engineering, dc=example, dc=com"
+                      - "{{.Values.lsdmop.elastic.ad.dn}}"
+                    group_search:
+                      base_dn: "{{ .Values.lsdmop.elastic.basedn }}"
+                    #files:
+                    #  role_mapping: "/mnt/elasticsearch/group_to_role_mapping.yml"
+                    unmapped_groups_as_roles: false
+{{- end}}    
+
       count: {{ .Values.lsdmop.elastic.cluster.warm.count }}
       name: warm-data
       podTemplate:
         metadata:
-          creationTimestamp: null
+          labels:
+            scrape: es
         spec:
           serviceAccountName: {{ .Release.Name }}-elastic
           serviceAccount: {{ .Release.Name }}-elastic
@@ -208,7 +257,8 @@ spec:
       name: ml
       podTemplate:
         metadata:
-          creationTimestamp: null
+          labels:
+            scrape: es
         spec:
           serviceAccountName: {{ .Release.Name }}-elastic
           serviceAccount: {{ .Release.Name }}-elastic

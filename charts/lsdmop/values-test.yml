@@ -64,6 +64,12 @@ lsdmop:
       url: *anchorgrafanaURL
   elastic:
     enabled: true
+    # Active Directory Integration
+    ad:
+      enabled: false
+      host: ldap://domain.example.com:389
+      dn: CN={0},CN=Users,DC=example,DC=com
+      basedn: DC=example,DC=com
     autoscaling:
       enabled: false
     image: *anchoreckElasticsearchImage
@@ -77,13 +83,13 @@ lsdmop:
       annotations: {}    
     cluster:
       hot:
-        count: 1
+        count: 2
         maxcount: 1 #autoscaling.enabled must be true otherwise ignored
         mem: 2
         cpureq: 500m
         cpulim: 4000m
         tolerations: elastic-hot
-        storagesize: 560Gi
+        storagesize: 5Gi
         storageclass: standard
       warm:
         count: 1
@@ -92,7 +98,7 @@ lsdmop:
         cpureq: 500m
         cpulim: 4000m
         tolerations: elastic-warm
-        storagesize: 2760Gi
+        storagesize: 10Gi
         storageclass: standard
       # cold:
       #   count: 0
@@ -111,14 +117,14 @@ lsdmop:
       #   storagesize: 560Gi
       #   storageclass: standard
       ml:
-        count: 1
+        count: 0
         maxcount: 1 #autoscaling.enabled must be true otherwise ignored
         mem: 2
         cpureq: 500m
         cpulim: 4000m
         storagesize: 1Gi
         storageclass: standard
-
+    
 
     #Kibana
     kibana:
@@ -137,7 +143,8 @@ lsdmop:
           secretName: kibana-ingress-tls
           hosts:
             *anchorkibanaURL
-
+    
+    #Filebeat 
     filebeat:
       enabled: true
       image: *anchoreckFilebeatImage
@@ -148,7 +155,8 @@ lsdmop:
       enabled: true
       image: *anchoreckMetricbeatImage
       version: *anchoreckVersion
-    ## Fleet agents as a Daemonset to collect metrics/logs from Nodes (replaces metricbeat and filebeat)
+
+    ## Fleet agents as a Daemonset to collect metrics/logs from Nodes (replaces metricbeat and filebeat - incomplete)
     fleet:
       enabled: true
       version: *anchoreckVersion
@@ -179,7 +187,7 @@ lsdmop:
 
     #S3 bucket storage for snapshots    
     s3snapshot:
-      enabled: false
+      enabled: true
       bucket: "elastic-storage"
 
 

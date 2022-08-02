@@ -59,6 +59,7 @@ data:
                 #- module: kubernetes
                 #  metricsets:
                 #    - event
+
         # To enable hints based autodiscover uncomment this:
         #- type: kubernetes
         #  node: ${NODE_NAME}
