@@ -66,11 +66,15 @@ spec:
           matchers:
           - logs_path:
               logs_path: /var/log/containers/
+        
     output.logstash:
       hosts:
         - {{ .Release.Name }}-logstash:5044
   daemonSet:
     podTemplate:
+      metadata:
+        labels:
+          scrape: bt
       spec:
         dnsPolicy: ClusterFirstWithHostNet
         hostNetwork: true

@@ -8,6 +8,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    scrape: kb
 spec:
   version: "{{ .Values.lsdmop.elastic.kibana.version }}"
   image: "{{ .Values.lsdmop.elastic.kibana.image }}"
@@ -77,10 +78,10 @@ spec:
       #         name: kubernetes  
 {{- end }}            
   podTemplate:
+    metadata:
+      labels:
+        scrape: kb      
     spec:
-      metadata:
-        labels:
-          scrape: kb      
       containers:
       - name: kibana
         resources:

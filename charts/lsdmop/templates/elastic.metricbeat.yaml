@@ -70,7 +70,9 @@ data:
 
     cloud.id: ${ELASTIC_CLOUD_ID}
     cloud.auth: ${ELASTIC_CLOUD_AUTH}
-
+    
+    http.enabled: true #monitoring enabled
+    
     output.elasticsearch:
       hosts: ['https://${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}']
       username: ${ELASTICSEARCH_USERNAME}
@@ -85,6 +87,14 @@ metadata:
   labels:
     k8s-app: metricbeat
 data:
+  # beat.yml: |-
+  #   - module: beat
+  #     # metricsets:
+  #     #   - stats
+  #     #   - state
+  #     period: 10s
+  #     hosts: ["http://localhost:5066"]  
+  #     xpack.enabled: true
   system.yml: |-
     - module: system
       period: 10s
@@ -153,6 +163,7 @@ spec:
     metadata:
       labels:
         k8s-app: metricbeat
+        kubernetes.labels.scrape: bt
     spec:
       tolerations:
       - key: dedicated
