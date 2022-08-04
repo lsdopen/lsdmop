@@ -168,7 +168,7 @@ spec:
                       #- "cn={0}, ou=users, o=engineering, dc=example, dc=com"
                       - "{{.Values.lsdmop.elastic.ad.dn}}"
                     group_search:
-                      base_dn: "{{ .Values.lsdmop.elastic.basedn }}"
+                      base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
                     #files:
                     #  role_mapping: "/mnt/elasticsearch/group_to_role_mapping.yml"
                     unmapped_groups_as_roles: false
