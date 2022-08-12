@@ -59,13 +59,18 @@ spec:
                 ldap:
                   ldap1:
                     order: 1
+                    bind_dn: {{ .Values.lsdmop.elastic.ad.binddn }}
+                    bind_password: {{.Values.lsdmop.elastic.ad.bindpassword }}
                     url: "{{ .Values.lsdmop.elastic.ad.host }}"
+                    group_search:
+                      base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
                     user_dn_templates:
                       #- "cn={0}, ou=users, o=marketing, dc=example, dc=com"
                       #- "cn={0}, ou=users, o=engineering, dc=example, dc=com"
                       - "{{.Values.lsdmop.elastic.ad.dn}}"
-                    group_search:
+                    user_search:
                       base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
+                      filter: (userPrincipalName={0})
                     #files:
                     #  role_mapping: "/mnt/elasticsearch/group_to_role_mapping.yml"
                     unmapped_groups_as_roles: false
@@ -162,13 +167,18 @@ spec:
                 ldap:
                   ldap1:
                     order: 1
+                    bind_dn: {{ .Values.lsdmop.elastic.ad.binddn }}
+                    bind_password: {{.Values.lsdmop.elastic.ad.bindpassword }}
                     url: "{{ .Values.lsdmop.elastic.ad.host }}"
+                    group_search:
+                      base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
                     user_dn_templates:
                       #- "cn={0}, ou=users, o=marketing, dc=example, dc=com"
                       #- "cn={0}, ou=users, o=engineering, dc=example, dc=com"
                       - "{{.Values.lsdmop.elastic.ad.dn}}"
-                    group_search:
+                    user_search:
                       base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
+                      filter: (userPrincipalName={0})
                     #files:
                     #  role_mapping: "/mnt/elasticsearch/group_to_role_mapping.yml"
                     unmapped_groups_as_roles: false
@@ -252,7 +262,35 @@ spec:
         #path.repo: /usr/share/elasticsearch/snapshots
         node.roles: ["ml"]
         #node.attr.data: ml
-        xpack.security.authc.api_key.enabled: true #required for fleet
+        xpack:
+          security:
+            authc:
+              api_key:
+                enabled: true #required for fleet
+{{- if .Values.lsdmop.elastic.ad.enabled }}
+              realms:
+                native:
+                  native1:
+                    order: 0	  
+                ldap:
+                  ldap1:
+                    order: 1
+                    bind_dn: {{ .Values.lsdmop.elastic.ad.binddn }}
+                    bind_password: {{.Values.lsdmop.elastic.ad.bindpassword }}
+                    url: "{{ .Values.lsdmop.elastic.ad.host }}"
+                    group_search:
+                      base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
+                    user_dn_templates:
+                      #- "cn={0}, ou=users, o=marketing, dc=example, dc=com"
+                      #- "cn={0}, ou=users, o=engineering, dc=example, dc=com"
+                      - "{{.Values.lsdmop.elastic.ad.dn}}"
+                    user_search:
+                      base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
+                      filter: (userPrincipalName={0})
+                    #files:
+                    #  role_mapping: "/mnt/elasticsearch/group_to_role_mapping.yml"
+                    unmapped_groups_as_roles: false
+{{- end}}    
       count: {{ .Values.lsdmop.elastic.cluster.ml.count }}
       name: ml
       podTemplate:

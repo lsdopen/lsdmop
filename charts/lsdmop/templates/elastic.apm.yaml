@@ -11,7 +11,7 @@ spec:
   image: {{ .Values.lsdmop.elastic.apm.image }}
   count: {{ .Values.lsdmop.elastic.apm.count }}
   elasticsearchRef:
-    name: lsdmop
+    name: {{ .Release.Name }}
   kibanaRef:
-    name: lsdmop
+    name: {{ .Release.Name }}
 {{- end }}

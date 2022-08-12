@@ -912,7 +912,7 @@
     "mappings" : {
       "_meta" : {
         "beat" : "filebeat",
-        "version" : "8.2.2"
+        "version" : "8.3.3"
       },
       "dynamic_templates" : [
         {

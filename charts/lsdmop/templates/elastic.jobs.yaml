@@ -7,10 +7,12 @@ metadata:
   namespace: {{ .Release.Namespace }}
   annotations:
     "helm.sh/hook": post-install,post-upgrade
+  # annotations:
+  #   "helm.sh/hook": post-install
 spec:
   template:
     spec:
-      #VOLUMES FOR CONFIG MAPS - always at end
+      #VOLUMES FOR CONFIG MAPS for all initcontainers
       restartPolicy: Never
       volumes:
       - configMap:
@@ -61,7 +63,7 @@ spec:
       #ROLE MAPPINGS TO AD GROUPS
       - args:
         - -c
-        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H \"Content-Type: application/json\" -X PUT -d '{\"roles\" : [ \"user\" ],  \"rules\" : { \"field\" : { \"dn\" : \"{{ .Values.lsdmop.elastic.ad.userdn }}\" } },  \"enabled\": true}' https://lsdmop-es-http:9200/_security/role_mapping/basic_user"
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H \"Content-Type: application/json\" -X PUT -d '{\"roles\" : [ \"user\" ],  \"rules\" : { \"field\" : { \"groups\" : \"{{ .Values.lsdmop.elastic.ad.userdn }}\" } },  \"enabled\": true}' https://lsdmop-es-http:9200/_security/role_mapping/basic_user"
         command:
         - /bin/sh
         env:
@@ -79,7 +81,7 @@ spec:
 
       - args:
         - -c
-        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H \"Content-Type: application/json\" -X PUT -d '{\"roles\" : [ \"superuser\" ],  \"rules\" : { \"field\" : { \"dn\" : \"{{ .Values.lsdmop.elastic.ad.admindn }}\" } },  \"enabled\": true }' https://lsdmop-es-http:9200/_security/role_mapping/admin_user"
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H \"Content-Type: application/json\" -X PUT -d '{\"roles\" : [ \"superuser\" ],  \"rules\" : { \"field\" : { \"groups\" : \"{{ .Values.lsdmop.elastic.ad.admindn }}\" } },  \"enabled\": true }' https://lsdmop-es-http:9200/_security/role_mapping/admin_user"
         command:
         - /bin/sh
         env:
@@ -269,7 +271,7 @@ spec:
       #COMPONENT TEMPLATES    
       - args:
         - -c
-        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.template.8.2.2.json \"https://lsdmop-es-http:9200/_component_template/filebeat-8.2.2\""
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.template.8.3.3.json \"https://lsdmop-es-http:9200/_component_template/filebeat-8.3.3\""
         command:
         - /bin/sh
         env:
@@ -393,7 +395,7 @@ spec:
       # BOOTSTRAP DATASTREAMS  PUT _data_stream/my-data-stream
       - args:
         - -c
-        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT \"https://lsdmop-es-http:9200/_data_stream/filebeat-8.2.2-infra\""
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT \"https://lsdmop-es-http:9200/_data_stream/filebeat-8.3.3-infra\""
         command:
         - /bin/sh
         env:
@@ -410,7 +412,7 @@ spec:
 
       - args:
         - -c
-        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT \"https://lsdmop-es-http:9200/_data_stream/filebeat-8.2.2-lsdo\""
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT \"https://lsdmop-es-http:9200/_data_stream/filebeat-8.3.3-lsdo\""
         command:
         - /bin/sh
         env:
@@ -427,7 +429,7 @@ spec:
           
       - args:
         - -c
-        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT \"https://lsdmop-es-http:9200/_data_stream/filebeat-8.2.2-apps\""
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT \"https://lsdmop-es-http:9200/_data_stream/filebeat-8.3.3-apps\""
         command:
         - /bin/sh
         env:

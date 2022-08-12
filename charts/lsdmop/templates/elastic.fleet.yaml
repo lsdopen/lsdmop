@@ -7,7 +7,7 @@ metadata:
   name: fleet-server-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
 spec:
-  version: 8.2.2
+  version: 8.3.3
   kibanaRef:
     name: {{ .Release.Name }}
   elasticsearchRefs:
@@ -29,7 +29,7 @@ metadata:
   name: elastic-agent-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
 spec:
-  version: 8.2.2
+  version: 8.3.3
   kibanaRef:
     name: {{ .Release.Name }}
   fleetServerRef:
@@ -46,7 +46,24 @@ spec:
         - key: dedicated
           effect: "NoSchedule"
           operator: Exists
-
+---
+# apiVersion: agent.k8s.elastic.co/v1alpha1
+# kind: Agent
+# metadata: 
+#   name: elastic-agent-apm-server-{{ .Release.Name }}
+# spec:
+#   version: 8.3.3
+#   kibanaRef:
+#     name: {{ .Release.Name }}
+#   fleetServerRef: 
+#     name: fleet-server-{{ .Release.Name }}
+#   mode: fleet
+#   deployment:
+#     replicas: 1
+#     podTemplate:
+#       spec:
+#         securityContext:
+#           runAsUser: 0
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -88,5 +105,52 @@ roleRef:
   kind: ClusterRole
   name: elastic-agent
   apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lsdmop-apm-http
+  namespace: lsdmop
+  labels:
+    apm.k8s.elastic.co/name: lsdmop
+    common.k8s.elastic.co/type: agent
+spec:
+  ports:
+    - name: https
+      protocol: TCP
+      port: 8200
+      targetPort: 8200
+  selector:
+    common.k8s.elastic.co/type: agent
+  type: ClusterIP
+  sessionAffinity: None
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lsdmop-apm
+  namespace: lsdmop
+  labels:
+    app: apm-server-agent
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - {{ .Values.lsdmop.elastic.apm.ingress.url }}
+      secretName: {{ .Values.lsdmop.elastic.apm.ingress.tls.secretName }}
+  rules:
+    - host: {{ .Values.lsdmop.elastic.apm.ingress.url }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: lsdmop-apm-http
+                port:
+                  number: 8200
 
 {{- end }}
