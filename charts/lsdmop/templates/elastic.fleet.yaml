@@ -7,7 +7,7 @@ metadata:
   name: fleet-server-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
 spec:
-  version: 8.3.3
+  version: {{ .Values.lsdmop.eckVersion }}
   kibanaRef:
     name: {{ .Release.Name }}
   elasticsearchRefs:
@@ -29,7 +29,7 @@ metadata:
   name: elastic-agent-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
 spec:
-  version: 8.3.3
+  version: {{ .Values.lsdmop.eckVersion }}
   kibanaRef:
     name: {{ .Release.Name }}
   fleetServerRef:
@@ -52,7 +52,7 @@ spec:
 # metadata: 
 #   name: elastic-agent-apm-server-{{ .Release.Name }}
 # spec:
-#   version: 8.3.3
+#   version: {{ .Values.lsdmop.eckVersion }}
 #   kibanaRef:
 #     name: {{ .Release.Name }}
 #   fleetServerRef: 

@@ -62,8 +62,6 @@ spec:
                     bind_dn: {{ .Values.lsdmop.elastic.ad.binddn }}
                     bind_password: {{.Values.lsdmop.elastic.ad.bindpassword }}
                     url: "{{ .Values.lsdmop.elastic.ad.host }}"
-                    group_search:
-                      base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
                     user_dn_templates:
                       #- "cn={0}, ou=users, o=marketing, dc=example, dc=com"
                       #- "cn={0}, ou=users, o=engineering, dc=example, dc=com"
@@ -170,8 +168,6 @@ spec:
                     bind_dn: {{ .Values.lsdmop.elastic.ad.binddn }}
                     bind_password: {{.Values.lsdmop.elastic.ad.bindpassword }}
                     url: "{{ .Values.lsdmop.elastic.ad.host }}"
-                    group_search:
-                      base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
                     user_dn_templates:
                       #- "cn={0}, ou=users, o=marketing, dc=example, dc=com"
                       #- "cn={0}, ou=users, o=engineering, dc=example, dc=com"
@@ -278,8 +274,6 @@ spec:
                     bind_dn: {{ .Values.lsdmop.elastic.ad.binddn }}
                     bind_password: {{.Values.lsdmop.elastic.ad.bindpassword }}
                     url: "{{ .Values.lsdmop.elastic.ad.host }}"
-                    group_search:
-                      base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
                     user_dn_templates:
                       #- "cn={0}, ou=users, o=marketing, dc=example, dc=com"
                       #- "cn={0}, ou=users, o=engineering, dc=example, dc=com"
