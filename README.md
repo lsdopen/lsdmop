@@ -1,4 +1,4 @@
-# LSDobserve Helm Chart
+# LSDmop Helm Chart
 
 ## Quick and Dirty Install
 

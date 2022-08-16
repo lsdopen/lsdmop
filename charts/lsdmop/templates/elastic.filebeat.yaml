@@ -127,3 +127,142 @@ spec:
             effect: "NoSchedule"
             operator: Exists
 {{- end }}
+
+
+# Elastic Filebeat
+{{- if .Values.lsdmop.elastic.filebeatcloudwatch.enabled -}}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: elastic-beat-autodiscover
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  - namespaces
+  - events
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: elastic-beat-autodiscover-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: elastic-beat-autodiscover
+subjects:
+- kind: ServiceAccount
+  name: {{ .Release.Name }}-filebeat
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Release.Name }}-filebeat
+---
+apiVersion: beat.k8s.elastic.co/v1beta1
+kind: Beat
+metadata:
+  name: {{ .Release.Name }}-filebeat-cloudwatch
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: filebeat
+  version: {{ .Values.lsdmop.elastic.filebeat.version }}
+  image: {{ .Values.lsdmop.elastic.filebeat.image }}
+  config:
+    filebeat.inputs:
+
+    - type: aws-cloudwatch
+      enabled: true
+      log_group_arn: arn:aws:logs:us-east-1:428152502467:log-group:test:*
+      role_arn: arn:aws:iam::123456789012:role/test-mb
+      scan_frequency: 1m
+      #credential_profile_name: elastic-beats
+      start_position: beginning
+
+    # - type: container
+    #   enabled: false
+    #   close_inactive: 4h
+    #   multiline:
+    #     match: after
+    #     negate: false
+    #     pattern: '^[[:space:]]+|^Caused by:'
+    #   paths:
+    #   - /var/log/containers/*.log
+    #   processors:
+    #   - add_kubernetes_metadata:
+    #       host: ${NODE_NAME}
+    #       matchers:
+    #       - logs_path:
+    #           logs_path: /var/log/containers/
+
+
+  daemonSet:
+    podTemplate:
+      metadata:
+        labels:
+          scrape: bt
+      spec:
+        dnsPolicy: ClusterFirstWithHostNet
+        hostNetwork: true
+        serviceAccountName: {{ .Release.Name }}-filebeat
+        automountServiceAccountToken: true
+        securityContext:
+          runAsUser: 0
+        containers:
+        - env:
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          name: filebeat
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 10m
+            limits:
+              memory: 512Mi
+              cpu: 200m
+          volumeMounts:
+          - name: varlogcontainers
+            mountPath: /var/log/containers
+          - name: varlogpods
+            mountPath: /var/log/pods
+          - name: varlibdockercontainers
+            mountPath: /var/lib/docker/containers
+        volumes:
+        - name: varlogcontainers
+          hostPath:
+            path: /var/log/containers
+        - name: varlogpods
+          hostPath:
+            path: /var/log/pods
+        - name: varlibdockercontainers
+          hostPath:
+            path: /var/lib/docker/containers
+        tolerations: 
+          - key: "node-role.kubernetes.io/controlplane"
+            operator: "Exists"
+            effect: "NoSchedule"
+          - key: "node-role.kubernetes.io/etcd"
+            operator: "Exists"
+            effect: "NoExecute"
+          - key: "node-role.kubernetes.io/master"
+            operator: "Exists"
+            effect: "NoSchedule"
+          - key: dedicated
+            effect: "NoSchedule"
+            operator: Exists
+{{- end }}
