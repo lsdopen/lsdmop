@@ -58,16 +58,17 @@ spec:
                     order: 0	  
                 ldap:
                   ldap1:
-                    order: 1
+                    enabled: true
                     bind_dn: {{ .Values.lsdmop.elastic.ad.binddn }}
                     bind_password: {{.Values.lsdmop.elastic.ad.bindpassword }}
+                    group_search:
+                      base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
+                    order: 1
+                    unmapped_groups_as_roles: false
                     url: "{{ .Values.lsdmop.elastic.ad.host }}"
                     user_search:
                       base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
                       filter: (userPrincipalName={0})
-                    #files:
-                    #  role_mapping: "/mnt/elasticsearch/group_to_role_mapping.yml"
-                    unmapped_groups_as_roles: false
 {{- end}}          
       count: {{ .Values.lsdmop.elastic.cluster.hot.count }}
       name: hot-data
@@ -86,7 +87,16 @@ spec:
           #     labelSelector:
           #       matchLabels:
           #         elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
-          #         elasticsearch.k8s.elastic.co/statefulset-name: {{ .Release.Name }}-es-hot-data          
+          #         elasticsearch.k8s.elastic.co/statefulset-name: {{ .Release.Name }}-es-hot-data 
+          hostAliases:
+            - hostnames:
+                - {{ .Values.lsdmop.elastic.ad.adhostname }}
+                - {{ .Values.lsdmop.elastic.ad.adfqdn }}
+              ip: {{ .Values.lsdmop.elastic.ad.adip }}
+            - hostnames:
+                - {{ .Values.lsdmop.elastic.ad.adddz }}
+                - {{ .Values.lsdmop.elastic.ad.adfdz }}
+              ip: {{ .Values.lsdmop.elastic.ad.adip }}
           initContainers:
             - name: set-s3-bucket-web-token-dir
               command:
@@ -157,19 +167,21 @@ spec:
               realms:
                 native:
                   native1:
+                    enabled: true
                     order: 0	  
                 ldap:
                   ldap1:
-                    order: 1
+                    enabled: true
                     bind_dn: {{ .Values.lsdmop.elastic.ad.binddn }}
                     bind_password: {{.Values.lsdmop.elastic.ad.bindpassword }}
+                    group_search:
+                      base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
+                    order: 1
+                    unmapped_groups_as_roles: false
                     url: "{{ .Values.lsdmop.elastic.ad.host }}"
                     user_search:
                       base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
                       filter: (userPrincipalName={0})
-                    #files:
-                    #  role_mapping: "/mnt/elasticsearch/group_to_role_mapping.yml"
-                    unmapped_groups_as_roles: false
 {{- end}}    
 
       count: {{ .Values.lsdmop.elastic.cluster.warm.count }}
@@ -189,7 +201,16 @@ spec:
           #     labelSelector:
           #       matchLabels:
           #         elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
-          #         elasticsearch.k8s.elastic.co/statefulset-name: {{ .Release.Name }}-es-warm-data          
+          #         elasticsearch.k8s.elastic.co/statefulset-name: {{ .Release.Name }}-es-warm-data       
+          hostAliases:
+            - hostnames:
+                - {{ .Values.lsdmop.elastic.ad.adhostname }}
+                - {{ .Values.lsdmop.elastic.ad.adfqdn }}
+              ip: {{ .Values.lsdmop.elastic.ad.adip }}
+            - hostnames:
+                - {{ .Values.lsdmop.elastic.ad.adddz }}
+                - {{ .Values.lsdmop.elastic.ad.adfdz }}
+              ip: {{ .Values.lsdmop.elastic.ad.adip }}             
           initContainers:
             - name: set-s3-bucket-web-token-dir
               command:
@@ -262,16 +283,17 @@ spec:
                     order: 0	  
                 ldap:
                   ldap1:
-                    order: 1
+                    enabled: true
                     bind_dn: {{ .Values.lsdmop.elastic.ad.binddn }}
                     bind_password: {{.Values.lsdmop.elastic.ad.bindpassword }}
+                    group_search:
+                      base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
+                    order: 1
+                    unmapped_groups_as_roles: false
                     url: "{{ .Values.lsdmop.elastic.ad.host }}"
                     user_search:
                       base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
                       filter: (userPrincipalName={0})
-                    #files:
-                    #  role_mapping: "/mnt/elasticsearch/group_to_role_mapping.yml"
-                    unmapped_groups_as_roles: false
 {{- end}}    
       count: {{ .Values.lsdmop.elastic.cluster.ml.count }}
       name: ml
@@ -282,6 +304,15 @@ spec:
         spec:
           serviceAccountName: {{ .Release.Name }}-elastic
           serviceAccount: {{ .Release.Name }}-elastic
+          hostAliases:
+            - hostnames:
+                - {{ .Values.lsdmop.elastic.ad.adhostname }}
+                - {{ .Values.lsdmop.elastic.ad.adfqdn }}
+              ip: {{ .Values.lsdmop.elastic.ad.adip }}
+            - hostnames:
+                - {{ .Values.lsdmop.elastic.ad.adddz }}
+                - {{ .Values.lsdmop.elastic.ad.adfdz }}
+              ip: {{ .Values.lsdmop.elastic.ad.adip }}          
           automountServiceAccountToken: true          
           containers:
             - env:

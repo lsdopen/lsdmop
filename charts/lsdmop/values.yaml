@@ -122,15 +122,20 @@ lsdmop:
         storageclass: ebs-gp3
 
     # Active Directory Integration
+
     ad:
       enabled: false
       # host: ldap://domain.example.com:389
-      # dn: CN={0},CN=Users,DC=example,DC=com
       # basedn: DC=example,DC=com
       # userdn: cn=User,ou=example,o=com
       # admindn: cn=Admin,ou=example,o=com
-      
-
+      # binddn: CN=UserName,OU=Support,DC=example,DC=com
+      # bindpassword: supersecurepassword
+      # adhostname: example
+      # adfqdn: example.com
+      # adip: 123.123.123.123
+      # adddz: domaindnszones.example.com
+      # adfdz: forestdnszones.example.com
 
     #Kibana
     kibana:

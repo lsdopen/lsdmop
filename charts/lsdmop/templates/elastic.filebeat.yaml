@@ -131,46 +131,46 @@ spec:
 
 # Elastic Filebeat
 {{- if .Values.lsdmop.elastic.filebeatcloudwatch.enabled -}}
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  annotations:
-    meta.helm.sh/release-name: {{ .Release.Name }}
-    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
-  labels:
-    app.kubernetes.io/managed-by: Helm
-  name: elastic-beat-autodiscover
-rules:
-- apiGroups:
-  - ""
-  resources:
-  - nodes
-  - namespaces
-  - events
-  - pods
-  verbs:
-  - get
-  - list
-  - watch
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: elastic-beat-autodiscover-binding
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: elastic-beat-autodiscover
-subjects:
-- kind: ServiceAccount
-  name: {{ .Release.Name }}-filebeat
-  namespace: {{ .Release.Namespace }}
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: {{ .Release.Name }}-filebeat
+# ---
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: ClusterRole
+# metadata:
+#   annotations:
+#     meta.helm.sh/release-name: {{ .Release.Name }}
+#     meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+#   labels:
+#     app.kubernetes.io/managed-by: Helm
+#   name: elastic-beat-autodiscover
+# rules:
+# - apiGroups:
+#   - ""
+#   resources:
+#   - nodes
+#   - namespaces
+#   - events
+#   - pods
+#   verbs:
+#   - get
+#   - list
+#   - watch
+# ---
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: ClusterRoleBinding
+# metadata:
+#   name: elastic-beat-autodiscover-binding
+# roleRef:
+#   apiGroup: rbac.authorization.k8s.io
+#   kind: ClusterRole
+#   name: elastic-beat-autodiscover
+# subjects:
+# - kind: ServiceAccount
+#   name: {{ .Release.Name }}-filebeat
+#   namespace: {{ .Release.Namespace }}
+# ---
+# apiVersion: v1
+# kind: ServiceAccount
+# metadata:
+#   name: {{ .Release.Name }}-filebeat
 ---
 apiVersion: beat.k8s.elastic.co/v1beta1
 kind: Beat
@@ -191,25 +191,7 @@ spec:
       scan_frequency: 1m
       #credential_profile_name: elastic-beats
       start_position: beginning
-
-    # - type: container
-    #   enabled: false
-    #   close_inactive: 4h
-    #   multiline:
-    #     match: after
-    #     negate: false
-    #     pattern: '^[[:space:]]+|^Caused by:'
-    #   paths:
-    #   - /var/log/containers/*.log
-    #   processors:
-    #   - add_kubernetes_metadata:
-    #       host: ${NODE_NAME}
-    #       matchers:
-    #       - logs_path:
-    #           logs_path: /var/log/containers/
-
-
-  daemonSet:
+  deployment:
     podTemplate:
       metadata:
         labels:
@@ -265,4 +247,9 @@ spec:
           - key: dedicated
             effect: "NoSchedule"
             operator: Exists
+  elasticsearchRef:
+    name: {{ .Release.Name }}
+  kibanaRef:
+    name: {{ .Release.Name }}
+
 {{- end }}

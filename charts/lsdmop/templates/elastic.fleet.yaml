@@ -38,6 +38,11 @@ spec:
   daemonSet:
     podTemplate:
       spec:
+        containers:
+          - name: agent
+            image: docker.elastic.co/beats/elastic-agent:{{ .Values.lsdmop.eckVersion }}
+          - name: FLEET_INSECURE
+            value: 'true'
         serviceAccountName: elastic-agent
         automountServiceAccountToken: true
         securityContext:

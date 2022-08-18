@@ -68,12 +68,16 @@ lsdmop:
     ad:
       enabled: true
       host: ldap://domain.example.com:389
-      dn: CN={0},CN=Users,DC=example,DC=com
       basedn: DC=example,DC=com
       userdn: cn=User,ou=example,o=com
       admindn: cn=Admin,ou=example,o=com
       binddn: CN=UserName,OU=Support,DC=example,DC=com
       bindpassword: supersecurepassword
+      adhostname: example
+      adfqdn: example.com
+      adip: 123.123.123.123
+      adddz: domaindnszones.example.com
+      adfdz: forestdnszones.example.com
 
     autoscaling:
       enabled: false
@@ -154,6 +158,10 @@ lsdmop:
       enabled: true
       image: *anchoreckFilebeatImage
       version: *anchoreckVersion
+
+    #Cloudwatch Input Source for Filebeat
+    filebeatcloudwatch:
+      enabled: true  
 
     ## Metricbeat as a Daemonset to collect metrics from Nodes
     metricbeat:

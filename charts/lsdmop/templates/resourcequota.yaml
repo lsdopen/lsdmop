@@ -16,8 +16,8 @@ spec:
     configmaps: "150"
     pods: "150"
     replicationcontrollers: "50"
-    secrets: "100"
-    services: "100"
+    secrets: "200"
+    services: "200"
     services.loadbalancers: "10"
 ---
 apiVersion: v1
