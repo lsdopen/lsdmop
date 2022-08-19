@@ -151,10 +151,16 @@ lsdmop:
         tls:
           secretName: kibana-ingress-tls
 
+    #Filebeat 
     filebeat:
       enabled: true
       image: *anchoreckFilebeatImage
       version: *anchoreckVersion
+
+    #Cloudwatch Input Source for Filebeat
+    filebeatcloudwatch:
+      enabled: true  
+
 
     ## Metricbeat as a Daemonset to collect metrics from Nodes
     metricbeat:
