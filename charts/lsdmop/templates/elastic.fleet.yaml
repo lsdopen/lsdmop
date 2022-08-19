@@ -18,6 +18,9 @@ spec:
     replicas: 2
     podTemplate:
       spec:
+        containers:
+          - name: agent
+            image: docker.elastic.co/beats/elastic-agent:{{ .Values.lsdmop.eckVersion }}
         serviceAccountName: elastic-agent
         automountServiceAccountToken: true
         securityContext:

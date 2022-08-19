@@ -274,6 +274,7 @@ spec:
         - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.template.8.3.3.json \"https://lsdmop-es-http:9200/_component_template/filebeat-8.3.3\""
         command:
         - /bin/sh
+        
         env:
           - name: ELASTIC_PASSWORD
             valueFrom:
