@@ -119,6 +119,9 @@ metadata:
   labels:
     apm.k8s.elastic.co/name: lsdmop
     common.k8s.elastic.co/type: agent
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Namespace }}
 spec:
   ports:
     - name: https
