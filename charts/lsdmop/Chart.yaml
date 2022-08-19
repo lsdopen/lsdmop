@@ -1,6 +1,6 @@
 apiVersion: v2
 name: lsdmop
-version: "2.12.3"
+version: "2.12.4"
 appVersion: "1.0.2"
 # Disabling kubeVersion because GKE is dumb
 # kubeVersion: ">=v1.11.0"

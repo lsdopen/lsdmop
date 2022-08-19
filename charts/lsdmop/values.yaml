@@ -186,7 +186,7 @@ lsdmop:
 
     #APM servers  
     apm:
-      enabled: true
+      enabled: false
       image: *anchoreckApmImage
       version: *anchoreckVersion
       count: 2
