@@ -27,7 +27,7 @@ spec:
       paths:
       - backend:
           service:
-            name: lsdmop-apm-http
+            name: {{ .Release.Namespace }}-apm-http
             port: 
               number: 8200
         path: /

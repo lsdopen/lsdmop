@@ -117,7 +117,7 @@ roleRef:
 apiVersion: v1
 kind: Service
 metadata:
-  name: lsdmop-apm-http
+  name: {{ .Release.Namespace }}-apm-http
   namespace: lsdmop
   labels:
     apm.k8s.elastic.co/name: lsdmop
@@ -160,7 +160,7 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: lsdmop-apm-http
+                name: {{ .Release.Namespace }}-apm-http
                 port:
                   number: 8200
 
