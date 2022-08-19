@@ -1,7 +1,7 @@
 {
     "index_patterns": ["filebeat-8.3.3-infra"],
     "data_stream": { },
-    "composed_of": [ "filebeat-8.3.3", "filebeat-infra" ],
+    "composed_of": ["filebeat-8.2.2", "filebeat-8.3.3", "filebeat-infra" ],
     "priority": 501,
     "_meta": {
       "description": "Template for general infra"
