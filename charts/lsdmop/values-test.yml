@@ -27,12 +27,12 @@ eck-operator:
 lsdmop:
   # There are your options clusterType: openshift | gke | rancher
   clusterType: "rancher"
-  eckVersion: &anchoreckVersion "8.3.3"
-  eckElasticsearchImage: &anchoreckElasticsearchImage "docker.elastic.co/elasticsearch/elasticsearch:8.3.3"
-  eckKibanaImage: &anchoreckKibanaImage "docker.elastic.co/kibana/kibana:8.3.3"
-  eckApmImage: &anchoreckApmImage "docker.elastic.co/apm/apm-server:8.3.3"
-  eckFilebeatImage: &anchoreckFilebeatImage "docker.elastic.co/beats/filebeat:8.3.3"
-  eckMetricbeatImage: &anchoreckMetricbeatImage "docker.elastic.co/beats/metricbeat:8.3.3"
+  eckVersion: &anchoreckVersion "8.4.1"
+  eckElasticsearchImage: &anchoreckElasticsearchImage "docker.elastic.co/elasticsearch/elasticsearch:8.4.1"
+  eckKibanaImage: &anchoreckKibanaImage "docker.elastic.co/kibana/kibana:8.4.1"
+  eckApmImage: &anchoreckApmImage "docker.elastic.co/apm/apm-server:8.4.1"
+  eckFilebeatImage: &anchoreckFilebeatImage "docker.elastic.co/beats/filebeat:8.4.1"
+  eckMetricbeatImage: &anchoreckMetricbeatImage "docker.elastic.co/beats/metricbeat:8.4.1"
   kibanaURL: &anchorkibanaURL "kibana.domain.example"
   elasticURL: &anchorelasticURL "elastic.domain.example"
   apmURL: &anchorapmURL "apm.domain.example"
@@ -160,8 +160,10 @@ lsdmop:
       version: *anchoreckVersion
 
     #Cloudwatch Input Source for Filebeat
-    filebeatcloudwatch:
-      enabled: true  
+    filebeatCloudwatch:
+      enabled: false
+      roleArn: ""
+      logsArn: ""
 
     ## Metricbeat as a Daemonset to collect metrics from Nodes
     metricbeat:

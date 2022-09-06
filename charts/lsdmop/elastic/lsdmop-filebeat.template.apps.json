@@ -1,7 +1,7 @@
 {
-    "index_patterns": ["filebeat-8.3.3-apps"],
+    "index_patterns": ["filebeat-8.4.1-apps"],
     "data_stream": { },
-    "composed_of": [ "filebeat-8.2.2", "filebeat-8.3.3", "filebeat-apps" ],
+    "composed_of": [ "filebeat-8.2.2", "filebeat-8.4.1", "filebeat-apps" ],
     "priority": 501,
     "_meta": {
       "description": "Template for general apps"

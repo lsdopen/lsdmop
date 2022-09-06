@@ -55,23 +55,23 @@ spec:
           effect: "NoSchedule"
           operator: Exists
 ---
-# apiVersion: agent.k8s.elastic.co/v1alpha1
-# kind: Agent
-# metadata: 
-#   name: elastic-agent-apm-server-{{ .Release.Name }}
-# spec:
-#   version: {{ .Values.lsdmop.eckVersion }}
-#   kibanaRef:
-#     name: {{ .Release.Name }}
-#   fleetServerRef: 
-#     name: fleet-server-{{ .Release.Name }}
-#   mode: fleet
-#   deployment:
-#     replicas: 1
-#     podTemplate:
-#       spec:
-#         securityContext:
-#           runAsUser: 0
+apiVersion: agent.k8s.elastic.co/v1alpha1
+kind: Agent
+metadata: 
+  name: elastic-agent-apm-server-{{ .Release.Name }}
+spec:
+  version: {{ .Values.lsdmop.eckVersion }}
+  kibanaRef:
+    name: {{ .Release.Name }}
+  fleetServerRef: 
+    name: fleet-server-{{ .Release.Name }}
+  mode: fleet
+  deployment:
+    replicas: 1
+    podTemplate:
+      spec:
+        securityContext:
+          runAsUser: 0
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -146,6 +146,10 @@ metadata:
   namespace: lsdmop
   labels:
     app: apm-server-agent
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    service.alpha.kubernetes.io/app-protocols: '{"https":"HTTPS"}'
 spec:
   ingressClassName: nginx
   tls:

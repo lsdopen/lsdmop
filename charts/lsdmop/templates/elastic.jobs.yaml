@@ -271,7 +271,7 @@ spec:
       #COMPONENT TEMPLATES    
       - args:
         - -c
-        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.template.8.3.3.json \"https://lsdmop-es-http:9200/_component_template/filebeat-8.3.3\""
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.template.8.4.1.json \"https://lsdmop-es-http:9200/_component_template/filebeat-8.4.1\""
         command:
         - /bin/sh
         
@@ -396,7 +396,7 @@ spec:
       # BOOTSTRAP DATASTREAMS  PUT _data_stream/my-data-stream
       - args:
         - -c
-        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT \"https://lsdmop-es-http:9200/_data_stream/filebeat-8.3.3-infra\""
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT \"https://lsdmop-es-http:9200/_data_stream/filebeat-8.4.1-infra\""
         command:
         - /bin/sh
         env:
@@ -413,7 +413,7 @@ spec:
 
       - args:
         - -c
-        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT \"https://lsdmop-es-http:9200/_data_stream/filebeat-8.3.3-lsdo\""
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT \"https://lsdmop-es-http:9200/_data_stream/filebeat-8.4.1-lsdo\""
         command:
         - /bin/sh
         env:
@@ -430,7 +430,7 @@ spec:
           
       - args:
         - -c
-        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT \"https://lsdmop-es-http:9200/_data_stream/filebeat-8.3.3-apps\""
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT \"https://lsdmop-es-http:9200/_data_stream/filebeat-8.4.1-apps\""
         command:
         - /bin/sh
         env:

@@ -60,7 +60,7 @@ spec:
                   ldap1:
                     enabled: true
                     bind_dn: {{ .Values.lsdmop.elastic.ad.binddn }}
-                    bind_password: {{.Values.lsdmop.elastic.ad.bindpassword }}
+                    bind_password: ${AD_BIND_PASSWORD} #{{.Values.lsdmop.elastic.ad.bindpassword }}
                     group_search:
                       base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
                     order: 1
@@ -121,7 +121,13 @@ spec:
                 - name: ZONE
                   valueFrom:
                     fieldRef:
-                      fieldPath: metadata.annotations['topology.kubernetes.io/zone']           
+                      fieldPath: metadata.annotations['topology.kubernetes.io/zone']
+                - name: AD_BIND_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: lsdmop-es-ad-bind-user
+                      key: ObserveAD
+                      optional: false
               name: elasticsearch
               resources:
                 limits:
@@ -173,7 +179,7 @@ spec:
                   ldap1:
                     enabled: true
                     bind_dn: {{ .Values.lsdmop.elastic.ad.binddn }}
-                    bind_password: {{.Values.lsdmop.elastic.ad.bindpassword }}
+                    bind_password: ${AD_BIND_PASSWORD} #{{.Values.lsdmop.elastic.ad.bindpassword }}
                     group_search:
                       base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
                     order: 1
@@ -235,7 +241,13 @@ spec:
                 - name: ZONE
                   valueFrom:
                     fieldRef:
-                      fieldPath: metadata.annotations['topology.kubernetes.io/zone']                  
+                      fieldPath: metadata.annotations['topology.kubernetes.io/zone']    
+                - name: AD_BIND_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: lsdmop-es-ad-bind-user
+                      key: ObserveAD
+                      optional: false
               name: elasticsearch
               resources:
                 limits:
@@ -285,7 +297,7 @@ spec:
                   ldap1:
                     enabled: true
                     bind_dn: {{ .Values.lsdmop.elastic.ad.binddn }}
-                    bind_password: {{.Values.lsdmop.elastic.ad.bindpassword }}
+                    bind_password: ${AD_BIND_PASSWORD} #{{.Values.lsdmop.elastic.ad.bindpassword }}
                     group_search:
                       base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
                     order: 1
@@ -319,6 +331,12 @@ spec:
                 - name: ES_JAVA_OPTS
                   #value: '-Xms1g -Xmx1g -Dlog4j2.formatMsgNoLookups=true'
                   value: "-Xms{{ div .Values.lsdmop.elastic.cluster.ml.mem 2 }}g -Xmx{{ div .Values.lsdmop.elastic.cluster.ml.mem 2}}g"
+                - name: AD_BIND_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: lsdmop-es-ad-bind-user
+                      key: ObserveAD
+                      optional: false
               name: elasticsearch
               resources:
                 limits:
