@@ -1,0 +1,31 @@
+# Logstash ConfigMaps
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-pipeline
+  namespace: {{ .Release.Namespace }}
+data:
+  logstash.conf: |-
+{{ .Files.Get "logstash/pipeline-logstash.conf" | indent 4}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-pipeline-lsdmopagent
+  namespace: {{ .Release.Namespace }}
+data:
+  001-pipeline.conf: |-
+{{ .Files.Get "logstash/pipeline-lsdmopagent.conf" | indent 4}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-patterns
+  namespace: {{ .Release.Namespace }}
+data:
+  lsdmopagent-basic: |-
+{{ .Files.Get "logstash/patterns-lsdmopagent-basic" | indent 4}}
+  lsdmopagent-utility: |-
+{{ .Files.Get "logstash/patterns-lsdmopagent-utility" | indent 4}}
+---

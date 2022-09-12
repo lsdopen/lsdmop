@@ -1,21 +1,16 @@
 apiVersion: v2
-name: lsdmop
-<<<<<<< HEAD
-version: "2.21.1"
-=======
+name: lsdmopagent
 version: "2.22.0"
->>>>>>> 1e1ca0c (sync)
 appVersion: "1.0.2"
 # Disabling kubeVersion because GKE is dumb
 # kubeVersion: ">=v1.11.0"
 description: A Helm chart for LSDMOP
 keywords:
-  - lsdmop
+  - lsdmopagent
   - kubernetes
-  - grafana
   - prometheus
-  - elastic
-home: https://github.com/lsdopen/charts
+  - elastic agents
+home: https://github.com/lsdopen/lsdmopagent
 sources:
   - https://github.com/lsdopen
 maintainers:
@@ -34,9 +29,6 @@ dependencies:
 - name: eck-operator
   version: "2.3.0"
   repository: https://helm.elastic.co
-- name: grafana
-  version: "6.21.1"
-  repository: https://grafana.github.io/helm-charts
 - name: logstash
   version: "7.17.3"
   repository: https://helm.elastic.co
