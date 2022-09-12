@@ -8,11 +8,8 @@ dependencies:
 - name: eck-operator
   repository: https://helm.elastic.co
   version: 2.3.0
-- name: grafana
-  repository: https://grafana.github.io/helm-charts
-  version: 6.21.1
 - name: logstash
   repository: https://helm.elastic.co
   version: 7.17.3
-digest: sha256:39f22bd876a07b5e16701ce1db361ae32940da31636571ea1726fae82e69b1c6
-generated: "2022-06-29T14:58:18.641832135+02:00"
+digest: sha256:13703fba5f4168da1a221dc4ecd938072101c6941463bafd347fe86fbbecbe70
+generated: "2022-09-12T16:24:52.159650661+02:00"
