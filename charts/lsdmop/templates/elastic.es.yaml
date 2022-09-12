@@ -124,12 +124,14 @@ spec:
                   valueFrom:
                     fieldRef:
                       fieldPath: metadata.annotations['topology.kubernetes.io/zone']
+                {{- if .Values.lsdmop.elastic.ad.enabled -}}
                 - name: AD_BIND_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       name: lsdmop-es-ad-bind-user
                       key: ObserveAD
                       optional: false
+                {{- end }}
               name: elasticsearch
               resources:
                 limits:
@@ -246,12 +248,14 @@ spec:
                   valueFrom:
                     fieldRef:
                       fieldPath: metadata.annotations['topology.kubernetes.io/zone']    
+                {{- if .Values.lsdmop.elastic.ad.enabled -}}
                 - name: AD_BIND_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       name: lsdmop-es-ad-bind-user
                       key: ObserveAD
                       optional: false
+                {{- end }}
               name: elasticsearch
               resources:
                 limits:
@@ -337,12 +341,14 @@ spec:
                 - name: ES_JAVA_OPTS
                   #value: '-Xms1g -Xmx1g -Dlog4j2.formatMsgNoLookups=true'
                   value: "-Xms{{ div .Values.lsdmop.elastic.cluster.ml.mem 2 }}g -Xmx{{ div .Values.lsdmop.elastic.cluster.ml.mem 2}}g"
+                {{- if .Values.lsdmop.elastic.ad.enabled -}}
                 - name: AD_BIND_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       name: lsdmop-es-ad-bind-user
                       key: ObserveAD
                       optional: false
+                {{- end }}
               name: elasticsearch
               resources:
                 limits:
