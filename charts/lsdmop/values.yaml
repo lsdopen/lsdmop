@@ -64,6 +64,9 @@ lsdmop:
       url: *anchorgrafanaURL
   elastic:
     enabled: true
+    license:
+      enabled: false
+      key: ""
     autoscaling:
       enabled: false
     image: *anchoreckElasticsearchImage

@@ -1,11 +1,12 @@
+{{- if .Values.lsdmop.elastic.license.enabled -}}
 apiVersion: v1
 kind: Secret
 metadata:
-  name: eck-license-temp
+  name: eck-license
   namespace: {{ .Release.Namespace }}
   labels:
     license.k8s.elastic.co/scope: operator
 type: Opaque
 data:
-  license: >-
-    base64encodedlicense
+  license: {{ .Values.lsdmop.elastic.license.key }}
+{{- end }}
