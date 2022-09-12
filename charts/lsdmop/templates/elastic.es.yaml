@@ -320,6 +320,7 @@ spec:
         spec:
           serviceAccountName: {{ .Release.Name }}-elastic
           serviceAccount: {{ .Release.Name }}-elastic
+          {{- if .Values.lsdmop.elastic.ad.enabled -}}
           hostAliases:
             - hostnames:
                 - {{ .Values.lsdmop.elastic.ad.adhostname }}
@@ -328,7 +329,8 @@ spec:
             - hostnames:
                 - {{ .Values.lsdmop.elastic.ad.adddz }}
                 - {{ .Values.lsdmop.elastic.ad.adfdz }}
-              ip: {{ .Values.lsdmop.elastic.ad.adip }}          
+              ip: {{ .Values.lsdmop.elastic.ad.adip }}
+          {{- end }}         
           automountServiceAccountToken: true          
           containers:
             - env:
