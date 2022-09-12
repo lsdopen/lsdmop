@@ -1,0 +1,140 @@
+# Elastic Operator
+# To get a latest values you can run:
+# helm show values elastic/eck-operator
+eck-operator:
+  # installCRDs must be disabled because CRDs are put into the Helm chart
+  installCRDs: false
+  managedNamespaces: []
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 1
+      memory: 1Gi
+    requests:
+      cpu: 100m
+      memory: 150Mi
+  # tracing:
+  #   # enabled specifies whether APM tracing is enabled for the operator.
+  #   enabled: false
+  #   # config is a map of APM Server configuration variables that should be set in the environment.
+  #   config:
+  #     ELASTIC_APM_SERVER_URL: http://localhost:8200
+  #     ELASTIC_APM_SERVER_TIMEOUT: 30s
+  config:
+    setDefaultSecurityContext: "auto-detect"
+
+# LSDobserve
+lsdmopagent:
+  # There are your options clusterType: openshift | gke | rancher
+  clusterType: "rancher"
+  eckVersion: &anchoreckVersion "8.4.1"
+  eckFilebeatImage: &anchoreckFilebeatImage "docker.elastic.co/beats/filebeat:8.4.1"
+  eckMetricbeatImage: &anchoreckMetricbeatImage "docker.elastic.co/beats/metricbeat:8.4.1"
+  logstashJavaOpts: &anchorlogstashJavaOpts "-Xms1g -Xmx1g"
+  prometheusRenention: &anchorprometheusRenention "30d"
+  prometheusURL: &anchorprometheusURL "prometheus.domain.example"
+  prometheusHttpURL: &anchorprometheusHttpURL "https://prometheus.domain.example"
+  prometheusStorageSize: &anchorprometheusStorageSize "25Gi"
+  alertmanagerURL: &anchoralertmanagerURL "alertmanager.domain.example"
+  alertmanagerHttpURL: &anchoralertmanagerHttpURL "https://alertmanager.domain.example"
+  smtpHost: &anchorsmtpHost "smtp.lsdopen.io"
+  smtpPort: &anchorsmtpPort "25"
+  smtpSmartHost: &anchorsmtpSmartHost "smtp.lsdopen.io:25"
+  supportAddress: &anchorsupportAddress "address-that-must-receive-alerts@lsdopen.io"
+  fromAddress: &anchorfromAddress "lsdmopagent+noreply+infra-01.qa.lsdopen.io@lsdopen.io"
+  fromName: &anchorfromName "LSDobserve - LSD - k8s-01.qa.lsdopen.io@lsdopen.io"
+  storageClass: &anchorstorageClass "ebs-gp3"
+  #storageClass: &anchorstorageClass "local"
+  curl:
+    image: docker.io/curlimages/curl:7.74.0
+  elastic:
+
+    #Filebeat 
+    filebeat:
+      enabled: true
+      image: *anchoreckFilebeatImage
+      version: *anchoreckVersion
+      serviceAccount:
+        annotations: {}
+
+    ## Metricbeat as a Daemonset to collect metrics from Nodes
+    metricbeat:
+      enabled: true
+      image: *anchoreckMetricbeatImage
+      version: *anchoreckVersion
+
+    ## Metricbeat to connect to Prometheus
+    metricbeatPrometheus:
+      enabled: false
+      image: *anchoreckMetricbeatImage
+      version: *anchoreckVersion
+
+
+# Logstash
+logstash:
+  image: "docker.elastic.co/logstash/logstash"
+  imageTag: *anchoreckVersion
+  replicas: "0"
+  logstashJavaOpts: *anchorlogstashJavaOpts
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "1536Mi"
+    limits:
+      cpu: "1000m"
+      memory: "1536Mi"
+  volumeClaimTemplate: {}
+  service: 
+    type: ClusterIP
+    loadBalancerIP: ""
+    ports:
+      - name: beats
+        port: 5044
+        protocol: TCP
+        targetPort: 5044
+  logstashPatternDir: "/usr/share/logstash/patterns/"
+  logstashConfig: 
+    logstash.yml: |
+      http.host: "0.0.0.0"
+      monitoring.enabled: true
+      monitoring.elasticsearch.username: elastic
+      monitoring.elasticsearch.password: ${ELASTIC_PASSWORD}
+      monitoring.elasticsearch.hosts: [ "https://lsdmopagent-es-http:9200" ]
+      monitoring.elasticsearch.ssl.certificate_authority: /usr/share/logstash/certs/tls.crt
+      pipeline.ordered: false
+    pipelines.yml: |
+      - pipeline.id: main
+        path.config: "/usr/share/logstash/pipeline"
+      - pipeline.id: lsdmopagent
+        path.config: "/usr/share/logstash/pipeline/lsdmopagent"
+  secretMounts:
+    - name: elastic-ca-certs
+      secretName: lsdmopagent-es-http-ca-internal
+      path: /usr/share/logstash/certs
+      defaultMode: 420
+  extraEnvs:
+    - name: ELASTIC_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: lsdmopagent-es-elastic-user
+          key: elastic
+  extraVolumes: |
+    - configMap:
+        defaultMode: 420
+        name: logstash-pipeline
+      name: logstash-pipeline
+    - configMap:
+        defaultMode: 420
+        name: logstash-pipeline-lsdmopagent
+      name: logstash-pipeline-lsdmopagent
+    - configMap:
+        defaultMode: 420
+        name: logstash-patterns
+      name: logstash-patterns
+  extraVolumeMounts: |
+    - mountPath: /usr/share/logstash/pipeline
+      name: logstash-pipeline
+    - mountPath: /usr/share/logstash/pipeline/lsdmopagent
+      name: logstash-pipeline-lsdmopagent
+    - mountPath: /usr/share/logstash/patterns
+      name: logstash-patterns

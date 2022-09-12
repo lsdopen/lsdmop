@@ -1,0 +1,53 @@
+# Elastic ConfigMaps
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elastic-filebeat-custom-files
+  namespace: {{ .Release.Namespace }}
+data:
+  lsdmopagent-filebeat.template.infra.json: |-
+{{ .Files.Get "elastic/lsdmopagent-filebeat.template.infra.json" | indent 4}}
+  lsdmopagent-filebeat.template.lsdo.json: |-
+{{ .Files.Get "elastic/lsdmopagent-filebeat.template.lsdo.json" | indent 4}}
+  lsdmopagent-filebeat.template.apps.json: |-
+{{ .Files.Get "elastic/lsdmopagent-filebeat.template.apps.json" | indent 4}}
+
+  lsdmopagent-filebeat.ilm.policy.infra.json: |-
+{{ .Files.Get "elastic/lsdmopagent-filebeat.ilm.policy.infra.json" | indent 4}}
+  lsdmopagent-filebeat.ilm.policy.lsdo.json: |-
+{{ .Files.Get "elastic/lsdmopagent-filebeat.ilm.policy.lsdo.json" | indent 4}}
+  lsdmopagent-filebeat.ilm.policy.apps.json: |-
+{{ .Files.Get "elastic/lsdmopagent-filebeat.ilm.policy.apps.json" | indent 4}}
+
+  lsdmopagent-filebeat.ilm.policy.infra.s3.json: |-
+{{ .Files.Get "elastic/lsdmopagent-filebeat.ilm.policy.infra.s3.json" | indent 4}}
+  lsdmopagent-filebeat.ilm.policy.lsdo.s3.json: |-
+{{ .Files.Get "elastic/lsdmopagent-filebeat.ilm.policy.lsdo.s3.json" | indent 4}}
+  lsdmopagent-filebeat.ilm.policy.apps.s3.json: |-
+{{ .Files.Get "elastic/lsdmopagent-filebeat.ilm.policy.apps.s3.json" | indent 4}}
+
+  lsdmopagent-filebeat.template.{{ .Values.lsdmopagent.eckVersion }}.json: |-
+{{ .Files.Get "elastic/lsdmopagent-filebeat.template.8.4.1.json" | indent 4}}
+
+  lsdmopagent-filebeat.component.template.infra.json: |-
+{{ .Files.Get "elastic/lsdmopagent-filebeat.component.template.infra.json" | indent 4}}
+  lsdmopagent-filebeat.component.template.lsdo.json: |-
+{{ .Files.Get "elastic/lsdmopagent-filebeat.component.template.lsdo.json" | indent 4}}
+  lsdmopagent-filebeat.component.template.apps.json: |-
+{{ .Files.Get "elastic/lsdmopagent-filebeat.component.template.apps.json" | indent 4}}
+
+
+
+  lsdmopagent-elastic-load-sample-dashboard.ndjson: |-
+{{ .Files.Get "elastic/lsdmopagent-elastic-load-sample-dashboard.ndjson" | indent 4}}
+
+  lsdmopagent-elastic-load-snapshot-repo.ndjson: |-
+{{ .Files.Get "elastic/lsdmopagent-elastic-load-snapshot-repo.ndjson" | indent 4}}
+
+  lsdmopagent-elastic-load-snapshot-policy-daily.ndjson: |-
+{{ .Files.Get "elastic/lsdmopagent-elastic-load-snapshot-policy-daily.ndjson" | indent 4}}
+
+  lsdmopagent-elastic-load-snapshot-policy-hourly.ndjson: |-
+{{ .Files.Get "elastic/lsdmopagent-elastic-load-snapshot-policy-hourly.ndjson" | indent 4}}
+---
