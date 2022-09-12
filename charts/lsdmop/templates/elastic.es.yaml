@@ -88,6 +88,7 @@ spec:
           #       matchLabels:
           #         elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
           #         elasticsearch.k8s.elastic.co/statefulset-name: {{ .Release.Name }}-es-hot-data 
+          {{- if .Values.lsdmop.elastic.ad.enabled -}}
           hostAliases:
             - hostnames:
                 - {{ .Values.lsdmop.elastic.ad.adhostname }}
@@ -97,6 +98,7 @@ spec:
                 - {{ .Values.lsdmop.elastic.ad.adddz }}
                 - {{ .Values.lsdmop.elastic.ad.adfdz }}
               ip: {{ .Values.lsdmop.elastic.ad.adip }}
+          {{- end }}
           initContainers:
             - name: set-s3-bucket-web-token-dir
               command:
@@ -207,7 +209,8 @@ spec:
           #     labelSelector:
           #       matchLabels:
           #         elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
-          #         elasticsearch.k8s.elastic.co/statefulset-name: {{ .Release.Name }}-es-warm-data       
+          #         elasticsearch.k8s.elastic.co/statefulset-name: {{ .Release.Name }}-es-warm-data  
+          {{- if .Values.lsdmop.elastic.ad.enabled -}}
           hostAliases:
             - hostnames:
                 - {{ .Values.lsdmop.elastic.ad.adhostname }}
@@ -216,7 +219,8 @@ spec:
             - hostnames:
                 - {{ .Values.lsdmop.elastic.ad.adddz }}
                 - {{ .Values.lsdmop.elastic.ad.adfdz }}
-              ip: {{ .Values.lsdmop.elastic.ad.adip }}             
+              ip: {{ .Values.lsdmop.elastic.ad.adip }}
+          {{- end }}     
           initContainers:
             - name: set-s3-bucket-web-token-dir
               command:
