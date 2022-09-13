@@ -72,7 +72,7 @@ lsdmop:
       userdn: cn=User,ou=example,o=com
       admindn: cn=Admin,ou=example,o=com
       binddn: CN=UserName,OU=Support,DC=example,DC=com
-      bindpassword: supersecurepassword
+      bindpassword: ""
       adhostname: example
       adfqdn: example.com
       adip: 123.123.123.123

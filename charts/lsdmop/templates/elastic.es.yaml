@@ -80,15 +80,7 @@ spec:
           serviceAccountName: {{ .Release.Name }}-elastic
           serviceAccount: {{ .Release.Name }}-elastic
           automountServiceAccountToken: true
-          # topologySpreadConstraints:
-          #   - maxSkew: 1
-          #     topologyKey: topology.kubernetes.io/zone
-          #     whenUnsatisfiable: DoNotSchedule
-          #     labelSelector:
-          #       matchLabels:
-          #         elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
-          #         elasticsearch.k8s.elastic.co/statefulset-name: {{ .Release.Name }}-es-hot-data 
-          {{- if .Values.lsdmop.elastic.ad.enabled -}}
+{{- if .Values.lsdmop.elastic.ad.enabled }}
           hostAliases:
             - hostnames:
                 - {{ .Values.lsdmop.elastic.ad.adhostname }}
@@ -98,7 +90,8 @@ spec:
                 - {{ .Values.lsdmop.elastic.ad.adddz }}
                 - {{ .Values.lsdmop.elastic.ad.adfdz }}
               ip: {{ .Values.lsdmop.elastic.ad.adip }}
-          {{- end }}
+{{ end }}
+
           initContainers:
             - name: set-s3-bucket-web-token-dir
               command:
@@ -124,13 +117,13 @@ spec:
                   valueFrom:
                     fieldRef:
                       fieldPath: metadata.annotations['topology.kubernetes.io/zone']
-                {{- if .Values.lsdmop.elastic.ad.enabled -}}
+                {{ if .Values.lsdmop.elastic.ad.enabled }}
                 - name: AD_BIND_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       name: lsdmop-es-ad-bind-user
                       key: ObserveAD
-                      optional: false
+                      optional: true
                 {{- end }}
               name: elasticsearch
               resources:
@@ -212,7 +205,7 @@ spec:
           #       matchLabels:
           #         elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
           #         elasticsearch.k8s.elastic.co/statefulset-name: {{ .Release.Name }}-es-warm-data  
-          {{- if .Values.lsdmop.elastic.ad.enabled -}}
+          {{ if .Values.lsdmop.elastic.ad.enabled }}
           hostAliases:
             - hostnames:
                 - {{ .Values.lsdmop.elastic.ad.adhostname }}
@@ -222,7 +215,7 @@ spec:
                 - {{ .Values.lsdmop.elastic.ad.adddz }}
                 - {{ .Values.lsdmop.elastic.ad.adfdz }}
               ip: {{ .Values.lsdmop.elastic.ad.adip }}
-          {{- end }}     
+          {{ end }}     
           initContainers:
             - name: set-s3-bucket-web-token-dir
               command:
@@ -248,13 +241,13 @@ spec:
                   valueFrom:
                     fieldRef:
                       fieldPath: metadata.annotations['topology.kubernetes.io/zone']    
-                {{- if .Values.lsdmop.elastic.ad.enabled -}}
+                {{ if .Values.lsdmop.elastic.ad.enabled }}
                 - name: AD_BIND_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       name: lsdmop-es-ad-bind-user
                       key: ObserveAD
-                      optional: false
+                      optional: true
                 {{- end }}
               name: elasticsearch
               resources:
@@ -324,7 +317,7 @@ spec:
         spec:
           serviceAccountName: {{ .Release.Name }}-elastic
           serviceAccount: {{ .Release.Name }}-elastic
-          {{- if .Values.lsdmop.elastic.ad.enabled -}}
+          {{ if .Values.lsdmop.elastic.ad.enabled }}
           hostAliases:
             - hostnames:
                 - {{ .Values.lsdmop.elastic.ad.adhostname }}
@@ -334,20 +327,20 @@ spec:
                 - {{ .Values.lsdmop.elastic.ad.adddz }}
                 - {{ .Values.lsdmop.elastic.ad.adfdz }}
               ip: {{ .Values.lsdmop.elastic.ad.adip }}
-          {{- end }}         
+          {{ end }}         
           automountServiceAccountToken: true          
           containers:
             - env:
                 - name: ES_JAVA_OPTS
                   #value: '-Xms1g -Xmx1g -Dlog4j2.formatMsgNoLookups=true'
                   value: "-Xms{{ div .Values.lsdmop.elastic.cluster.ml.mem 2 }}g -Xmx{{ div .Values.lsdmop.elastic.cluster.ml.mem 2}}g"
-                {{- if .Values.lsdmop.elastic.ad.enabled -}}
+                {{ if .Values.lsdmop.elastic.ad.enabled }}
                 - name: AD_BIND_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       name: lsdmop-es-ad-bind-user
                       key: ObserveAD
-                      optional: false
+                      optional: true
                 {{- end }}
               name: elasticsearch
               resources:
