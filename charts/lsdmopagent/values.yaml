@@ -30,6 +30,7 @@ lsdmopagent:
   eckVersion: &anchoreckVersion "8.4.1"
   eckFilebeatImage: &anchoreckFilebeatImage "docker.elastic.co/beats/filebeat:8.4.1"
   eckMetricbeatImage: &anchoreckMetricbeatImage "docker.elastic.co/beats/metricbeat:8.4.1"
+  eckApmImage: &anchoreckApmImage "docker.elastic.co/apm/apm-server:8.4.1"  
   apmURL: &anchorapmURL "apm.domain.example"
   fleetURL: &anchorfleetURL "fleet.domain.example"
   kibanaURL: &anchorkibanaURL "kibana.domain.example"
