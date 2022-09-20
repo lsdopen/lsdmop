@@ -1,9 +1,9 @@
 {
-    "index_patterns": ["filebeat-8.4.1-lsdo"],
+    "index_patterns": ["logs-lsdmop-prod*"],
     "data_stream": { },
-    "composed_of": [ "filebeat-8.4.1", "filebeat-lsdo" ],
+    "composed_of": [ "filebeat-8.4.1", "filebeat-lsdmop" ],
     "priority": 501,
     "_meta": {
-      "description": "Template for general lsdo"
+      "description": "Template for general lsdmop"
     }
   }

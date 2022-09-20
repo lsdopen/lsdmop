@@ -1,0 +1,36 @@
+# Elasticsearch Ingress
+{{- if .Values.lsdmop.elastic.fleet.enabled -}}
+{{- if or (eq .Values.lsdmop.clusterType "gke") (eq .Values.lsdmop.clusterType "rancher") -}}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+{{- with .Values.lsdmop.elastic.ingress.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}  
+  labels:
+    app: fleet-server-{{ .Release.Name }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"    
+  name: fleet-server-{{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - {{ .Values.lsdmop.elastic.fleet.ingress.url }}
+      secretName: {{ .Values.lsdmop.elastic.fleet.ingress.tls.secretName }}
+  rules:
+  - host: {{ .Values.lsdmop.elastic.fleet.ingress.url }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: fleet-server-lsdmop-agent-http
+            port: 
+              number: 8220
+        path: /
+        pathType: ImplementationSpecific
+---
+{{- end }}
+{{- end }}

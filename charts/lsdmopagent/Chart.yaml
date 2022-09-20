@@ -1,16 +1,16 @@
 apiVersion: v2
 name: lsdmopagent
-version: "2.22.3"
+version: "2.22.5"
 appVersion: "1.0.2"
 # Disabling kubeVersion because GKE is dumb
 # kubeVersion: ">=v1.11.0"
-description: A Helm chart for LSDMOP
+description: A Helm chart for LSDMOP remote agents
 keywords:
   - lsdmopagent
   - kubernetes
   - prometheus
   - elastic agents
-home: https://github.com/lsdopen/lsdmopagent
+home: https://github.com/lsdopen/lsdmop
 sources:
   - https://github.com/lsdopen
 maintainers:
@@ -30,5 +30,5 @@ dependencies:
   version: "2.3.0"
   repository: https://helm.elastic.co
 - name: logstash
-  version: "7.17.3"
+  version: "8.4.1"
   repository: https://helm.elastic.co

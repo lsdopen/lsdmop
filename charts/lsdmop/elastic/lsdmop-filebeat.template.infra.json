@@ -1,5 +1,5 @@
 {
-    "index_patterns": ["filebeat-8.4.1-infra"],
+    "index_patterns": ["logs-infra-prod*"],
     "data_stream": { },
     "composed_of": ["filebeat-8.4.1", "filebeat-infra" ],
     "priority": 501,

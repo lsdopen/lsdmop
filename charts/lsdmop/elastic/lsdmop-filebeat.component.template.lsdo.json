@@ -3,7 +3,7 @@
   "settings": {
     "index": {
       "lifecycle": {
-        "name": "filebeat-lsdo"
+        "name": "logs-lsdmop"
       }
     },
     "routing": {

@@ -3,7 +3,7 @@
   "settings": {
     "index": {
       "lifecycle": {
-        "name": "filebeat-apps"
+        "name": "logs-apps"
       }
     },
     "routing": {

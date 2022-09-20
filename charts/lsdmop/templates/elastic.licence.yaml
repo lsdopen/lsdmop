@@ -7,6 +7,6 @@ metadata:
   labels:
     license.k8s.elastic.co/scope: operator
 type: Opaque
-data:
+stringData:
   license: {{ .Values.lsdmop.elastic.license.key }}
 {{- end }}

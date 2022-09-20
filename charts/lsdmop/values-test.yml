@@ -64,6 +64,9 @@ lsdmop:
       url: *anchorgrafanaURL
   elastic:
     enabled: true
+    license:
+      enabled: false
+      key: ""
     # Active Directory Integration
     ad:
       enabled: true
@@ -72,7 +75,7 @@ lsdmop:
       userdn: cn=User,ou=example,o=com
       admindn: cn=Admin,ou=example,o=com
       binddn: CN=UserName,OU=Support,DC=example,DC=com
-      bindpassword: ""
+      bindpassword: "c2VjcmV0Cg=="
       adhostname: example
       adfqdn: example.com
       adip: 123.123.123.123
@@ -81,6 +84,7 @@ lsdmop:
 
     autoscaling:
       enabled: false
+
     image: *anchoreckElasticsearchImage
     version: *anchoreckVersion
     ingress:
@@ -161,7 +165,7 @@ lsdmop:
 
     #Cloudwatch Input Source for Filebeat
     filebeatCloudwatch:
-      enabled: false
+      enabled: true
       roleArn: ""
       logsArn: ""
 

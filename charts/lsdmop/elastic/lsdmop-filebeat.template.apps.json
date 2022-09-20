@@ -1,5 +1,5 @@
 {
-    "index_patterns": ["filebeat-8.4.1-apps"],
+    "index_patterns": ["logs-apps-prod*"],
     "data_stream": { },
     "composed_of": [ "filebeat-8.4.1", "filebeat-apps" ],
     "priority": 501,

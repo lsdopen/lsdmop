@@ -165,7 +165,7 @@ spec:
       #ILM POLICIES WITH S3
       - args:
         - -c
-        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.ilm.policy.infra.s3.json \"https://lsdmop-es-http:9200/_ilm/policy/filebeat-infra\""
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.ilm.policy.infra.s3.json \"https://lsdmop-es-http:9200/_ilm/policy/logs-infra\""
         command:
         - /bin/sh
         env:
@@ -182,7 +182,7 @@ spec:
 
       - args:
         - -c
-        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.ilm.policy.lsdo.s3.json \"https://lsdmop-es-http:9200/_ilm/policy/filebeat-lsdo\""
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.ilm.policy.lsdo.s3.json \"https://lsdmop-es-http:9200/_ilm/policy/logs-lsdmop\""
         command:
         - /bin/sh
         env:
@@ -192,14 +192,14 @@ spec:
                 name: lsdmop-es-elastic-user
                 key: elastic
         image: {{ .Values.lsdmop.curl.image }}
-        name: filebeat-ilm-policy-lsdo
+        name: filebeat-ilm-policy-lsdmop
         volumeMounts:
         - mountPath: /opt/elastic/
           name: elastic-filebeat-custom-files
 
       - args:
         - -c
-        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.ilm.policy.apps.s3.json \"https://lsdmop-es-http:9200/_ilm/policy/filebeat-apps\""
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.ilm.policy.apps.s3.json \"https://lsdmop-es-http:9200/_ilm/policy/logs-apps\""
         command:
         - /bin/sh
         env:
@@ -217,7 +217,7 @@ spec:
       #ILM POLICIES WITHOUT S3
       - args:
         - -c
-        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.ilm.policy.infra.json \"https://lsdmop-es-http:9200/_ilm/policy/filebeat-infra\""
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.ilm.policy.infra.json \"https://lsdmop-es-http:9200/_ilm/policy/logs-infra\""
         command:
         - /bin/sh
         env:
@@ -234,7 +234,7 @@ spec:
 
       - args:
         - -c
-        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.ilm.policy.lsdo.json \"https://lsdmop-es-http:9200/_ilm/policy/filebeat-lsdo\""
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.ilm.policy.lsdo.json \"https://lsdmop-es-http:9200/_ilm/policy/logs-lsdmop\""
         command:
         - /bin/sh
         env:
@@ -244,14 +244,14 @@ spec:
                 name: lsdmop-es-elastic-user
                 key: elastic
         image: {{ .Values.lsdmop.curl.image }}
-        name: filebeat-ilm-policy-lsdo
+        name: filebeat-ilm-policy-lsdmop
         volumeMounts:
         - mountPath: /opt/elastic/
           name: elastic-filebeat-custom-files
 
       - args:
         - -c
-        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.ilm.policy.apps.json \"https://lsdmop-es-http:9200/_ilm/policy/filebeat-apps\""
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.ilm.policy.apps.json \"https://lsdmop-es-http:9200/_ilm/policy/logs-apps\""
         command:
         - /bin/sh
         env:
@@ -306,7 +306,7 @@ spec:
 
       - args:
         - -c
-        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.component.template.lsdo.json \"https://lsdmop-es-http:9200/_component_template/filebeat-lsdo\""
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.component.template.lsdo.json \"https://lsdmop-es-http:9200/_component_template/filebeat-lsdmop\""
         command:
         - /bin/sh
         env:
@@ -316,7 +316,7 @@ spec:
                 name: lsdmop-es-elastic-user
                 key: elastic
         image: {{ .Values.lsdmop.curl.image }}
-        name: filebeat-component-template-lsdo
+        name: filebeat-component-template-lsdmop
         volumeMounts:
         - mountPath: /opt/elastic/
           name: elastic-filebeat-custom-files
@@ -361,7 +361,7 @@ spec:
 
       - args:
         - -c
-        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.template.lsdo.json \"https://lsdmop-es-http:9200/_index_template/filebeat-lsdo\""
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.template.lsdo.json \"https://lsdmop-es-http:9200/_index_template/filebeat-lsdmop\""
         command:
         - /bin/sh
         env:
@@ -371,7 +371,7 @@ spec:
                 name: lsdmop-es-elastic-user
                 key: elastic
         image: {{ .Values.lsdmop.curl.image }}
-        name: filebeat-template-lsdo
+        name: filebeat-template-lsdmop
         volumeMounts:
         - mountPath: /opt/elastic/
           name: elastic-filebeat-custom-files 
@@ -413,7 +413,7 @@ spec:
 
       - args:
         - -c
-        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT \"https://lsdmop-es-http:9200/_data_stream/filebeat-8.4.1-lsdo\""
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT \"https://lsdmop-es-http:9200/_data_stream/filebeat-8.4.1-lsdmop\""
         command:
         - /bin/sh
         env:
@@ -423,7 +423,7 @@ spec:
                 name: lsdmop-es-elastic-user
                 key: elastic
         image: {{ .Values.lsdmop.curl.image }}
-        name: filebeat-bootstrap-lsdo
+        name: filebeat-bootstrap-lsdmop
         volumeMounts:
         - mountPath: /opt/elastic/
           name: elastic-filebeat-custom-files
