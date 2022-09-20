@@ -203,6 +203,18 @@ lsdmop:
           secretName: apm-ingress-tls
         url: *anchorapmURL
 
+    #New gen Fleet based APM servers - cannot be enabled if apm is enabled
+    fleet-apm:
+      enabled: true
+      image: *anchoreckApmImage
+      version: *anchoreckVersion
+      ingress:
+        annotations: {}
+        tls:
+          secretName: apm-ingress-tls
+        url: *anchorapmURL
+
+
     #S3 bucket storage for snapshots    
     s3snapshot:
       enabled: true
