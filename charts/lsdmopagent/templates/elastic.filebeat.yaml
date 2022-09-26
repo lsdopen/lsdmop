@@ -71,14 +71,9 @@ spec:
           matchers:
           - logs_path:
               logs_path: /var/log/containers/
-  elasticsearchRef:
-    name: {{ .Release.Name }}
-  kibanaRef:
-    name: {{ .Release.Name }}
-        
-    # output.logstash:
-    #   hosts:
-    #     - {{ .Release.Name }}-logstash:5044
+    output.logstash:
+      hosts:
+        - {{ .Release.Name }}-logstash:5044
   daemonSet:
     podTemplate:
       metadata:

@@ -75,7 +75,7 @@ lsdmopagent:
       version: *anchoreckVersion
 
     #New gen Fleet based APM servers - cannot be enabled if apm is enabled
-    fleet-apm:
+    fleetapm:
       enabled: true
       image: *anchoreckApmImage
       version: *anchoreckVersion

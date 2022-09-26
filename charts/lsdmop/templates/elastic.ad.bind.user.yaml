@@ -3,7 +3,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: lsdmop-es-ad-bind-user
-  namespace: lsdmop
+  namespace: {{ .Release.namespace }}
 type: Opaque
 data:
   ObserveAD: {{ .Values.lsdmop.elastic.ad.bindpassword }}
