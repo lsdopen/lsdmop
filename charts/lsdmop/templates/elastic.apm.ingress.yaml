@@ -35,3 +35,36 @@ spec:
 ---
 {{- end }}
 {{- end }}
+
+
+{{ if .Values.lsdmop.elastic.fleetapm.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lsdmop-apm
+  namespace: {{ .Release.namespace }}
+  labels:
+    app: apm-server-agent
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    service.alpha.kubernetes.io/app-protocols: '{"https":"HTTPS"}'
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - {{ .Values.lsdmop.elastic.apm.ingress.url }}
+      secretName: {{ .Values.lsdmop.elastic.apm.ingress.tls.secretName }}
+  rules:
+    - host: {{ .Values.lsdmop.elastic.apm.ingress.url }}
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ .Release.Namespace }}-apm-http
+                port:
+                  number: 8200
+
+{{- end }}

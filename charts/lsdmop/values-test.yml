@@ -194,7 +194,7 @@ lsdmop:
 
     #APM servers  
     apm:
-      enabled: false
+      enabled: true
       image: *anchoreckApmImage
       version: *anchoreckVersion
       count: 2
@@ -206,7 +206,7 @@ lsdmop:
 
     #New gen Fleet based APM servers - cannot be enabled if apm is enabled
     fleetapm:
-      enabled: true
+      enabled: false
       image: *anchoreckApmImage
       version: *anchoreckVersion
       ingress:

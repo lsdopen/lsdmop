@@ -22,8 +22,8 @@ spec:
 {{- if .Values.lsdmop.elastic.fleet.enabled }}
     xpack.fleet.agents.elasticsearch.hosts: ["https://lsdmop-es-http.lsdmop.svc:9200"]
     xpack.fleet.agents.fleet_server.hosts: 
-      - https://{{ .Values.lsdmop.elastic.fleet.fleetURL }}:443
       - https://fleet-server-lsdmop-agent-http.lsdmop.svc:8220
+      - https://{{ .Values.lsdmop.elastic.fleet.fleetURL }}:443
     xpack.fleet.packages:
       - name: system
         version: latest

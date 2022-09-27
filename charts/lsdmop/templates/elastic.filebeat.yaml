@@ -63,6 +63,7 @@ spec:
         match: after
         negate: false
         pattern: '^[[:space:]]+|^Caused by:'
+      exclude_files: ['^*_lsdmop_*$']
       paths:
       - /var/log/containers/*.log
       processors:
