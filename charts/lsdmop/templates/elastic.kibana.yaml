@@ -61,12 +61,29 @@ spec:
             id: system-1
             package:
               name: system    
+          - name: kubernetes-1
+            id: kubernetes-1
+            package:
+              name: kubernetes  
+      - name: Elastic APM policy
+        id: eck-apm-1
+        namespace: {{ .Release.Namespace }}
+        monitoring_enabled:
+          - logs
+          - metrics
+        unenroll_timeout: 900
+        is_default: true
+        package_policies:
+          - name: system-2
+            id: system-2
+            package:
+              name: system    
           - name: kubernetes-2
             id: kubernetes-2
             package:
               name: kubernetes  
-          - name: apm-1
-            id: apm-1
+          - name: apm-2
+            id: apm-2
             package:
               name: apm
             inputs:
@@ -75,7 +92,6 @@ spec:
               vars:
               - name: host
                 value: 0.0.0.0:8200
-
       # - name: Kubernetes Monitoring on ECK policy
       #   id: eck-agent-k8s
       #   namespace: {{ .Release.Namespace }}

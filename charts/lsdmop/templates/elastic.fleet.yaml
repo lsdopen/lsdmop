@@ -58,7 +58,7 @@ spec:
 apiVersion: agent.k8s.elastic.co/v1alpha1
 kind: Agent
 metadata: 
-  name: elastic-agent-apm-server-{{ .Release.Name }}
+  name: apm-server-{{ .Release.Name }}
 spec:
   version: {{ .Values.lsdmop.eckVersion }}
   kibanaRef:
@@ -72,6 +72,11 @@ spec:
       spec:
         securityContext:
           runAsUser: 0
+        containers:
+          - name: agent
+            image: docker.elastic.co/beats/elastic-agent:{{ .Values.lsdmop.eckVersion }}
+          - name: FLEET_INSECURE
+            value: 'true'
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
