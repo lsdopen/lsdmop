@@ -7,6 +7,7 @@ metadata:
   name: fleet-server-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
 spec:
+  policyID: eck-fleet-server
   version: {{ .Values.lsdmop.eckVersion }}
   kibanaRef:
     name: {{ .Release.Name }}
@@ -26,36 +27,37 @@ spec:
         securityContext:
           runAsUser: 0
 ---
-# apiVersion: agent.k8s.elastic.co/v1alpha1
-# kind: Agent
-# metadata:
-#   name: elastic-agent-{{ .Release.Name }}
-#   namespace: {{ .Release.Namespace }}
-# spec:
-#   version: {{ .Values.lsdmop.eckVersion }}
-#   kibanaRef:
-#     name: {{ .Release.Name }}
-#   fleetServerRef:
-#     name: fleet-server-{{ .Release.Name }}
-#   mode: fleet
-#   daemonSet:
-#     podTemplate:
-#       spec:
-#         containers:
-#           - name: agent
-#             image: docker.elastic.co/beats/elastic-agent:{{ .Values.lsdmop.eckVersion }}
-#             env:
-#             - name: FLEET_INSECURE
-#               value: 'true'
-#         serviceAccountName: elastic-agent
-#         automountServiceAccountToken: true
-#         securityContext:
-#           runAsUser: 0
-#         tolerations:
-#         - key: dedicated
-#           effect: "NoSchedule"
-#           operator: Exists
-# ---
+apiVersion: agent.k8s.elastic.co/v1alpha1
+kind: Agent
+metadata:
+  name: elastic-agent-{{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  policyID: eck-agent-1
+  version: {{ .Values.lsdmop.eckVersion }}
+  kibanaRef:
+    name: {{ .Release.Name }}
+  fleetServerRef:
+    name: fleet-server-{{ .Release.Name }}
+  mode: fleet
+  daemonSet:
+    podTemplate:
+      spec:
+        containers:
+          - name: agent
+            image: docker.elastic.co/beats/elastic-agent:{{ .Values.lsdmop.eckVersion }}
+            env:
+            - name: FLEET_INSECURE
+              value: 'true'
+        serviceAccountName: elastic-agent
+        automountServiceAccountToken: true
+        securityContext:
+          runAsUser: 0
+        tolerations:
+        - key: dedicated
+          effect: "NoSchedule"
+          operator: Exists
+---
 
 {{ if .Values.lsdmop.elastic.fleetapm.enabled }}
 apiVersion: agent.k8s.elastic.co/v1alpha1
@@ -63,6 +65,7 @@ kind: Agent
 metadata: 
   name: apm-server-{{ .Release.Name }}
 spec:
+  policyID: eck-apm-1
   version: {{ .Values.lsdmop.eckVersion }}
   kibanaRef:
     name: {{ .Release.Name }}
