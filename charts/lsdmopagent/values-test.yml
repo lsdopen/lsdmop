@@ -4,7 +4,8 @@
 eck-operator:
   # installCRDs must be disabled because CRDs are put into the Helm chart
   installCRDs: false
-  managedNamespaces: []
+  managedNamespaces: ["lsdmopagent"]
+  createClusterScopedResources: false
   replicaCount: 1
   resources:
     limits:
@@ -22,6 +23,9 @@ eck-operator:
   #     ELASTIC_APM_SERVER_TIMEOUT: 30s
   config:
     setDefaultSecurityContext: "auto-detect"
+    validateStorageClass: false
+  webhook:
+    enabled: false    
 
 # LSDobserve
 lsdmopagent:

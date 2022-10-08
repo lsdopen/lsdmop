@@ -140,14 +140,14 @@ spec:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: heartbeat
+  name: {{ .Release.Name }}-heartbeat
 subjects:
 - kind: ServiceAccount
-  name: heartbeat
+  name: {{ .Release.Name }}-heartbeat
   namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: heartbeat
+  name: {{ .Release.Name }}-heartbeat
   apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -181,7 +181,7 @@ roleRef:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: heartbeat
+  name: {{ .Release.Name }}-heartbeat
   labels:
     k8s-app: heartbeat
 rules:
