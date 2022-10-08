@@ -3,6 +3,44 @@ entries:
   lsdmop:
   - apiVersion: v2
     appVersion: 1.0.2
+    created: "2022-10-08T12:24:25.359889173Z"
+    dependencies:
+    - name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 15.1.1
+    - name: prometheus-blackbox-exporter
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 5.3.1
+    - name: eck-operator
+      repository: https://helm.elastic.co
+      version: 2.4.0
+    - name: grafana
+      repository: https://grafana.github.io/helm-charts
+      version: 6.21.1
+    - name: logstash
+      repository: https://helm.elastic.co
+      version: 7.17.3
+    description: A Helm chart for LSDMOP
+    digest: 8da6c8b992cf9db360d2d4158be376416a53e1feda5c521773837d9686e1c51e
+    home: https://github.com/lsdopen/charts
+    keywords:
+    - lsdmop
+    - kubernetes
+    - grafana
+    - prometheus
+    - elastic
+    maintainers:
+    - email: support@lsdopen.io
+      name: LSD
+      url: https://lsdopen.io
+    name: lsdmop
+    sources:
+    - https://github.com/lsdopen
+    urls:
+    - https://github.com/lsdopen/lsdmop/releases/download/lsdmop-3.4.2/lsdmop-3.4.2.tgz
+    version: 3.4.2
+  - apiVersion: v2
+    appVersion: 1.0.2
     created: "2022-09-29T16:58:25.265817576Z"
     dependencies:
     - name: prometheus
@@ -2626,6 +2664,40 @@ entries:
   lsdmopagent:
   - apiVersion: v2
     appVersion: 1.0.2
+    created: "2022-10-08T12:24:25.545365541Z"
+    dependencies:
+    - name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 15.1.1
+    - name: prometheus-blackbox-exporter
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 5.3.1
+    - name: eck-operator
+      repository: https://helm.elastic.co
+      version: 2.3.0
+    - name: logstash
+      repository: https://helm.elastic.co
+      version: 7.17.3
+    description: A Helm chart for LSDMOP remote agents
+    digest: 2e2c7e623c1456d397ccff1f7e5e7d2d62c1c0eb0115db292eb073bcf8ed62a5
+    home: https://github.com/lsdopen/lsdmop
+    keywords:
+    - lsdmopagent
+    - kubernetes
+    - prometheus
+    - elastic agents
+    maintainers:
+    - email: support@lsdopen.io
+      name: LSD
+      url: https://lsdopen.io
+    name: lsdmopagent
+    sources:
+    - https://github.com/lsdopen
+    urls:
+    - https://github.com/lsdopen/lsdmop/releases/download/lsdmopagent-3.4.2/lsdmopagent-3.4.2.tgz
+    version: 3.4.2
+  - apiVersion: v2
+    appVersion: 1.0.2
     created: "2022-09-26T17:27:55.571147403Z"
     dependencies:
     - name: prometheus
@@ -2794,4 +2866,4 @@ entries:
     urls:
     - https://github.com/lsdopen/lsdmop/releases/download/lsdmopagent-2.22.0/lsdmopagent-2.22.0.tgz
     version: 2.22.0
-generated: "2022-09-29T16:58:25.266347214Z"
+generated: "2022-10-08T12:24:25.545911544Z"
