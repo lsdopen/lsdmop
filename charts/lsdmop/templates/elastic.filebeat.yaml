@@ -72,6 +72,9 @@ spec:
           matchers:
           - logs_path:
               logs_path: /var/log/containers/
+
+    path.data: /usr/share/{{ .Release.Name }}-filebeat-k8s/data
+
     output.logstash:
       hosts:
         - {{ .Release.Name }}-logstash:5044
@@ -93,6 +96,7 @@ spec:
         automountServiceAccountToken: true
         securityContext:
           runAsUser: 0
+          priviliged: true
         containers:
         - env:
           - name: NODE_NAME

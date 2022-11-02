@@ -64,7 +64,9 @@ data:
         #- type: kubernetes
         #  node: ${NODE_NAME}
         #  hints.enabled: true
-
+    
+    path.data: /usr/share/{{ .Release.Name }}-metricbeat/data
+    
     processors:
       - add_cloud_metadata:
 

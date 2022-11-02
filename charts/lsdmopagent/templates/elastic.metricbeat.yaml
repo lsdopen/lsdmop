@@ -72,16 +72,18 @@ data:
     cloud.auth: ${ELASTIC_CLOUD_AUTH}
     
     # http.enabled: true #monitoring enabled
-
-    output.logstash:
-      hosts:
-        - {{ .Release.Name }}-logstash:5044
     
-    # output.elasticsearch:
-    #   hosts: ['https://${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}']
-    #   username: ${ELASTICSEARCH_USERNAME}
-    #   password: ${ELASTICSEARCH_PASSWORD}
-    #   ssl.verification_mode: none
+    path.data: /usr/share/{{ .Release.Name }}-metricbeat/data
+    
+    # output.logstash:
+    #   hosts:
+    #     - {{ .Release.Name }}-logstash:5044
+    
+    output.elasticsearch:
+      hosts: ['https://${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}']
+      username: ${ELASTICSEARCH_USERNAME}
+      password: ${ELASTICSEARCH_PASSWORD}
+      ssl.verification_mode: none
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -195,12 +197,12 @@ spec:
         #- name: ELASTICSEARCH_PASSWORD
         #  value: changeme
         - name: ELASTICSEARCH_PASSWORD
-          value: none
-          # valueFrom:
-          #   secretKeyRef:
-          #     name: lsdmopagent-es-elastic-user
-          #     key: elastic
-          #     optional: false          
+          #value: none
+          valueFrom:
+            secretKeyRef:
+              name: lsdmopagent-es-elastic-user
+              key: elastic
+              optional: false          
         - name: ELASTIC_CLOUD_ID
           value:
         - name: ELASTIC_CLOUD_AUTH

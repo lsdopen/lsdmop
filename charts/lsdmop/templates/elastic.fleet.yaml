@@ -146,7 +146,7 @@ spec:
       port: 8200
       targetPort: 8200
   selector:
-    common.k8s.elastic.co/type: agent
+    agent.k8s.elastic.co/name: apm-server-{{ .Release.Namespace }}
   type: ClusterIP
   sessionAffinity: None
   ipFamilies:

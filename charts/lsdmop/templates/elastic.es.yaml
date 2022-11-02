@@ -69,6 +69,9 @@ spec:
                     user_search:
                       base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
                       filter: (userPrincipalName={0})
+                    ssl:
+                      verification_mode: none
+                      #certificate_authorities: [ "cacert.pem" ]                    
 {{- end}}          
       count: {{ .Values.lsdmop.elastic.cluster.hot.count }}
       name: hot-data
@@ -185,6 +188,9 @@ spec:
                     user_search:
                       base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
                       filter: (userPrincipalName={0})
+                    ssl:
+                      verification_mode: none
+                      #certificate_authorities: [ "cacert.pem" ]                    
 {{- end}}    
 
       count: {{ .Values.lsdmop.elastic.cluster.warm.count }}
@@ -307,6 +313,10 @@ spec:
                     user_search:
                       base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
                       filter: (userPrincipalName={0})
+                    ssl:
+                      verification_mode: none
+                      #certificate_authorities: [ "cacert.pem" ]                    
+
 {{- end}}    
       count: {{ .Values.lsdmop.elastic.cluster.ml.count }}
       name: ml

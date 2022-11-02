@@ -74,6 +74,7 @@ spec:
     processors:
     - add_cloud_metadata: {}
     logging.json: true
+    path.data: /usr/share/{{ .Release.Name }}-metricbeat-monitoring/data
   deployment:
     podTemplate:
       spec:

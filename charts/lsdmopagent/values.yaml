@@ -133,6 +133,9 @@ logstash:
       monitoring.elasticsearch.hosts: [ "https://lsdmopagent-es-http:9200" ]
       monitoring.elasticsearch.ssl.certificate_authority: /usr/share/logstash/certs/tls.crt
       pipeline.ordered: false
+      pipeline.batch.size: 50
+      pipeline.batch.delay: 50
+
     pipelines.yml: |
       - pipeline.id: main
         path.config: "/usr/share/logstash/pipeline"

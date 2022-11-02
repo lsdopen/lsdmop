@@ -28,6 +28,7 @@ spec:
     - add_cloud_metadata: {}
     - add_host_metadata: {}
     logging.json: true
+    path.data: /usr/share/{{ .Release.Name }}-filebeat-monitoring/data
 
   daemonSet:
     podTemplate:

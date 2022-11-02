@@ -43,6 +43,8 @@ data:
                   schedule: '@every 10s'
                   timeout: 5s
                   type: tcp
+    
+    path.data: /usr/share/{{ .Release.Name }}-heartbeat/data
 
     processors:
       - add_kubernetes_metadata:

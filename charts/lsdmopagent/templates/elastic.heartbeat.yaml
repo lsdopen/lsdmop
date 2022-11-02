@@ -49,6 +49,8 @@ data:
 
     #cloud.id: ${ELASTIC_CLOUD_ID}
     #cloud.auth: ${ELASTIC_CLOUD_AUTH}
+    
+    path.data: /usr/share/{{ .Release.Name }}-heartbeat/data
 
     output.elasticsearch:
       hosts: ['${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}']

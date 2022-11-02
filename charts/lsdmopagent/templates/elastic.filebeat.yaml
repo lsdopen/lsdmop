@@ -57,23 +57,27 @@ spec:
   image: {{ .Values.lsdmopagent.elastic.filebeat.image }}
   config:
     filebeat.inputs:
-    - type: container
-      close_inactive: 4h
-      multiline:
-        match: after
-        negate: false
-        pattern: '^[[:space:]]+|^Caused by:'
-      paths:
-      - /var/log/containers/*.log
-      processors:
-      - add_kubernetes_metadata:
-          host: ${NODE_NAME}
-          matchers:
-          - logs_path:
-              logs_path: /var/log/containers/
+      - close_inactive: 4h
+        exclude_files:
+          - ^*_lsdmopagent_*$
+        multiline:
+          match: after
+          negate: false
+          pattern: '^[[:space:]]+|^Caused by:'
+        paths:
+          - /var/log/containers/*.log
+        processors:
+          - add_kubernetes_metadata:
+              host: ${NODE_NAME}
+              matchers:
+                - logs_path:
+                    logs_path: /var/log/containers/
+        type: container
     output.logstash:
       hosts:
-        - {{ .Release.Name }}-logstash:5044
+        - lsdmopagent-logstash:5044
+    path.data: /usr/share/lsdmopagent-filebeat-k8s/data
+
   daemonSet:
     podTemplate:
       metadata:
