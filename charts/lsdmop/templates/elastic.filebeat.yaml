@@ -203,7 +203,7 @@ spec:
     - type: aws-cloudwatch
       enabled: true
       log_group_arn: {{ $logArn }}
-      role_arn: {{ .Values.lsdmop.elastic.filebeatCloudwatch.roleArn }}
+      role_arn: {{ $.Values.lsdmop.elastic.filebeatCloudwatch.roleArn }}
       scan_frequency: 1m
       #credential_profile_name: elastic-beats
       start_position: beginning
