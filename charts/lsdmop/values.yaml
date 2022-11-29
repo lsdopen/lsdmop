@@ -170,7 +170,7 @@ lsdmop:
     filebeatCloudwatch:
       enabled: false
       roleArn: ""
-      logsArn: ""
+      logArns: []
 
 
     ## Metricbeat as a Daemonset to collect metrics from Nodes
