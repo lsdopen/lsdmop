@@ -1,4 +1,4 @@
-# Elastic Filebeat
+  # Elastic Filebeat
 {{- if .Values.lsdmop.elastic.filebeat.enabled -}}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -199,13 +199,15 @@ spec:
   config:
     filebeat.inputs:
 
+    {{- range $logArn := .Values.lsdmop.elastic.filebeatCloudwatch.logArns }}
     - type: aws-cloudwatch
       enabled: true
-      log_group_arn: {{ .Values.lsdmop.elastic.filebeatCloudwatch.logsArn }}
+      log_group_arn: {{ $logArn }}
       role_arn: {{ .Values.lsdmop.elastic.filebeatCloudwatch.roleArn }}
       scan_frequency: 1m
       #credential_profile_name: elastic-beats
       start_position: beginning
+    {{- end }}
   deployment:
     podTemplate:
       metadata:
