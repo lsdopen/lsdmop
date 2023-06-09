@@ -1,18 +1,12 @@
 dependencies:
-- name: prometheus
+- name: kube-state-metrics
   repository: https://prometheus-community.github.io/helm-charts
-  version: 15.1.1
-- name: prometheus-blackbox-exporter
-  repository: https://prometheus-community.github.io/helm-charts
-  version: 5.3.1
+  version: 5.7.0
 - name: eck-operator
   repository: https://helm.elastic.co
   version: 2.4.0
-- name: grafana
-  repository: https://grafana.github.io/helm-charts
-  version: 6.21.1
 - name: logstash
   repository: https://helm.elastic.co
   version: 7.17.3
-digest: sha256:8ce08f6d3d8d7303e76d1d754e05391aff30afb2903c54eb2b177c7e62e54d75
-generated: "2022-09-29T09:38:21.130693881+02:00"
+digest: sha256:a9b61d91e5b4b81973999b657fa7a5722803c2d555bbd5c9234fb687512f159d
+generated: "2023-06-08T09:37:27.520681936+02:00"

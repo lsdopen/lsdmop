@@ -15,7 +15,7 @@ metadata:
   name: fleet-server-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
 spec:
-  ingressClassName: nginx
+  ingressClassName: {{ .Values.lsdmop.elastic.fleet.ingress.className }}
   tls:
     - hosts:
         - {{ .Values.lsdmop.elastic.fleet.ingress.url }}

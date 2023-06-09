@@ -16,7 +16,7 @@ metadata:
   name: lsdmop-kb
   namespace: {{ .Release.Namespace }}
 spec:
-  ingressClassName: nginx
+  ingressClassName: {{ .Values.lsdmop.elastic.kibana.ingress.className }}
   tls:
     - hosts:
         - {{ .Values.lsdmop.elastic.kibana.ingress.url }}
