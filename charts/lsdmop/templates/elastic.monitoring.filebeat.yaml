@@ -6,8 +6,7 @@ metadata:
   namespace: {{ .Release.namespace }}
 spec:
   type: filebeat
-  version: {{ .Values.lsdmop.elastic.filebeat.version }}
-  image: {{ .Values.lsdmop.elastic.filebeat.image }}
+  version: {{ .Values.lsdmop.elastic.version }}
   elasticsearchRef:
     name: lsdmop
   kibanaRef:

@@ -8,7 +8,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   policyID: eck-fleet-server
-  version: {{ .Values.lsdmop.eckVersion }}
+  version: {{ .Values.lsdmop.elastic.version }}
   kibanaRef:
     name: {{ .Release.Name }}
   elasticsearchRefs:
@@ -19,9 +19,6 @@ spec:
     replicas: 2
     podTemplate:
       spec:
-        containers:
-          - name: agent
-            image: docker.elastic.co/beats/elastic-agent:{{ .Values.lsdmop.eckVersion }}
         serviceAccountName: elastic-agent
         automountServiceAccountToken: true
         securityContext:
@@ -34,7 +31,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   policyID: eck-agent-1
-  version: {{ .Values.lsdmop.eckVersion }}
+  version: {{ .Values.lsdmop.elastic.version }}
   kibanaRef:
     name: {{ .Release.Name }}
   fleetServerRef:
@@ -43,12 +40,6 @@ spec:
   daemonSet:
     podTemplate:
       spec:
-        containers:
-          - name: agent
-            image: docker.elastic.co/beats/elastic-agent:{{ .Values.lsdmop.eckVersion }}
-            env:
-            - name: FLEET_INSECURE
-              value: 'true'
         serviceAccountName: elastic-agent
         automountServiceAccountToken: true
         securityContext:
@@ -66,7 +57,7 @@ metadata:
   name: apm-server-{{ .Release.Name }}
 spec:
   policyID: eck-apm-1
-  version: {{ .Values.lsdmop.eckVersion }}
+  version: {{ .Values.lsdmop.elastic.version }}
   kibanaRef:
     name: {{ .Release.Name }}
   fleetServerRef: 
@@ -78,12 +69,6 @@ spec:
       spec:
         securityContext:
           runAsUser: 0
-        containers:
-          - name: agent
-            image: docker.elastic.co/beats/elastic-agent:{{ .Values.lsdmop.eckVersion }}
-            env:
-            - name: FLEET_INSECURE
-              value: 'true'
 ---
 {{- end }}
 

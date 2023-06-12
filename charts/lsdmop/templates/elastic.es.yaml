@@ -36,7 +36,6 @@ metadata:
 {{- end}}    
 spec:
   version: "{{ .Values.lsdmop.elastic.version }}"
-  image: "{{ .Values.lsdmop.elastic.image }}"
   nodeSets:
 
     # HOT DATA NODES

@@ -102,7 +102,6 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
       - name: metricbeat
-        image: {{ .Values.lsdmop.elastic.metricbeat.image }}
         args: [
           "-c", "/etc/metricbeat.yml",
           "-e",
