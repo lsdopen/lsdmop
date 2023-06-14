@@ -15,7 +15,7 @@ metadata:
   name: lsdmop-elasticsearch
   namespace: {{ .Release.Namespace }}
 spec:
-  ingressClassName: nginx
+  ingressClassName: {{ .Values.lsdmop.elastic.ingress.className }}
   tls:
     - hosts:
         - {{ .Values.lsdmop.elastic.ingress.url }}

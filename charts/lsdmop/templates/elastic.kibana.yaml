@@ -10,8 +10,7 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     scrape: kb
 spec:
-  version: "{{ .Values.lsdmop.elastic.kibana.version }}"
-  image: "{{ .Values.lsdmop.elastic.kibana.image }}"
+  version: "{{ .Values.lsdmop.elastic.version }}"
   count: {{ .Values.lsdmop.elastic.kibana.count }}
   elasticsearchRef:
     name: {{ .Release.Name }}

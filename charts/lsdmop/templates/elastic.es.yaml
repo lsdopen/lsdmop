@@ -36,7 +36,6 @@ metadata:
 {{- end}}    
 spec:
   version: "{{ .Values.lsdmop.elastic.version }}"
-  image: "{{ .Values.lsdmop.elastic.image }}"
   nodeSets:
 
     # HOT DATA NODES
@@ -55,23 +54,11 @@ spec:
               realms:
                 native:
                   native1:
-                    order: 0	  
-                ldap:
-                  ldap1:
-                    enabled: true
-                    bind_dn: {{ .Values.lsdmop.elastic.ad.binddn }}
-                    bind_password: ${AD_BIND_PASSWORD} #{{.Values.lsdmop.elastic.ad.bindpassword }}
-                    group_search:
-                      base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
-                    order: 1
-                    unmapped_groups_as_roles: false
-                    url: "{{ .Values.lsdmop.elastic.ad.host }}"
-                    user_search:
-                      base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
-                      filter: (userPrincipalName={0})
-                    ssl:
-                      verification_mode: none
-                      #certificate_authorities: [ "cacert.pem" ]                    
+                    order: 0
+                {{- range $key, $val := .Values.lsdmop.elastic.ad.realms }}
+                {{ $key }}:
+                  {{ $val | toYaml | indent 18 | trim  }}
+                {{- end }}                        
 {{- end}}          
       count: {{ .Values.lsdmop.elastic.cluster.hot.count }}
       name: hot-data
@@ -83,18 +70,8 @@ spec:
           serviceAccountName: {{ .Release.Name }}-elastic
           serviceAccount: {{ .Release.Name }}-elastic
           automountServiceAccountToken: true
-{{- if .Values.lsdmop.elastic.ad.enabled }}
           hostAliases:
-            - hostnames:
-                - {{ .Values.lsdmop.elastic.ad.adhostname }}
-                - {{ .Values.lsdmop.elastic.ad.adfqdn }}
-              ip: {{ .Values.lsdmop.elastic.ad.adip }}
-            - hostnames:
-                - {{ .Values.lsdmop.elastic.ad.adddz }}
-                - {{ .Values.lsdmop.elastic.ad.adfdz }}
-              ip: {{ .Values.lsdmop.elastic.ad.adip }}
-{{ end }}
-
+            {{ $.Values.lsdmop.elastic.hostAliases | toYaml | indent 12 | trim  }}
           initContainers:
             - name: set-s3-bucket-web-token-dir
               command:
@@ -174,23 +151,11 @@ spec:
                 native:
                   native1:
                     enabled: true
-                    order: 0	  
-                ldap:
-                  ldap1:
-                    enabled: true
-                    bind_dn: {{ .Values.lsdmop.elastic.ad.binddn }}
-                    bind_password: ${AD_BIND_PASSWORD} #{{.Values.lsdmop.elastic.ad.bindpassword }}
-                    group_search:
-                      base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
-                    order: 1
-                    unmapped_groups_as_roles: false
-                    url: "{{ .Values.lsdmop.elastic.ad.host }}"
-                    user_search:
-                      base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
-                      filter: (userPrincipalName={0})
-                    ssl:
-                      verification_mode: none
-                      #certificate_authorities: [ "cacert.pem" ]                    
+                    order: 0
+                {{- range $key, $val := .Values.lsdmop.elastic.ad.realms }}
+                {{ $key }}:
+                  {{ $val | toYaml | indent 18 | trim  }}
+                {{- end }}            
 {{- end}}    
 
       count: {{ .Values.lsdmop.elastic.cluster.warm.count }}
@@ -210,18 +175,9 @@ spec:
           #     labelSelector:
           #       matchLabels:
           #         elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
-          #         elasticsearch.k8s.elastic.co/statefulset-name: {{ .Release.Name }}-es-warm-data  
-          {{ if .Values.lsdmop.elastic.ad.enabled }}
+          #         elasticsearch.k8s.elastic.co/statefulset-name: {{ .Release.Name }}-es-warm-data 
           hostAliases:
-            - hostnames:
-                - {{ .Values.lsdmop.elastic.ad.adhostname }}
-                - {{ .Values.lsdmop.elastic.ad.adfqdn }}
-              ip: {{ .Values.lsdmop.elastic.ad.adip }}
-            - hostnames:
-                - {{ .Values.lsdmop.elastic.ad.adddz }}
-                - {{ .Values.lsdmop.elastic.ad.adfdz }}
-              ip: {{ .Values.lsdmop.elastic.ad.adip }}
-          {{ end }}     
+            {{ $.Values.lsdmop.elastic.hostAliases | toYaml | indent 12 | trim  }}
           initContainers:
             - name: set-s3-bucket-web-token-dir
               command:
@@ -299,25 +255,13 @@ spec:
               realms:
                 native:
                   native1:
-                    order: 0	  
-                ldap:
-                  ldap1:
-                    enabled: true
-                    bind_dn: {{ .Values.lsdmop.elastic.ad.binddn }}
-                    bind_password: ${AD_BIND_PASSWORD} #{{.Values.lsdmop.elastic.ad.bindpassword }}
-                    group_search:
-                      base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
-                    order: 1
-                    unmapped_groups_as_roles: false
-                    url: "{{ .Values.lsdmop.elastic.ad.host }}"
-                    user_search:
-                      base_dn: "{{ .Values.lsdmop.elastic.ad.basedn }}"
-                      filter: (userPrincipalName={0})
-                    ssl:
-                      verification_mode: none
-                      #certificate_authorities: [ "cacert.pem" ]                    
+                    order: 0
+                {{- range $key, $val := .Values.lsdmop.elastic.ad.realms }}
+                {{ $key }}:
+                  {{ $val | toYaml | indent 18 | trim  }}
+                {{- end }}                  
 
-{{- end}}    
+{{- end}} 
       count: {{ .Values.lsdmop.elastic.cluster.ml.count }}
       name: ml
       podTemplate:
@@ -327,17 +271,8 @@ spec:
         spec:
           serviceAccountName: {{ .Release.Name }}-elastic
           serviceAccount: {{ .Release.Name }}-elastic
-          {{ if .Values.lsdmop.elastic.ad.enabled }}
           hostAliases:
-            - hostnames:
-                - {{ .Values.lsdmop.elastic.ad.adhostname }}
-                - {{ .Values.lsdmop.elastic.ad.adfqdn }}
-              ip: {{ .Values.lsdmop.elastic.ad.adip }}
-            - hostnames:
-                - {{ .Values.lsdmop.elastic.ad.adddz }}
-                - {{ .Values.lsdmop.elastic.ad.adfdz }}
-              ip: {{ .Values.lsdmop.elastic.ad.adip }}
-          {{ end }}         
+            {{ $.Values.lsdmop.elastic.hostAliases | toYaml | indent 12 | trim  }}
           automountServiceAccountToken: true          
           containers:
             - env:

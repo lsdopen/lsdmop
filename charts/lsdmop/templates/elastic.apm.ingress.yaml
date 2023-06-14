@@ -16,7 +16,7 @@ metadata:
   name: lsdmop-apm
   namespace: {{ .Release.Namespace }}
 spec:
-  ingressClassName: nginx
+  ingressClassName: {{ .Values.lsdmop.elastic.apm.ingress.className }}
   tls:
     - hosts:
         - {{ .Values.lsdmop.elastic.apm.ingress.url }}
@@ -50,7 +50,7 @@ metadata:
     nginx.ingress.kubernetes.io/backend-protocol: HTTPS
     service.alpha.kubernetes.io/app-protocols: '{"https":"HTTPS"}'
 spec:
-  ingressClassName: nginx
+  ingressClassName: {{ .Values.lsdmop.elastic.apm.ingress.className }}
   tls:
     - hosts:
         - {{ .Values.lsdmop.elastic.apm.ingress.url }}

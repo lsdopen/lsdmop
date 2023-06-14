@@ -5,6 +5,6 @@ metadata:
   name: lsdmop-es-ad-bind-user
   namespace: {{ .Release.namespace }}
 type: Opaque
-data:
-  ObserveAD: {{ .Values.lsdmop.elastic.ad.bindpassword }}
+stringData:
+  ObserveAD: {{ .Values.lsdmop.elastic.ad.bindpassword | quote }}
 {{- end }}

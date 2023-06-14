@@ -1,4 +1,4 @@
-  # Elastic Filebeat
+# Elastic Filebeat
 {{- if .Values.lsdmop.elastic.filebeat.enabled -}}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -53,8 +53,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   type: filebeat
-  version: {{ .Values.lsdmop.elastic.filebeat.version }}
-  image: {{ .Values.lsdmop.elastic.filebeat.image }}
+  version: {{ .Values.lsdmop.elastic.version }}
   config:
     filebeat.inputs:
     - type: container
@@ -194,8 +193,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   type: filebeat
-  version: {{ .Values.lsdmop.elastic.filebeat.version }}
-  image: {{ .Values.lsdmop.elastic.filebeat.image }}
+  version: {{ .Values.lsdmop.elastic.version }}
   config:
     filebeat.inputs:
 
