@@ -3,7 +3,7 @@
 # helm show values elastic/eck-operator
 eck-operator:
   # installCRDs must be disabled because CRDs are put into the Helm chart
-  installCRDs: true
+  installCRDs: false
   managedNamespaces: ["lsdmop"]
   createClusterScopedResources: false
   replicaCount: 1
