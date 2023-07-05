@@ -119,13 +119,3 @@ spec:
 
 
 
-# .NET Core App running on Kubernetes
-
-```RUN curl -L -o ElasticApmAgent_1.18.0.zip https://github.com/elastic/apm-agent-dotnet/releases/download/v1.18.0/ElasticApmAgent_1.18.0.zip && \
-unzip ElasticApmAgent_1.18.0.zip -d /ElasticApmAgent
-
-ENV DOTNET_STARTUP_HOOKS=/ElasticApmAgent/ElasticApmAgentStartupHook.dll
-
-
-
-```
