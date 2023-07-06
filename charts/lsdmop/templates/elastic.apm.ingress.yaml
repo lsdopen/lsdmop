@@ -1,41 +1,5 @@
 
-# Elasticsearch Ingress
-{{- if .Values.lsdmop.elastic.apm.enabled -}}
-{{- if or (eq .Values.lsdmop.clusterType "gke") (eq .Values.lsdmop.clusterType "rancher") -}}
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-{{- with .Values.lsdmop.elastic.ingress.annotations }}
-  annotations:
-{{ toYaml . | indent 4 }}
-{{- end }}
-  labels:
-    app: apm-server
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"    
-  name: lsdmop-apm
-  namespace: {{ .Release.Namespace }}
-spec:
-  ingressClassName: {{ .Values.lsdmop.elastic.apm.ingress.className }}
-  tls:
-    - hosts:
-        - {{ .Values.lsdmop.elastic.apm.ingress.url }}
-      secretName: {{ .Values.lsdmop.elastic.apm.ingress.tls.secretName }}
-  rules:
-  - host: {{ .Values.lsdmop.elastic.apm.ingress.url }}
-    http:
-      paths:
-      - backend:
-          service:
-            name: {{ .Release.Namespace }}-apm-http
-            port: 
-              number: 8200
-        path: /
-        pathType: ImplementationSpecific
----
-{{- end }}
-{{- end }}
-
+# Fleet APM Ingress
 
 {{ if .Values.lsdmop.elastic.fleetapm.enabled }}
 apiVersion: networking.k8s.io/v1

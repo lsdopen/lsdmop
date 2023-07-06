@@ -184,15 +184,6 @@ lsdmop:
       enabled: false
 
     #APM servers  
-    apm:
-      enabled: false
-      count: 2
-      ingress:
-        annotations: {}
-        className: nginx
-        tls:
-          secretName: apm-ingress-tls
-        url: *anchorapmURL
 
     #New gen Fleet based APM servers - cannot be enabled if apm is enabled
     fleetapm:
