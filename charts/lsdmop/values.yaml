@@ -189,6 +189,7 @@ lsdmop:
     fleetapm:
       enabled: true
       ingress:
+        className: nginx      
         annotations: {}
         tls:
           secretName: apm-ingress-tls
