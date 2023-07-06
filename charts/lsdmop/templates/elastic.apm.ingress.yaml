@@ -14,13 +14,13 @@ metadata:
     nginx.ingress.kubernetes.io/backend-protocol: HTTPS
     service.alpha.kubernetes.io/app-protocols: '{"https":"HTTPS"}'
 spec:
-  ingressClassName: {{ .Values.lsdmop.elastic.apm.ingress.className }}
+  ingressClassName: {{ .Values.lsdmop.elastic.fleetapm.ingress.className }}
   tls:
     - hosts:
-        - {{ .Values.lsdmop.elastic.apm.ingress.url }}
-      secretName: {{ .Values.lsdmop.elastic.apm.ingress.tls.secretName }}
+        - {{ .Values.lsdmop.elastic.fleetapm.ingress.url }}
+      secretName: {{ .Values.lsdmop.elastic.fleetapm.ingress.tls.secretName }}
   rules:
-    - host: {{ .Values.lsdmop.elastic.apm.ingress.url }}
+    - host: {{ .Values.lsdmop.elastic.fleetapm.ingress.url }}
       http:
         paths:
           - path: /
