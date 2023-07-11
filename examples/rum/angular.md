@@ -16,6 +16,8 @@ The Angular integration packages exposes the ApmModule and ApmService which uses
 > **Warning**
 > Get your local APM server URL. If this is a SPA, then you will either need to provide a public endpoint or an endpoint in your network available to your SPA users. If you want to avoid CORS issues, you may also proxy requests via your frontends proxy. `yourapp.com/apm` -> `apm.yourorg.com`.
 
+All agent configration options can be found here: https://www.elastic.co/guide/en/apm/agent/rum-js/5.x/configuration.html
+
 ```
 import { NgModule } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
