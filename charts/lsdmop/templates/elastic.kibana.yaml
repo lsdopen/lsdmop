@@ -110,6 +110,16 @@ spec:
       labels:
         scrape: kb      
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    common.k8s.elastic.co/type: kibana
+                    kibana.k8s.elastic.co/name: lsdmop
+                topologyKey: kubernetes.io/hostname
+              weight: 100
       containers:
       - name: kibana
         resources:
