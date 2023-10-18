@@ -36,6 +36,14 @@ metadata:
 {{- end}}    
 spec:
   version: "{{ .Values.lsdmop.elastic.version }}"
+  podDisruptionBudget:
+    metadata: {}
+    spec:
+      minAvailable: {{ add .Values.lsdmop.elastic.cluster.hot.count .Values.lsdmop.elastic.cluster.warm.count | sub 1 | mod }}
+      selector:
+        matchLabels:
+          elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
+          elasticsearch.k8s.elastic.co/node-data: "true"
   nodeSets:
 
     # HOT DATA NODES
