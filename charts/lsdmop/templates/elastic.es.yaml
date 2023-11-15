@@ -44,6 +44,27 @@ spec:
         matchLabels:
           elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
           elasticsearch.k8s.elastic.co/node-data: "true"
+  http:
+    service:
+      metadata: {}
+      spec:
+        selector:
+          common.k8s.elastic.co/type: elasticsearch
+          elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
+          elasticsearch.k8s.elastic.co/node-data: "true"
+    tls:
+      certificate: {}
+  transport:
+    service:
+      metadata: { }
+      spec:
+        selector:
+          common.k8s.elastic.co/type: elasticsearch
+          elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
+          elasticsearch.k8s.elastic.co/node-data: "true"
+    tls:
+      certificate: { }
+      certificateAuthorities: { }
   nodeSets:
 
     # HOT DATA NODES
