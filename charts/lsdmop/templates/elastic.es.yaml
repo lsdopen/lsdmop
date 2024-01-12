@@ -39,7 +39,7 @@ spec:
   podDisruptionBudget:
     metadata: {}
     spec:
-      minAvailable: {{ add .Values.lsdmop.elastic.cluster.hot.count .Values.lsdmop.elastic.cluster.warm.count | sub 1 | mod }}
+      minAvailable: {{ add .Values.lsdmop.elastic.cluster.hot.count .Values.lsdmop.elastic.cluster.warm.count | sub 1 | mul -1 }}
       selector:
         matchLabels:
           elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
