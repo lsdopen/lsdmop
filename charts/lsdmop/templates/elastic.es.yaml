@@ -74,6 +74,8 @@ spec:
         node.roles: ["master", "data_hot", "data", "transform", "remote_cluster_client", "ingest"]
         node.attr.data: hot
         http.max_content_length: 100mb
+        http.compression: true
+        transport.compress: true
         xpack:
           security:
             authc:
@@ -170,6 +172,8 @@ spec:
         node.roles: ["master", "data_warm", "data", "data_content", "transform", "remote_cluster_client", "ingest"]
         node.attr.data: warm
         http.max_content_length: 100mb
+        http.compression: true
+        transport.compress: true
         xpack:
           security:
             authc:
@@ -275,6 +279,8 @@ spec:
         #path.repo: /usr/share/elasticsearch/snapshots
         node.roles: ["ml"]
         #node.attr.data: ml
+        http.compression: true
+        transport.compress: true
         xpack:
           security:
             authc:

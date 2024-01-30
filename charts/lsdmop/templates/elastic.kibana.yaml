@@ -15,6 +15,7 @@ spec:
   elasticsearchRef:
     name: {{ .Release.Name }}
   config:
+    elasticsearch.compression: true
     monitoring.ui.ccs.enabled: false #prevents a bug 
     xpack.encryptedSavedObjects.encryptionKey: "37LxDnDT9dy*J2DcTE7UQJW6mw@sMmqj"
 
