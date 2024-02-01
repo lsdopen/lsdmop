@@ -59,6 +59,63 @@ spec:
           name: elastic-filebeat-custom-files
 
 
+      #BOOTSTRAP PLATFORM MONITORING FLEET POLICY
+      - args:
+        - -c
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -XPOST https://lsdmop-kb-http:5601/api/fleet/agent_policies?sys_monitoring=true -H \"kbn-xsrf: reporting\" -H \"Content-Type: application/json\" -d'{\"name\": \"elastic-platform-monitoring\",\"description\": \"A policy for monitoring core platform components.\",\"namespace\": \"platformmonitoring\",\"monitoring_enabled\": [],\"inactivity_timeout\": 1209600,\"is_protected\": false}'"
+        command:
+        - /bin/sh
+        env:
+          - name: ELASTIC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: lsdmop-es-elastic-user
+                key: elastic
+        image: {{ .Values.lsdmop.curl.image }}
+        name: elastic-platform-monitoring-fleet-policy
+        volumeMounts:
+        - mountPath: /opt/elastic/
+          name: elastic-filebeat-custom-files
+          
+          #RESPONSE
+          # {
+          #   "item": {
+          #     "id": "1eb868b0-c0f0-11ee-9fa4-2d44c26abe95",
+          #     "name": "example",
+          #     "description": "",
+          #     "namespace": "platformmonitoring",
+          #     "monitoring_enabled": [],
+          #     "inactivity_timeout": 1209600,
+          #     "is_protected": false,
+          #     "status": "active",
+          #     "is_managed": false,
+          #     "revision": 1,
+          #     "updated_at": "2024-02-01T10:53:23.521Z",
+          #     "updated_by": "elastic",
+          #     "schema_version": "1.1.1"
+          #   }
+          # }
+
+
+      #BOOTSTRAP PLATFORM MONITORING FLEET ES INTEGRATION
+      - args:
+        - -c
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -XPOST https://lsdmop-kb-http:5601/api/fleet/package_policies?sys_monitoring=true -H \"kbn-xsrf: reporting\" -H \"Content-Type: application/json\" -d'{ \"policy_id\": \"141ef470-c0e9-11ee-ba45-795e21db46d1\", \"package\": { \"name\": \"elasticsearch\", \"version\": \"1.13.1\" }, \"name\": \"elasticsearch-1\", \"description\": \"\", \"namespace\": \"platform\", \"inputs\": { \"elasticsearch-logfile\": { \"enabled\": true, \"vars\": {}, \"streams\": {  \"elasticsearch.audit\": {  \"enabled\": true,  \"vars\": {  \"paths\": [  \"/var/log/elasticsearch/*_audit.json\"  ]  }  },  \"elasticsearch.deprecation\": {  \"enabled\": true,  \"vars\": {  \"paths\": [  \"/var/log/elasticsearch/*_deprecation.json\"  ]  }  },  \"elasticsearch.gc\": {  \"enabled\": true,  \"vars\": {  \"paths\": [  \"/var/log/elasticsearch/gc.log.[0-9]*\",  \"/var/log/elasticsearch/gc.log\"  ]  }  },  \"elasticsearch.server\": {  \"enabled\": true,  \"vars\": {  \"paths\": [  \"/var/log/elasticsearch/*_server.json\"  ]  }  },  \"elasticsearch.slowlog\": {  \"enabled\": true,  \"vars\": {  \"paths\": [  \"/var/log/elasticsearch/*_index_search_slowlog.json\",  \"/var/log/elasticsearch/*_index_indexing_slowlog.json\"  ]  }  } } }, \"elasticsearch-elasticsearch/metrics\": { \"enabled\": true, \"vars\": {  \"hosts\": [  \"http://localhost:9200\"  ],  \"scope\": \"node\",  \"leaderelection\": false }, \"streams\": {  \"elasticsearch.stack_monitoring.ccr\": {  \"enabled\": true,  \"vars\": {  \"period\": \"10s\"  }  },  \"elasticsearch.stack_monitoring.cluster_stats\": {  \"enabled\": true,  \"vars\": {  \"period\": \"10s\"  }  },  \"elasticsearch.stack_monitoring.enrich\": {  \"enabled\": true,  \"vars\": {  \"period\": \"10s\"  }  },  \"elasticsearch.stack_monitoring.index\": {  \"enabled\": true,  \"vars\": {  \"period\": \"10s\"  }  },  \"elasticsearch.stack_monitoring.index_recovery\": {  \"enabled\": true,  \"vars\": {  \"active.only\": true,  \"period\": \"10s\"  }  },  \"elasticsearch.stack_monitoring.index_summary\": {  \"enabled\": true,  \"vars\": {  \"period\": \"10s\"  }  },  \"elasticsearch.ingest_pipeline\": {  \"enabled\": true,  \"vars\": {  \"ingest_pipeline_processor_sampling_rate\": \"0.25\"  }  },  \"elasticsearch.stack_monitoring.ml_job\": {  \"enabled\": true,  \"vars\": {  \"period\": \"10s\"  }  },  \"elasticsearch.stack_monitoring.node\": {  \"enabled\": true,  \"vars\": {  \"period\": \"10s\"  }  },  \"elasticsearch.stack_monitoring.node_stats\": {  \"enabled\": true,  \"vars\": {  \"period\": \"10s\"  }  },  \"elasticsearch.stack_monitoring.pending_tasks\": {  \"enabled\": true,  \"vars\": {  \"period\": \"10s\"  }  },  \"elasticsearch.stack_monitoring.shard\": {  \"enabled\": true,  \"vars\": {  \"period\": \"10s\"  }  } } } } }'"
+        command:
+        - /bin/sh
+        env:
+          - name: ELASTIC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: lsdmop-es-elastic-user
+                key: elastic
+        image: {{ .Values.lsdmop.curl.image }}
+        name: elastic-platform-monitoring-fleet-es-integration
+        volumeMounts:
+        - mountPath: /opt/elastic/
+          name: elastic-filebeat-custom-files
+
+
 {{- if .Values.lsdmop.elastic.ad.enabled }}
       #ROLE MAPPINGS TO AD GROUPS
       - args:
@@ -460,6 +517,24 @@ spec:
                 key: elastic
         image: {{ .Values.lsdmop.curl.image }}
         name: elastic-load-sample-dashboard
+        volumeMounts:
+        - mountPath: /opt/elastic/
+          name: elastic-filebeat-custom-files
+
+      #SPACE ALERT GENERATOR
+      - args:
+        - -c
+        - "echo ''"
+        command:
+        - /bin/sh
+        env:
+          - name: ELASTIC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: lsdmop-es-elastic-user
+                key: elastic
+        image: {{ .Values.lsdmop.curl.image }}
+        name: elastic-space-alert-generator
         volumeMounts:
         - mountPath: /opt/elastic/
           name: elastic-filebeat-custom-files
