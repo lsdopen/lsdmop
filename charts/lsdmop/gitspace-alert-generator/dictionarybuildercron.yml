@@ -1,0 +1,63 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  labels:
+    app: dictionarymaintainer
+  name: dictionarymaintainer
+  namespace: build-templateapi
+spec:
+  
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    metadata:
+      name: dictionarymaintainer
+      namespace: build-templateapi
+    spec:
+      ttlSecondsAfterFinished: 604800
+      template:
+            
+        spec:
+          
+          serviceAccount: dictionary-builder-service-account
+          serviceAccountName: dictionary-builder-service-account  
+          securityContext:
+            fsGroup: 0
+            #runAsUser: 0
+          restartPolicy: Never
+          containers:
+            - name: ubuntu
+              image: image-registry.openshift-image-registry.svc:5000/build-templateapi/dictionarybuild
+              #command: [ "/usr/bin/bash", "-c", "cp /scripts/dictbuild.sh /dictbuild.sh; chmod +x /dictbuild.sh; sed -i -e 's/\r$//' /dictbuild.sh && sleep 5"]
+              command: [ "/usr/bin/bash", "-c", "cp /scripts/dictbuild.sh /dictbuild.sh; chmod +x /dictbuild.sh; sed -i -e 's/\r$//' /dictbuild.sh && /dictbuild.sh devopspipeline $(ES_PASSWORD) elastic.mop.sa.aws.fosltd.co.za:443"]
+              volumeMounts:
+              - name: builddict
+                mountPath: /scripts
+              resources:
+                requests:
+                  memory: "256Mi"
+                  cpu: "250m"
+                limits:
+                  memory: "256Mi"
+                  cpu: "500m"        
+              env:
+              - name: "ES_PASSWORD"
+                valueFrom:
+                  secretKeyRef:
+                    name: espassword
+                    key: ES_PASSWORD
+            
+          volumes:
+            - name: builddict
+              configMap:
+                # Provide the name of the ConfigMap containing the files you want
+                # to add to the container
+                name: builddictionaryscript
+                defaultMode: 309
+          nodeSelector:
+            kubernetes.io/hostname: "worker05.ocpprod.ho.fosltd.co.za"    
+
+  schedule: "0 * * * *"
+  startingDeadlineSeconds: 600
+  successfulJobsHistoryLimit: 3
+  suspend: false
