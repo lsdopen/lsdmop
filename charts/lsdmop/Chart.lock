@@ -4,9 +4,9 @@ dependencies:
   version: 5.7.0
 - name: eck-operator
   repository: https://helm.elastic.co
-  version: 2.8.0
+  version: 2.10.0
 - name: logstash
   repository: https://helm.elastic.co
   version: 7.17.3
-digest: sha256:7cf2c376b42fdffe8d15ba7edbc71b57d79172a44057433b7836dcb2f0f8406d
-generated: "2023-06-14T15:38:44.379982752+02:00"
+digest: sha256:b9d77af2a3c9d24a47c628695599ce052ae605eb0664135bcd2fb44d1a5ecc55
+generated: "2024-03-05T11:21:55.930784523+02:00"
