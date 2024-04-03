@@ -6,7 +6,7 @@ metadata:
   name: elastic-post-setup
   namespace: {{ .Release.Namespace }}
   annotations:
-    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook": post-install
   # annotations:
   #   "helm.sh/hook": post-install
 spec:
