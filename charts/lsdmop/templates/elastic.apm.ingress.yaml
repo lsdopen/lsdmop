@@ -9,10 +9,10 @@ metadata:
   namespace: {{ .Release.namespace }}
   labels:
     app: apm-server-agent
-  {{- with .Values.lsdmop.elastic.ingress.annotations }}
+{{- with .Values.lsdmop.elastic.fleetapm.ingress.annotations }}
   annotations:
-    {{ toYaml . | indent 4 }}
-  {{- end }}
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
   ingressClassName: {{ .Values.lsdmop.elastic.fleetapm.ingress.className }}
   tls:
