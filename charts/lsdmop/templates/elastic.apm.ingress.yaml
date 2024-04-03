@@ -9,10 +9,10 @@ metadata:
   namespace: {{ .Release.namespace }}
   labels:
     app: apm-server-agent
+  {{- with .Values.lsdmop.elastic.ingress.annotations }}
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt
-    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-    service.alpha.kubernetes.io/app-protocols: '{"https":"HTTPS"}'
+    {{ toYaml . | indent 4 }}
+  {{- end }}
 spec:
   ingressClassName: {{ .Values.lsdmop.elastic.fleetapm.ingress.className }}
   tls:
