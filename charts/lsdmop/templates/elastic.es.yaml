@@ -97,6 +97,8 @@ spec:
         metadata:
           labels:
             scrape: es
+          annotations:
+            "reports.cast.ai/name": {{ .Release.Name }}-es-hot-data
         spec:
           serviceAccountName: {{ .Release.Name }}-elastic
           serviceAccount: {{ .Release.Name }}-elastic
@@ -197,6 +199,8 @@ spec:
         metadata:
           labels:
             scrape: es
+          annotations:
+            "reports.cast.ai/name": {{ .Release.Name }}-es-warm-data
         spec:
           serviceAccountName: {{ .Release.Name }}-elastic
           serviceAccount: {{ .Release.Name }}-elastic
@@ -303,6 +307,8 @@ spec:
         metadata:
           labels:
             scrape: es
+          annotations:
+            "reports.cast.ai/name": {{ .Release.Name }}-es-ml
         spec:
           serviceAccountName: {{ .Release.Name }}-elastic
           serviceAccount: {{ .Release.Name }}-elastic
