@@ -67,7 +67,7 @@ lsdmop:
         count: 3
         maxcount: 3 #autoscaling.enabled must be true otherwise ignored
         mem: 30
-        cpureq: 500m
+        cpureq: 1500m
         cpulim: 4000m
         tolerations: elastic-hot
         storagesize: 560Gi
@@ -77,7 +77,7 @@ lsdmop:
         count: 2
         maxcount: 2 #autoscaling.enabled must be true otherwise ignored        
         mem: 30
-        cpureq: 500m
+        cpureq: 1500m
         cpulim: 4000m
         tolerations: elastic-warm
         storagesize: 2760Gi
