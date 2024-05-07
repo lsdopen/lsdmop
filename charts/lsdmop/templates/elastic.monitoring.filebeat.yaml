@@ -1,4 +1,49 @@
 # filebeat resources
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: elastic-beat-autodiscover
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+      - namespaces
+      - events
+      - pods
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: elastic-beat-autodiscover-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: elastic-beat-autodiscover
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Release.Name }}-filebeat
+    namespace: {{ .Release.Namespace }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Release.Name }}-filebeat
+  {{- with .Values.lsdmop.elastic.filebeat.serviceAccount.annotations }}
+  annotations:
+  {{ toYaml . | indent 4 }}
+  {{- end }}
+---
 apiVersion: beat.k8s.elastic.co/v1beta1
 kind: Beat
 metadata:
