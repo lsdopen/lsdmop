@@ -1,0 +1,10 @@
+apiVersion: enterprisesearch.k8s.elastic.co/v1
+kind: EnterpriseSearch
+metadata:
+  name: enterprise-search-{{ .Release.Name }}
+  namespace: lsdmop
+spec:
+  version: "{{ .Values.lsdmop.elastic.version }}"
+  count: 1
+  elasticsearchRef:
+    name: {{ .Release.Name }}
