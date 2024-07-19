@@ -71,7 +71,7 @@ spec:
     - config:
         node.store.allow_mmap: false
         #path.repo: /usr/share/elasticsearch/snapshots
-{{- if eq .Values.lsdmop.elastic.cluster.ml.count 0 }}        
+{{- if (eq (int .Values.lsdmop.elastic.cluster.ml.count) 0) }}        
         node.roles: ["master", "data_hot", "data", "transform", "remote_cluster_client", "ingest", "ml"]
 {{ else }}
         node.roles: ["master", "data_hot", "data", "transform", "remote_cluster_client", "ingest"]
