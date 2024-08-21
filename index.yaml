@@ -3,6 +3,37 @@ entries:
   lsdmop:
   - apiVersion: v2
     appVersion: 1.0.2
+    created: "2024-08-21T12:40:37.856380862Z"
+    dependencies:
+    - name: kube-state-metrics
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 5.7.0
+    - name: eck-operator
+      repository: https://helm.elastic.co
+      version: 2.11.1
+    - name: logstash
+      repository: https://helm.elastic.co
+      version: 7.17.3
+    description: A Helm chart for LSDMOP
+    digest: 4a772e04d77360854ab1ee503d6e4aa1b71280bca1a394b334657188e87556ed
+    home: https://github.com/lsdopen/charts
+    keywords:
+    - lsdmop
+    - kubernetes
+    - prometheus
+    - elastic
+    maintainers:
+    - email: support@lsdopen.io
+      name: LSD
+      url: https://lsdopen.io
+    name: lsdmop
+    sources:
+    - https://github.com/lsdopen
+    urls:
+    - https://github.com/lsdopen/lsdmop/releases/download/lsdmop-4.7.8/lsdmop-4.7.8.tgz
+    version: 4.7.8
+  - apiVersion: v2
+    appVersion: 1.0.2
     created: "2024-07-19T13:56:56.795569371Z"
     dependencies:
     - name: kube-state-metrics
@@ -3827,4 +3858,4 @@ entries:
     urls:
     - https://github.com/lsdopen/lsdmop/releases/download/lsdmopagent-2.22.0/lsdmopagent-2.22.0.tgz
     version: 2.22.0
-generated: "2024-07-19T13:56:56.796272832Z"
+generated: "2024-08-21T12:40:37.85709436Z"
