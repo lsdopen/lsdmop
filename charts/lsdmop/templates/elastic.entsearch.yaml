@@ -15,34 +15,3 @@ spec:
   count: 1
   elasticsearchRef:
     name: {{ .Release.Name }}
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: {{ .Release.Name }}-entsearch
-  namespace: lsdmop
-  annotations:
-    cert-manager.io/cluster-issuer: nginx-private
-    meta.helm.sh/release-name: {{ .Release.Name }}
-    meta.helm.sh/release-namespace: {{ .Release.Name }}
-    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-    nginx.ingress.kubernetes.io/client-body-buffer-size: 64m
-    nginx.ingress.kubernetes.io/proxy-body-size: 350m
-    service.alpha.kubernetes.io/app-protocols: '{"https":"HTTPS"}'
-spec:
-  ingressClassName: nginx-private
-  tls:
-    - hosts:
-        - entsearch.mop.sandbox.internal.lsdopen.io
-      secretName: entsearch-ingress-tls
-  rules:
-    - host: entsearch.mop.sandbox.internal.lsdopen.io
-      http:
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: enterprise-search-{{ .Release.Name }}-ent-http
-                port:
-                  number: 3002
