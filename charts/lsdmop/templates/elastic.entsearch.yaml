@@ -8,7 +8,7 @@ spec:
     # define the exposed URL at which users will reach Enterprise Search
     ent_search.external_url: https://entsearch.mop.sandbox.internal.lsdopen.io:443
     # define the exposed URL at which users will reach Kibana
-    kibana.host: https://https://{{ .Release.Name }}-kb-http:5601:443
+    kibana.host: https://https://{{ .Release.Name }}-kb-http:5601
     # configure app search document size limit
     app_search.engine.document_size.limit: 1024kb  
   version: "{{ .Values.lsdmop.elastic.version }}"
