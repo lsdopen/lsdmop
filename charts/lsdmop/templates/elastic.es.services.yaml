@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: elasticsearch
+  name: {{ .Release.Name }}-elasticsearch-coordinating-nodes
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
+{{- if .Values.lsdmop.elastic.dedicatedCoordinatingNodes  }}
+    elasticsearch.k8s.elastic.co/node-master: "false"
+    elasticsearch.k8s.elastic.co/node-data: "false"
+    elasticsearch.k8s.elastic.co/node-ingest: "false"
+    elasticsearch.k8s.elastic.co/node-ml: "false"
+    elasticsearch.k8s.elastic.co/node-transform: "false"
+{{- end }}
+  ports:
+  - name: https
+      port: 9200
+      targetPort: 9200
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: elasticsearch
+  name: {{ .Release.Name }}-elasticsearch-non-master-nodes
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
+    elasticsearch.k8s.elastic.co/node-master: "false"
+  ports:
+  - name: https
+      port: 9200
+      targetPort: 9200
