@@ -19,7 +19,7 @@ metadata:
             }
           },
           {
-              "name": "warm-data",
+            "name": "warm-data",
             "roles": ["master", "data_warm", "data", "data_content", "transform", "remote_cluster_client", "ingest"],
             "resources": {
                 "nodeCount": { "min": {{ .Values.lsdmop.elastic.cluster.warm.count }}, "max": {{ .Values.lsdmop.elastic.cluster.warm.maxcount }} }
@@ -39,7 +39,6 @@ spec:
   podDisruptionBudget:
     metadata: {}
     spec:
-      minAvailable: {{ add .Values.lsdmop.elastic.cluster.hot.count .Values.lsdmop.elastic.cluster.warm.count | sub 1 | mul -1 }}
       selector:
         matchLabels:
           elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
@@ -51,7 +50,7 @@ spec:
         selector:
           common.k8s.elastic.co/type: elasticsearch
           elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
-          elasticsearch.k8s.elastic.co/node-data: "true"
+          elasticsearch.k8s.elastic.co/node-ingest: "true"
     tls:
       certificate: {}
   transport:
@@ -66,17 +65,21 @@ spec:
       certificate: { }
       certificateAuthorities: { }
   nodeSets:
-
-    # HOT DATA NODES
+{{- range $name, $nodeSet := .Values.lsdmop.elastic.nodeSets }}
     - config:
         node.store.allow_mmap: false
         #path.repo: /usr/share/elasticsearch/snapshots
-{{- if (eq (int .Values.lsdmop.elastic.cluster.ml.count) 0) }}        
-        node.roles: ["master", "data_hot", "data", "transform", "remote_cluster_client", "ingest", "ml"]
-{{ else }}
-        node.roles: ["master", "data_hot", "data", "transform", "remote_cluster_client", "ingest"]
-{{- end }}        
-        node.attr.data: hot
+        node.roles: {{ $nodeSet.roles }}  
+{{- if or 
+   (has "data" $nodeSet.roles) 
+   (has "data_hot" $nodeSet.roles) 
+   (has "data_warm" $nodeSet.roles) 
+   (has "data_cold" $nodeSet.roles)  
+   (has "data_frozen" $nodeSet.roles) 
+   (has "data_content" $nodeSet.roles)
+}}
+        node.attr.data: {{ $name }}
+{{- end }}
         http.max_content_length: 100mb
         http.compression: true
         transport.compress: true
@@ -85,26 +88,25 @@ spec:
             authc:
               api_key:
                 enabled: true #required for fleet
-{{- if .Values.lsdmop.elastic.ad.enabled }}
+{{- if $.Values.lsdmop.elastic.ad.enabled }}
               realms:
                 native:
                   native1:
                     order: 0
-                {{- range $key, $val := .Values.lsdmop.elastic.ad.realms }}
+                {{- range $key, $val := $.Values.lsdmop.elastic.ad.realms }}
                 {{ $key }}:
                   {{ $val | toYaml | indent 18 | trim  }}
                 {{- end }}                        
-{{- end}}          
-      count: {{ .Values.lsdmop.elastic.cluster.hot.count }}
-      name: hot-data
+{{- end }}          
+      count: {{ $nodeSet.count }}
+      name: {{ $name }}
       podTemplate:
         metadata:
           labels:
             scrape: es
-            reports.cast.ai/name: {{ .Release.Name }}-es-hot-data
         spec:
-          serviceAccountName: {{ .Release.Name }}-elastic
-          serviceAccount: {{ .Release.Name }}-elastic
+          serviceAccountName: {{ $.Release.Name }}-elastic
+          serviceAccount: {{ $.Release.Name }}-elastic
           automountServiceAccountToken: true
           hostAliases:
             {{ $.Values.lsdmop.elastic.hostAliases | toYaml | indent 12 | trim  }}
@@ -127,13 +129,11 @@ spec:
               - "/usr/share/elasticsearch/config/repository-s3/aws-web-identity-token-file"
           containers:
             - env:
-                - name: ES_JAVA_OPTS
-                  value: "-Xms{{ div .Values.lsdmop.elastic.cluster.hot.mem 2 }}g -Xmx{{ div .Values.lsdmop.elastic.cluster.hot.mem 2}}g"
                 - name: ZONE
                   valueFrom:
                     fieldRef:
                       fieldPath: metadata.annotations['topology.kubernetes.io/zone']
-                {{ if .Values.lsdmop.elastic.ad.enabled }}
+                {{ if $.Values.lsdmop.elastic.ad.enabled }}
                 - name: AD_BIND_PASSWORD
                   valueFrom:
                     secretKeyRef:
@@ -142,19 +142,11 @@ spec:
                       optional: true
                 {{- end }}
               name: elasticsearch
-              resources:
-                limits:
-                  cpu: {{ .Values.lsdmop.elastic.cluster.hot.cpulim }}
-                  memory: {{ .Values.lsdmop.elastic.cluster.hot.mem }}Gi
-                requests:
-                  cpu: {{ .Values.lsdmop.elastic.cluster.hot.cpureq }}
-                  memory: {{ .Values.lsdmop.elastic.cluster.hot.mem }}Gi
-          tolerations:
-            - effect: NoSchedule
-              key: dedicated
-              operator: Equal
-              value: {{ .Values.lsdmop.elastic.cluster.hot.tolerations }}
-          {{- with .Values.lsdmop.elastic.cluster.hot.nodeSelector }}
+              resources: 
+                {{ $nodeSet.resources | toYaml | indent 16 | trim }}
+          tolerations: 
+            {{ $nodeSet.tolerations | toYaml | indent 12 | trim }}
+          {{- with $nodeSet.nodeSelector }}
           nodeSelector:
           {{ toYaml . | indent 12 }}
           {{- end }}
@@ -167,186 +159,8 @@ spec:
               - ReadWriteOnce
             resources:
               requests:
-                storage: {{ .Values.lsdmop.elastic.cluster.hot.storagesize }}
-            storageClassName: {{ .Values.lsdmop.elastic.cluster.hot.storageclass }}
-            
-    #WARM DATA NODES            
-    - config:
-        node.store.allow_mmap: false
-        #path.repo: /usr/share/elasticsearch/snapshots
-        node.roles: ["master", "data_warm", "data", "data_content", "transform", "remote_cluster_client", "ingest"]
-        node.attr.data: warm
-        http.max_content_length: 100mb
-        http.compression: true
-        transport.compress: true
-        xpack:
-          security:
-            authc:
-              api_key:
-                enabled: true #required for fleet
-{{- if .Values.lsdmop.elastic.ad.enabled }}
-              realms:
-                native:
-                  native1:
-                    enabled: true
-                    order: 0
-                {{- range $key, $val := .Values.lsdmop.elastic.ad.realms }}
-                {{ $key }}:
-                  {{ $val | toYaml | indent 18 | trim  }}
-                {{- end }}            
-{{- end}}    
-
-      count: {{ .Values.lsdmop.elastic.cluster.warm.count }}
-      name: warm-data
-      podTemplate:
-        metadata:
-          labels:
-            scrape: es
-            reports.cast.ai/name: {{ .Release.Name }}-es-warm-data
-        spec:
-          serviceAccountName: {{ .Release.Name }}-elastic
-          serviceAccount: {{ .Release.Name }}-elastic
-          automountServiceAccountToken: true          
-          # topologySpreadConstraints:
-          #   - maxSkew: 1
-          #     topologyKey: topology.kubernetes.io/zone
-          #     whenUnsatisfiable: DoNotSchedule
-          #     labelSelector:
-          #       matchLabels:
-          #         elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
-          #         elasticsearch.k8s.elastic.co/statefulset-name: {{ .Release.Name }}-es-warm-data 
-          hostAliases:
-            {{ $.Values.lsdmop.elastic.hostAliases | toYaml | indent 12 | trim  }}
-          initContainers:
-            - name: set-s3-bucket-web-token-dir
-              command:
-              - mkdir
-              - -p
-              - /usr/share/elasticsearch/config/repository-s3
-            - name: remove-s3-bucket-web-token-symlink
-              command:
-              - rm
-              - -rf
-              - /usr/share/elasticsearch/config/repository-s3/aws-web-identity-token-file
-            - name: set-s3-bucket-web-token-symlink
-              command:
-              - ln
-              - -s
-              - /var/run/secrets/eks.amazonaws.com/serviceaccount/token 
-              - "/usr/share/elasticsearch/config/repository-s3/aws-web-identity-token-file"
-          containers:
-            - env:
-                - name: ES_JAVA_OPTS
-                  value: "-Xms{{ div .Values.lsdmop.elastic.cluster.warm.mem 2 }}g -Xmx{{ div .Values.lsdmop.elastic.cluster.warm.mem 2}}g"
-                - name: ZONE
-                  valueFrom:
-                    fieldRef:
-                      fieldPath: metadata.annotations['topology.kubernetes.io/zone']    
-                {{ if .Values.lsdmop.elastic.ad.enabled }}
-                - name: AD_BIND_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: lsdmop-es-ad-bind-user
-                      key: ObserveAD
-                      optional: true
-                {{- end }}
-              name: elasticsearch
-              resources:
-                limits:
-                  cpu: {{ .Values.lsdmop.elastic.cluster.warm.cpulim }}
-                  memory: {{ .Values.lsdmop.elastic.cluster.warm.mem }}Gi
-                requests:
-                  cpu: {{ .Values.lsdmop.elastic.cluster.warm.cpureq }}
-                  memory: {{ .Values.lsdmop.elastic.cluster.warm.mem }}Gi
-          tolerations:
-            - effect: NoSchedule
-              key: dedicated
-              operator: Equal
-              value: {{ .Values.lsdmop.elastic.cluster.warm.tolerations }}
-          {{- with .Values.lsdmop.elastic.cluster.warm.nodeSelector }}
-          nodeSelector:
-          {{ toYaml . | indent 12 }}
-          {{- end }}
-      volumeClaimTemplates:
-        - metadata:
-            creationTimestamp: null
-            name: elasticsearch-data
-          spec:
-            accessModes:
-              - ReadWriteOnce
-            resources:
-              requests:
-                storage: {{ .Values.lsdmop.elastic.cluster.warm.storagesize }}
-            storageClassName: {{ .Values.lsdmop.elastic.cluster.warm.storageclass }}
-
-    # MACHINE LEARNING NODES            
-    - config:
-        node.store.allow_mmap: false
-        #path.repo: /usr/share/elasticsearch/snapshots
-        node.roles: ["ml"]
-        #node.attr.data: ml
-        http.compression: true
-        transport.compress: true
-        xpack:
-          security:
-            authc:
-              api_key:
-                enabled: true #required for fleet
-{{- if .Values.lsdmop.elastic.ad.enabled }}
-              realms:
-                native:
-                  native1:
-                    order: 0
-                {{- range $key, $val := .Values.lsdmop.elastic.ad.realms }}
-                {{ $key }}:
-                  {{ $val | toYaml | indent 18 | trim  }}
-                {{- end }}                  
-
-{{- end}} 
-      count: {{ .Values.lsdmop.elastic.cluster.ml.count }}
-      name: ml
-      podTemplate:
-        metadata:
-          labels:
-            scrape: es
-            reports.cast.ai/name: {{ .Release.Name }}-es-ml
-        spec:
-          serviceAccountName: {{ .Release.Name }}-elastic
-          serviceAccount: {{ .Release.Name }}-elastic
-          hostAliases:
-            {{ $.Values.lsdmop.elastic.hostAliases | toYaml | indent 12 | trim  }}
-          automountServiceAccountToken: true          
-          containers:
-            - env:
-                - name: ES_JAVA_OPTS
-                  #value: '-Xms1g -Xmx1g -Dlog4j2.formatMsgNoLookups=true'
-                  value: "-Xms{{ div .Values.lsdmop.elastic.cluster.ml.mem 2 }}g -Xmx{{ div .Values.lsdmop.elastic.cluster.ml.mem 2}}g"
-                {{ if .Values.lsdmop.elastic.ad.enabled }}
-                - name: AD_BIND_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: lsdmop-es-ad-bind-user
-                      key: ObserveAD
-                      optional: true
-                {{- end }}
-              name: elasticsearch
-              resources:
-                limits:
-                  cpu: {{ .Values.lsdmop.elastic.cluster.ml.cpulim }}
-                  memory: {{ .Values.lsdmop.elastic.cluster.ml.mem }}Gi
-                requests:
-                  cpu: {{ .Values.lsdmop.elastic.cluster.ml.cpureq }}
-                  memory: {{ .Values.lsdmop.elastic.cluster.ml.mem }}Gi
-      volumeClaimTemplates:
-        - metadata:
-            creationTimestamp: null
-            name: elasticsearch-data
-          spec:
-            accessModes:
-              - ReadWriteOnce
-            resources:
-              requests:
-                storage: {{ .Values.lsdmop.elastic.cluster.ml.storagesize }}
-            storageClassName: {{ .Values.lsdmop.elastic.cluster.ml.storageclass }}
+                storage: {{ $nodeSet.storagesize }}
+            storageClassName: {{ $nodeSet.storageClassName }}
+{{- end }}
 ---     
 {{- end }}

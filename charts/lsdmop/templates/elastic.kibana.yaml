@@ -14,6 +14,7 @@ spec:
   count: {{ .Values.lsdmop.elastic.kibana.count }}
   elasticsearchRef:
     name: {{ .Release.Name }}
+    serviceName: {{ .Release.Name }}-elasticsearch-coordinating-nodes
   enterpriseSearchRef:
     name: enterprise-search-{{ .Release.Name }}
   config:

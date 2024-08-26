@@ -60,53 +60,105 @@ lsdmop:
       tls:
         secretName: elastic-ingress-tls
       url: *anchorelasticURL
+    dedicatedCoordinatingNodes: false
     serviceAccount:
       annotations: {}    
-    cluster:
-      hot:
+    nodeSets: 
+      data-hot: 
         count: 3
-        maxcount: 3 #autoscaling.enabled must be true otherwise ignored
-        mem: 30
-        cpureq: 1500m
-        cpulim: 4000m
-        tolerations: elastic-hot
+        resources:
+          requests:
+            cpu: 1500m
+            memory: 30
+          limits:
+            cpu: 4000m
+            memory: 30
+        tolerations:
+        - effect: NoSchedule
+          key: dedicated
+          operator: Equal
+          value: elastic-hot
         storagesize: 560Gi
-        storageclass: ebs-gp3
-        nodeSelector: null
-      warm:
+        storageClassName: ebs-gp3
+        nodeSelector: {}
+        roles: ["master", "data_hot", "transform", "remote_cluster_client", "ingest"]
+      warm: 
         count: 2
-        maxcount: 2 #autoscaling.enabled must be true otherwise ignored        
-        mem: 30
-        cpureq: 1500m
-        cpulim: 4000m
-        tolerations: elastic-warm
+        resources:
+          requests:
+            cpu: 1500m
+            memory: 30
+          limits:
+            cpu: 4000m
+            memory: 30
+        tolerations:
+        - effect: NoSchedule
+          key: dedicated
+          operator: Equal
+          value: elastic-warm
         storagesize: 2760Gi
-        storageclass: ebs-gp3
-        nodeSelector: null
-      # cold:
-      #   count: 0
-      #   mem: 30
-      #   cpureq: 500m
-      #   cpulim: 4000m
-      #   tolerations: elastic-cold
-      #   storagesize: 560Gi
-      #   storageclass: ebs-gp3
-      # frozen:
-      #   count: 0
-      #   mem: 30
-      #   cpureq: 500m
-      #   cpulim: 4000m
-      #   tolerations: elastic-frozen
-      #   storagesize: 560Gi
-      #   storageclass: ebs-gp3
-      ml:
+        storageClassName: ebs-gp3
+        nodeSelector: {}
+        roles: ["master", "data_warm", "transform", "remote_cluster_client", "ingest"]
+      ml: 
         count: 2
-        maxcount: 2 #autoscaling.enabled must be true otherwise ignored        
-        mem: 16
-        cpureq: 500m
-        cpulim: 4000m
+        resources:
+          requests:
+            cpu: 500m
+            memory: 16
+          limits:
+            cpu: 4000m
+            memory: 16
+        tolerations: []
         storagesize: 1Gi
-        storageclass: ebs-gp3
+        storageClassName: ebs-gp3
+        roles: ["ml"]
+    
+    # cluster:
+    #   hot:
+    #     count: 3
+    #     maxcount: 3 #autoscaling.enabled must be true otherwise ignored
+    #     mem: 30
+    #     cpureq: 1500m
+    #     cpulim: 4000m
+    #     tolerations: elastic-hot
+    #     storagesize: 560Gi
+    #     storageclass: ebs-gp3
+    #     nodeSelector: null
+    #   warm:
+    #     count: 2
+    #     maxcount: 2 #autoscaling.enabled must be true otherwise ignored        
+    #     mem: 30
+    #     cpureq: 1500m
+    #     cpulim: 4000m
+    #     tolerations: elastic-warm
+    #     storagesize: 2760Gi
+    #     storageclass: ebs-gp3
+    #     nodeSelector: null
+    #   # cold:
+    #   #   count: 0
+    #   #   mem: 30
+    #   #   cpureq: 500m
+    #   #   cpulim: 4000m
+    #   #   tolerations: elastic-cold
+    #   #   storagesize: 560Gi
+    #   #   storageclass: ebs-gp3
+    #   # frozen:
+    #   #   count: 0
+    #   #   mem: 30
+    #   #   cpureq: 500m
+    #   #   cpulim: 4000m
+    #   #   tolerations: elastic-frozen
+    #   #   storagesize: 560Gi
+    #   #   storageclass: ebs-gp3
+    #   ml:
+    #     count: 2
+    #     maxcount: 2 #autoscaling.enabled must be true otherwise ignored        
+    #     mem: 16
+    #     cpureq: 500m
+    #     cpulim: 4000m
+    #     storagesize: 1Gi
+    #     storageclass: ebs-gp3
 
     hostAliases: []
       # - hostnames:
