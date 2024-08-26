@@ -19,7 +19,7 @@ spec:
     name: enterprise-search-{{ .Release.Name }}
   config:
     elasticsearch.compression: true
-    enterpriseSearch.host: http://enterprise-search-{{ .Release.Name }}-ent-http:3002
+    enterpriseSearch.host: https://enterprise-search-{{ .Release.Name }}-ent-http:3002
     monitoring.ui.ccs.enabled: false #prevents a bug 
     xpack.encryptedSavedObjects.encryptionKey: "37LxDnDT9dy*J2DcTE7UQJW6mw@sMmqj"
 
