@@ -159,7 +159,7 @@ spec:
               - ReadWriteOnce
             resources:
               requests:
-                storage: {{ $nodeSet.storagesize }}
+                storage: {{ $nodeSet.storageSize }}
             storageClassName: {{ $nodeSet.storageClassName }}
 {{- end }}
 ---     
