@@ -17,8 +17,8 @@ spec:
 {{- end }}
   ports:
   - name: https
-      port: 9200
-      targetPort: 9200
+    port: 9200
+    targetPort: 9200
 ---
 apiVersion: v1
 kind: Service
@@ -33,5 +33,5 @@ spec:
     elasticsearch.k8s.elastic.co/node-master: "false"
   ports:
   - name: https
-      port: 9200
-      targetPort: 9200
+    port: 9200
+    targetPort: 9200
