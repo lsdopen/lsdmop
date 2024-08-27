@@ -69,7 +69,8 @@ spec:
     - config:
         node.store.allow_mmap: false
         #path.repo: /usr/share/elasticsearch/snapshots
-        node.roles: {{ $nodeSet.roles }}  
+        node.roles:
+          {{ $nodeSet.roles | toYaml | indent 10 | trim }}
 {{- if or 
    (has "data" $nodeSet.roles) 
    (has "data_hot" $nodeSet.roles) 
