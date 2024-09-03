@@ -43,7 +43,6 @@ spec:
       selector:
         matchLabels:
           elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
-          elasticsearch.k8s.elastic.co/node-data: "true"
   http:
     service:
       metadata: {}
