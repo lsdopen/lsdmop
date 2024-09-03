@@ -39,8 +39,8 @@ spec:
   podDisruptionBudget:
     metadata: {}
     spec:
+      maxUnavailable: 1
       selector:
-        maxUnavailable: 1
         matchLabels:
           elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
           elasticsearch.k8s.elastic.co/node-data: "true"
