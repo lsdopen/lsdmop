@@ -8,7 +8,7 @@ metadata:
 spec:
   selector:
     elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
-{{- if .Values.lsdmop.elastic.dedicatedCoordinatingNodes  }}
+{{- if .Values.elastic.dedicatedCoordinatingNodes  }}
     elasticsearch.k8s.elastic.co/node-master: "false"
     elasticsearch.k8s.elastic.co/node-data: "false"
     elasticsearch.k8s.elastic.co/node-ingest: "false"

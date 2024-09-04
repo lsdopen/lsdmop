@@ -1,12 +1,12 @@
 # Elasticsearch
-{{- if .Values.lsdmop.elastic.enabled -}}
+{{- if .Values.elastic.enabled -}}
 ---
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
   name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
-{{- if .Values.lsdmop.elastic.autoscaling.enabled }}
+{{- if .Values.elastic.autoscaling.enabled }}
   annotations:
     elasticsearch.alpha.elastic.co/autoscaling-spec: |-
       {
@@ -15,27 +15,27 @@ metadata:
             "name": "hot-data",
             "roles": ["master", "data_hot", "data", "transform", "remote_cluster_client", "ingest"],
             "resources": {
-                "nodeCount": { "min": {{ .Values.lsdmop.elastic.cluster.hot.count }}, "max": {{ .Values.lsdmop.elastic.cluster.hot.maxcount }} }
+                "nodeCount": { "min": {{ .Values.elastic.cluster.hot.count }}, "max": {{ .Values.elastic.cluster.hot.maxcount }} }
             }
           },
           {
             "name": "warm-data",
             "roles": ["master", "data_warm", "data", "data_content", "transform", "remote_cluster_client", "ingest"],
             "resources": {
-                "nodeCount": { "min": {{ .Values.lsdmop.elastic.cluster.warm.count }}, "max": {{ .Values.lsdmop.elastic.cluster.warm.maxcount }} }
+                "nodeCount": { "min": {{ .Values.elastic.cluster.warm.count }}, "max": {{ .Values.elastic.cluster.warm.maxcount }} }
             }
           },
           {
             "name": "ml",
             "roles": ["ml"],
             "resources": {
-                "nodeCount": { "min": {{ .Values.lsdmop.elastic.cluster.ml.count }}, "max": {{ .Values.lsdmop.elastic.cluster.ml.maxcount }} }
+                "nodeCount": { "min": {{ .Values.elastic.cluster.ml.count }}, "max": {{ .Values.elastic.cluster.ml.maxcount }} }
             }
           }]
       }
 {{- end}}    
 spec:
-  version: "{{ .Values.lsdmop.elastic.version }}"
+  version: "{{ .Values.elastic.version }}"
   podDisruptionBudget:
     metadata: {}
     spec:
@@ -65,7 +65,7 @@ spec:
       certificate: { }
       certificateAuthorities: { }
   nodeSets:
-{{- range $name, $nodeSet := .Values.lsdmop.elastic.nodeSets }}
+{{- range $name, $nodeSet := .Values.elastic.nodeSets }}
     - config:
         node.store.allow_mmap: false
         #path.repo: /usr/share/elasticsearch/snapshots
@@ -82,12 +82,12 @@ spec:
             authc:
               api_key:
                 enabled: true #required for fleet
-{{- if $.Values.lsdmop.elastic.ad.enabled }}
+{{- if $.Values.elastic.ad.enabled }}
               realms:
                 native:
                   native1:
                     order: 0
-                {{- range $key, $val := $.Values.lsdmop.elastic.ad.realms }}
+                {{- range $key, $val := $.Values.elastic.ad.realms }}
                 {{ $key }}:
                   {{ $val | toYaml | indent 18 | trim  }}
                 {{- end }}                        
@@ -103,7 +103,7 @@ spec:
           serviceAccount: {{ $.Release.Name }}-elastic
           automountServiceAccountToken: true
           hostAliases:
-            {{ $.Values.lsdmop.elastic.hostAliases | toYaml | indent 12 | trim  }}
+            {{ $.Values.elastic.hostAliases | toYaml | indent 12 | trim  }}
           initContainers:
             - name: set-s3-bucket-web-token-dir
               command:
@@ -127,7 +127,7 @@ spec:
                   valueFrom:
                     fieldRef:
                       fieldPath: metadata.annotations['topology.kubernetes.io/zone']
-                {{ if $.Values.lsdmop.elastic.ad.enabled }}
+                {{ if $.Values.elastic.ad.enabled }}
                 - name: AD_BIND_PASSWORD
                   valueFrom:
                     secretKeyRef:

@@ -1,12 +1,12 @@
 
 # Kibana Ingress
-{{- if .Values.lsdmop.elastic.kibana.enabled -}}
-{{- if or (eq .Values.lsdmop.clusterType "gke") (eq .Values.lsdmop.clusterType "rancher") -}}
+{{- if .Values.elastic.kibana.enabled -}}
+{{- if or (eq .Values.clusterType "gke") (eq .Values.clusterType "rancher") -}}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-{{- with .Values.lsdmop.elastic.ingress.annotations }}
+{{- with .Values.elastic.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
 {{- end }}   
@@ -16,13 +16,13 @@ metadata:
   name: lsdmop-kb
   namespace: {{ .Release.Namespace }}
 spec:
-  ingressClassName: {{ .Values.lsdmop.elastic.kibana.ingress.className }}
+  ingressClassName: {{ .Values.elastic.kibana.ingress.className }}
   tls:
     - hosts:
-        - {{ .Values.lsdmop.elastic.kibana.ingress.url }}
-      secretName: {{ .Values.lsdmop.elastic.kibana.ingress.tls.secretName }}
+        - {{ .Values.elastic.kibana.ingress.url }}
+      secretName: {{ .Values.elastic.kibana.ingress.tls.secretName }}
   rules:
-  - host: {{ .Values.lsdmop.elastic.kibana.ingress.url }}
+  - host: {{ .Values.elastic.kibana.ingress.url }}
     http:
       paths:
       - backend:
@@ -36,7 +36,7 @@ spec:
 {{- end }}
 
 # Kibana Route for Openshift
-{{- if eq .Values.lsdmop.clusterType "openshift" -}}
+{{- if eq .Values.clusterType "openshift" -}}
 ---
 apiVersion: route.openshift.io/v1
 kind: Route
@@ -45,7 +45,7 @@ metadata:
     app: {{ .Release.Name }}-kb-http
   name: {{ .Release.Name }}-kb-http
 spec:
-  host: {{ .Values.lsdmop.elastic.kibana.ingress.url }}
+  host: {{ .Values.elastic.kibana.ingress.url }}
   port:
     targetPort: http
   tls:
@@ -61,7 +61,7 @@ status:
   - conditions:
     - status: "True"
       type: Admitted
-    host: {{ .Values.lsdmop.elastic.kibana.ingress.url }}
+    host: {{ .Values.elastic.kibana.ingress.url }}
     routerName: router
     wildcardPolicy: None
 ---

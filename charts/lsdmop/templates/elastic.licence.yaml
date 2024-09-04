@@ -1,4 +1,4 @@
-{{- if .Values.lsdmop.elastic.license.enabled -}}
+{{- if .Values.elastic.license.enabled -}}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -8,5 +8,5 @@ metadata:
     license.k8s.elastic.co/scope: operator
 type: Opaque
 stringData:
-  license: {{ .Values.lsdmop.elastic.license.key }}
+  license: {{ .Values.elastic.license.key }}
 {{- end }}

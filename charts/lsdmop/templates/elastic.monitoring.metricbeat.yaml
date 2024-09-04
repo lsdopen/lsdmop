@@ -6,7 +6,7 @@ metadata:
   namespace: {{ .Release.namespace }}
 spec:
   type: metricbeat
-  version: {{ .Values.lsdmop.elastic.version }}
+  version: {{ .Values.elastic.version }}
   elasticsearchRef:
     name: lsdmop
   config:

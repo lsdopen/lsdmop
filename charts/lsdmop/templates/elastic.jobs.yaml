@@ -1,4 +1,4 @@
-{{- if .Values.lsdmop.elastic.enabled -}}
+{{- if .Values.elastic.enabled -}}
 ---
 apiVersion: batch/v1
 kind: Job
@@ -36,7 +36,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: wait-for-elastic
       containers:
 
@@ -52,18 +52,18 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: sleep-debug-container
         volumeMounts:
         - mountPath: /opt/elastic/
           name: elastic-filebeat-custom-files
 
 
-{{- if .Values.lsdmop.elastic.ad.enabled }}
+{{- if .Values.elastic.ad.enabled }}
       #ROLE MAPPINGS TO AD GROUPS
       - args:
         - -c
-        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H \"Content-Type: application/json\" -X PUT -d '{\"roles\" : [ \"user\" ],  \"rules\" : { \"field\" : { \"groups\" : \"{{ .Values.lsdmop.elastic.ad.userdn }}\" } },  \"enabled\": true}' https://lsdmop-es-http:9200/_security/role_mapping/basic_user"
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H \"Content-Type: application/json\" -X PUT -d '{\"roles\" : [ \"user\" ],  \"rules\" : { \"field\" : { \"groups\" : \"{{ .Values.elastic.ad.userdn }}\" } },  \"enabled\": true}' https://lsdmop-es-http:9200/_security/role_mapping/basic_user"
         command:
         - /bin/sh
         env:
@@ -72,7 +72,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: rolemapping-user
         volumeMounts:
         - mountPath: /opt/elastic/
@@ -81,7 +81,7 @@ spec:
 
       - args:
         - -c
-        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H \"Content-Type: application/json\" -X PUT -d '{\"roles\" : [ \"superuser\" ],  \"rules\" : { \"field\" : { \"groups\" : \"{{ .Values.lsdmop.elastic.ad.admindn }}\" } },  \"enabled\": true }' https://lsdmop-es-http:9200/_security/role_mapping/admin_user"
+        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H \"Content-Type: application/json\" -X PUT -d '{\"roles\" : [ \"superuser\" ],  \"rules\" : { \"field\" : { \"groups\" : \"{{ .Values.elastic.ad.admindn }}\" } },  \"enabled\": true }' https://lsdmop-es-http:9200/_security/role_mapping/admin_user"
         command:
         - /bin/sh
         env:
@@ -90,7 +90,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: rolemapping-admin
         volumeMounts:
         - mountPath: /opt/elastic/
@@ -100,12 +100,12 @@ spec:
 
 
 
-{{- if .Values.lsdmop.elastic.s3snapshot.enabled }}
+{{- if .Values.elastic.s3snapshot.enabled }}
 
       #LOAD S3 Repo Config for Snapshots    - must happen before ILM S3 policies see #ILM POLICIES WITH S3
       - args:
         - -c
-        - "curl -kv -u elastic:$ELASTIC_PASSWORD -H \"Content-Type: application/json\" -X PUT -d '{\"type\": \"s3\",\"settings\": {\"bucket\": \"{{ .Values.lsdmop.elastic.s3snapshot.bucket }}\"}}' https://lsdmop-es-http.lsdmop.svc:9200/_snapshot/s3_repository"
+        - "curl -kv -u elastic:$ELASTIC_PASSWORD -H \"Content-Type: application/json\" -X PUT -d '{\"type\": \"s3\",\"settings\": {\"bucket\": \"{{ .Values.elastic.s3snapshot.bucket }}\"}}' https://lsdmop-es-http.lsdmop.svc:9200/_snapshot/s3_repository"
         command:
         - /bin/sh
         env:
@@ -114,7 +114,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: elastic-load-snapshot-repo
         volumeMounts:
         - mountPath: /opt/elastic/
@@ -133,7 +133,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: elastic-load-snapshot-policy-daily
         volumeMounts:
         - mountPath: /opt/elastic/
@@ -152,7 +152,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: elastic-load-snapshot-policy-hourly
         volumeMounts:
         - mountPath: /opt/elastic/
@@ -161,7 +161,7 @@ spec:
 
 
 
-{{- if .Values.lsdmop.elastic.s3snapshot.enabled }}
+{{- if .Values.elastic.s3snapshot.enabled }}
       #ILM POLICIES WITH S3
       - args:
         - -c
@@ -174,7 +174,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: filebeat-ilm-policy-infra
         volumeMounts:
         - mountPath: /opt/elastic/
@@ -191,7 +191,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: filebeat-ilm-policy-lsdmop
         volumeMounts:
         - mountPath: /opt/elastic/
@@ -208,7 +208,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: filebeat-ilm-policy-apps
         volumeMounts:
         - mountPath: /opt/elastic/
@@ -226,7 +226,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: filebeat-ilm-policy-infra
         volumeMounts:
         - mountPath: /opt/elastic/
@@ -243,7 +243,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: filebeat-ilm-policy-lsdmop
         volumeMounts:
         - mountPath: /opt/elastic/
@@ -260,7 +260,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: filebeat-ilm-policy-apps
         volumeMounts:
         - mountPath: /opt/elastic/
@@ -281,7 +281,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: filebeat-component-template
         volumeMounts:
         - mountPath: /opt/elastic/
@@ -298,7 +298,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: filebeat-component-template-infra
         volumeMounts:
         - mountPath: /opt/elastic/
@@ -315,7 +315,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: filebeat-component-template-lsdmop
         volumeMounts:
         - mountPath: /opt/elastic/
@@ -332,7 +332,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: filebeat-component-template-apps
         volumeMounts:
         - mountPath: /opt/elastic/
@@ -353,7 +353,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: filebeat-template-apps
         volumeMounts:
         - mountPath: /opt/elastic/
@@ -370,7 +370,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: filebeat-template-lsdmop
         volumeMounts:
         - mountPath: /opt/elastic/
@@ -387,7 +387,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: filebeat-template-infra
         volumeMounts:
         - mountPath: /opt/elastic/
@@ -405,7 +405,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: filebeat-bootstrap-infra
         volumeMounts:
         - mountPath: /opt/elastic/
@@ -422,7 +422,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: filebeat-bootstrap-lsdmop
         volumeMounts:
         - mountPath: /opt/elastic/
@@ -439,7 +439,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: filebeat-bootstrap-apps
         volumeMounts:
         - mountPath: /opt/elastic/
@@ -458,7 +458,7 @@ spec:
               secretKeyRef:
                 name: lsdmop-es-elastic-user
                 key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
+        image: {{ .Values.curl.image }}
         name: elastic-load-sample-dashboard
         volumeMounts:
         - mountPath: /opt/elastic/
