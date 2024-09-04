@@ -1,25 +1,21 @@
----
+{{- if .Values.lsdmop.elastic.enterprise_search.enabled -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ .Release.Name }}-entsearch
   namespace: lsdmop
+{{- with .Values.lsdmop.elastic.enterprise_search.ingress.annotations }}
   annotations:
-    cert-manager.io/cluster-issuer: nginx-private
-    meta.helm.sh/release-name: {{ .Release.Name }}
-    meta.helm.sh/release-namespace: {{ .Release.Name }}
-    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-    nginx.ingress.kubernetes.io/client-body-buffer-size: 64m
-    nginx.ingress.kubernetes.io/proxy-body-size: 350m
-    service.alpha.kubernetes.io/app-protocols: '{"https":"HTTPS"}'
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
-  ingressClassName: nginx-private
+  ingressClassName: {{ .Values.lsdmop.elastic.ingress.className }}
   tls:
     - hosts:
-        - entsearch.mop.sandbox.internal.lsdopen.io
-      secretName: entsearch-ingress-tls
+        - {{ .Values.lsdmop.elastic.enterprise_search.ingress.url }}
+      secretName: {{ .Values.lsdmop.elastic.ingress.tls.secretName }}
   rules:
-    - host: entsearch.mop.sandbox.internal.lsdopen.io
+    - host: {{ .Values.lsdmop.elastic.enterprise_search.ingress.url }}
       http:
         paths:
           - path: /
@@ -29,3 +25,4 @@ spec:
                 name: enterprise-search-{{ .Release.Name }}-ent-http
                 port:
                   number: 3002
+{{- end }}

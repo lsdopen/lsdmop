@@ -162,6 +162,18 @@ lsdmop:
         tls:
           secretName: kibana-ingress-tls
 
+    #Enterprise Search
+    enterprise_search:
+      enabled: false
+      count: "1"
+      ingress:
+        url: enterprise.domain.example
+        enabled: true
+        className: nginx
+        annotations: {}
+        tls:
+          secretName: enterprise-search-ingress-tls
+
     #Filebeat 
     filebeat:
       enabled: true
