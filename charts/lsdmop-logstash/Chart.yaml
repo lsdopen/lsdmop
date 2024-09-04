@@ -1,0 +1,25 @@
+apiVersion: v2
+name: lsdmop-logstash
+version: "7.17.3"
+appVersion: "7.17.3"
+# Disabling kubeVersion because GKE is dumb
+# kubeVersion: ">=v1.11.0"
+description: A Helm chart for LSDMOP
+keywords:
+  - lsdmop
+  - kubernetes
+  - prometheus
+  - elastic
+home: https://github.com/lsdopen/charts
+sources:
+  - https://github.com/lsdopen
+maintainers:
+  - name: LSD
+    email: support@lsdopen.io
+    url: https://lsdopen.io
+deprecated: false
+
+dependencies:
+  - name: logstash
+    version: "7.17.3"
+    repository: https://helm.elastic.co

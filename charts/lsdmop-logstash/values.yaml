@@ -1,0 +1,67 @@
+logstash:
+  image: "docker.elastic.co/logstash/logstash"
+  imageTag: 8.8.1
+  replicas: "0"
+  logstashJavaOpts: *anchorlogstashJavaOpts
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "1536Mi"
+    limits:
+      cpu: "1000m"
+      memory: "1536Mi"
+  volumeClaimTemplate: {}
+  service:
+    type: ClusterIP
+    loadBalancerIP: ""
+    ports:
+      - name: beats
+        port: 5044
+        protocol: TCP
+        targetPort: 5044
+  logstashPatternDir: "/usr/share/logstash/patterns/"
+  logstashConfig:
+    logstash.yml: |
+      http.host: "0.0.0.0"
+      monitoring.enabled: true
+      monitoring.elasticsearch.username: elastic
+      monitoring.elasticsearch.password: ${ELASTIC_PASSWORD}
+      monitoring.elasticsearch.hosts: [ "https://lsdmop-es-http:9200" ]
+      monitoring.elasticsearch.ssl.certificate_authority: /usr/share/logstash/certs/tls.crt
+      pipeline.ordered: false
+    pipelines.yml: |
+      - pipeline.id: main
+        path.config: "/usr/share/logstash/pipeline"
+      - pipeline.id: lsdmop
+        path.config: "/usr/share/logstash/pipeline/lsdmop"
+  secretMounts:
+    - name: elastic-ca-certs
+      secretName: lsdmop-es-http-ca-internal
+      path: /usr/share/logstash/certs
+      defaultMode: 420
+  extraEnvs:
+    - name: ELASTIC_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: lsdmop-es-elastic-user
+          key: elastic
+  extraVolumes: |
+    - configMap:
+        defaultMode: 420
+        name: logstash-pipeline
+      name: logstash-pipeline
+    - configMap:
+        defaultMode: 420
+        name: logstash-pipeline-lsdmop
+      name: logstash-pipeline-lsdmop
+    - configMap:
+        defaultMode: 420
+        name: logstash-patterns
+      name: logstash-patterns
+  extraVolumeMounts: |
+    - mountPath: /usr/share/logstash/pipeline
+      name: logstash-pipeline
+    - mountPath: /usr/share/logstash/pipeline/lsdmop
+      name: logstash-pipeline-lsdmop
+    - mountPath: /usr/share/logstash/patterns
+      name: logstash-patterns
