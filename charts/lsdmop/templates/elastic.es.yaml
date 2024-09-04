@@ -71,16 +71,9 @@ spec:
         #path.repo: /usr/share/elasticsearch/snapshots
         node.roles:
           {{ $nodeSet.roles | toYaml | indent 10 | trim }}
-{{- if or 
-   (has "data" $nodeSet.roles) 
-   (has "data_hot" $nodeSet.roles) 
-   (has "data_warm" $nodeSet.roles) 
-   (has "data_cold" $nodeSet.roles)  
-   (has "data_frozen" $nodeSet.roles) 
-   (has "data_content" $nodeSet.roles)
-}}
-        node.attr.data: {{ $name }}
-{{- end }}
+        {{- range $key, $val := $nodeSet.node_attributes }}
+        node.attr.{{ $key }}: {{ $val }}
+        {{- end }}
         http.max_content_length: 100mb
         http.compression: true
         transport.compress: true
