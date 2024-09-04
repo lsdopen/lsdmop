@@ -4,7 +4,7 @@ kind: Ingress
 metadata:
   name: {{ .Release.Name }}-entsearch
   namespace: lsdmop
-{{- with .Values.lsdmop.elastic.ingress.annotations }}
+{{- with .Values.lsdmop.elastic.enterprise_search.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
 {{- end }}

@@ -6,7 +6,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-{{- with .Values.lsdmop.elastic.ingress.annotations }}
+{{- with .Values.lsdmop.elastic.kibana.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
 {{- end }}   
