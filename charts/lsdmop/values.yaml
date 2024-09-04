@@ -64,55 +64,60 @@ lsdmop:
     serviceAccount:
       annotations: {}    
     nodeSets: {}
-      # data-hot: 
-      #   count: 3
-      #   resources:
-      #     requests:
-      #       cpu: 1500m
-      #       memory: 30
-      #     limits:
-      #       cpu: 4000m
-      #       memory: 30
-      #   tolerations:
-      #   - effect: NoSchedule
-      #     key: dedicated
-      #     operator: Equal
-      #     value: elastic-hot
-      #   storagesize: 560Gi
-      #   storageClassName: ebs-gp3
-      #   nodeSelector: {}
-      #   roles: ["master", "data_hot", "transform", "remote_cluster_client", "ingest"]
-      # warm: 
-      #   count: 2
-      #   resources:
-      #     requests:
-      #       cpu: 1500m
-      #       memory: 30
-      #     limits:
-      #       cpu: 4000m
-      #       memory: 30
-      #   tolerations:
-      #   - effect: NoSchedule
-      #     key: dedicated
-      #     operator: Equal
-      #     value: elastic-warm
-      #   storagesize: 2760Gi
-      #   storageClassName: ebs-gp3
-      #   nodeSelector: {}
-      #   roles: ["master", "data_warm", "transform", "remote_cluster_client", "ingest"]
-      # ml: 
-      #   count: 2
-      #   resources:
-      #     requests:
-      #       cpu: 500m
-      #       memory: 16
-      #     limits:
-      #       cpu: 4000m
-      #       memory: 16
-      #   tolerations: []
-      #   storagesize: 1Gi
-      #   storageClassName: ebs-gp3
-      #   roles: ["ml"]
+#       data-hot:
+#         count: 3
+#         node_attributes:
+#           data: hot
+#         resources:
+#           requests:
+#             cpu: 1500m
+#             memory: 30
+#           limits:
+#             cpu: 4000m
+#             memory: 30
+#         tolerations:
+#         - effect: NoSchedule
+#           key: dedicated
+#           operator: Equal
+#           value: elastic-hot
+#         storagesize: 560Gi
+#         storageClassName: ebs-gp3
+#         nodeSelector: {}
+#         roles: ["master", "data_hot", "transform", "remote_cluster_client", "ingest"]
+#       warm:
+#         count: 2
+#         node_attributes:
+#           data: warm
+#           foo: bar
+#         resources:
+#           requests:
+#             cpu: 1500m
+#             memory: 30
+#           limits:
+#             cpu: 4000m
+#             memory: 30
+#         tolerations:
+#         - effect: NoSchedule
+#           key: dedicated
+#           operator: Equal
+#           value: elastic-warm
+#         storagesize: 2760Gi
+#         storageClassName: ebs-gp3
+#         nodeSelector: {}
+#         roles: ["master", "data_warm", "transform", "remote_cluster_client", "ingest"]
+#       ml:
+#         count: 2
+#         resources:
+#           requests:
+#             cpu: 500m
+#             memory: 16
+#           limits:
+#             cpu: 4000m
+#             memory: 16
+#         tolerations: []
+#         storagesize: 1Gi
+#         storageClassName: ebs-gp3
+#         roles: ["ml"]
     hostAliases: []
       # - hostnames:
       #     - ad.lsdopen.io
