@@ -268,24 +268,7 @@ spec:
 {{- end}}
 
 
-      #COMPONENT TEMPLATES    
-      - args:
-        - -c
-        - "curl -skv -u elastic:$ELASTIC_PASSWORD -H 'Content-Type: application/json' -X PUT -d @/opt/elastic/lsdmop-filebeat.template.8.4.1.json \"https://lsdmop-es-http:9200/_component_template/filebeat-8.4.1\""
-        command:
-        - /bin/sh
-        
-        env:
-          - name: ELASTIC_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: lsdmop-es-elastic-user
-                key: elastic
-        image: {{ .Values.lsdmop.curl.image }}
-        name: filebeat-component-template
-        volumeMounts:
-        - mountPath: /opt/elastic/
-          name: elastic-filebeat-custom-files
+      #COMPONENT TEMPLATES
 
       - args:
         - -c
