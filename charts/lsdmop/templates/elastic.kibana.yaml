@@ -15,11 +15,15 @@ spec:
   elasticsearchRef:
     name: {{ .Release.Name }}
     serviceName: {{ .Release.Name }}-elasticsearch-coordinating-nodes
+{{- if .Values.lsdmop.elastic.enterprise_search.enabled -}}
   enterpriseSearchRef:
     name: enterprise-search-{{ .Release.Name }}
+{{- end }}
   config:
     elasticsearch.compression: true
+{{- if .Values.lsdmop.elastic.enterprise_search.enabled -}}
     enterpriseSearch.host: https://enterprise-search-{{ .Release.Name }}-ent-http:3002
+{{- end }}
     monitoring.ui.ccs.enabled: false #prevents a bug 
     xpack.encryptedSavedObjects.encryptionKey: "37LxDnDT9dy*J2DcTE7UQJW6mw@sMmqj"
 
