@@ -68,7 +68,7 @@ spec:
     - config:
         node.store.allow_mmap: false
         #path.repo: /usr/share/elasticsearch/snapshots
-        {{- if not empty $nodeSet.roles }}
+        {{- if not (empty $nodeSet.roles) }}
         node.roles:
           {{ $nodeSet.roles | toYaml | indent 10 | trim }}
         {{- end }}
