@@ -36,12 +36,6 @@ lsdmop:
   apmURL: &anchorapmURL "apm.domain.example"
   fleetURL: &anchorfleetURL "fleet.domain.example"
   logstashJavaOpts: &anchorlogstashJavaOpts "-Xms1g -Xmx1g"
-  smtpHost: &anchorsmtpHost "smtp.lsdopen.io"
-  smtpPort: &anchorsmtpPort "25"
-  smtpSmartHost: &anchorsmtpSmartHost "smtp.lsdopen.io:25"
-  supportAddress: &anchorsupportAddress "address-that-must-receive-alerts@lsdopen.io"
-  fromAddress: &anchorfromAddress "lsdmop+noreply+infra-01.qa.lsdopen.io@lsdopen.io"
-  fromName: &anchorfromName "LSDobserve - LSD - k8s-01.qa.lsdopen.io@lsdopen.io"
   storageClass: &anchorstorageClass "ebs-gp3"
   #storageClass: &anchorstorageClass "local"
   curl:
