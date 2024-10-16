@@ -1,4 +1,5 @@
 {{- if .Values.lsdmop.elastic.enterprise_search.enabled -}}
+---
 apiVersion: enterprisesearch.k8s.elastic.co/v1
 kind: EnterpriseSearch
 metadata:
