@@ -8,5 +8,5 @@ metadata:
     license.k8s.elastic.co/scope: operator
 type: Opaque
 stringData:
-  license: "{{ .Values.lsdmop.elastic.license.key }}"
+  license: {{ .Values.lsdmop.elastic.license.key | toJson | quote }}
 {{- end }}
