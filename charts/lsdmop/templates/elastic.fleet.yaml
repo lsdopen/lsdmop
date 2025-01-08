@@ -1,5 +1,5 @@
 # Elastic Metricbeat {{ .Release.Name }}-metricbeat
-{{- if .Values.lsdmop.elastic.fleet.enabled -}}
+{{- if .Values.elastic.fleet.enabled -}}
 ---
 apiVersion: agent.k8s.elastic.co/v1alpha1
 kind: Agent
@@ -8,15 +8,15 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   policyID: eck-fleet-server
-  version: {{ .Values.lsdmop.elastic.version }}
+  version: {{ .Values.elastic.version }}
   kibanaRef:
     name: {{ .Release.Name }}
   elasticsearchRefs:
   - name: {{ .Release.Name }}
   mode: fleet
   fleetServerEnabled: true
-  image: docker.elastic.co/beats/elastic-agent:{{ .Values.lsdmop.elastic.version }}
-  verseion: {{ .Values.lsdmop.elastic.version }}
+  image: docker.elastic.co/beats/elastic-agent:{{ .Values.elastic.version }}
+  verseion: {{ .Values.elastic.version }}
   deployment:
     replicas: 2
     podTemplate:
@@ -33,7 +33,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   policyID: eck-agent-1
-  version: {{ .Values.lsdmop.elastic.version }}
+  version: {{ .Values.elastic.version }}
   kibanaRef:
     name: {{ .Release.Name }}
   fleetServerRef:
@@ -52,14 +52,14 @@ spec:
           operator: Exists
 ---
 
-{{ if .Values.lsdmop.elastic.fleetapm.enabled }}
+{{ if .Values.elastic.fleetapm.enabled }}
 apiVersion: agent.k8s.elastic.co/v1alpha1
 kind: Agent
 metadata: 
   name: apm-server-{{ .Release.Name }}
 spec:
   policyID: eck-apm-1
-  version: {{ .Values.lsdmop.elastic.version }}
+  version: {{ .Values.elastic.version }}
   kibanaRef:
     name: {{ .Release.Name }}
   fleetServerRef: 

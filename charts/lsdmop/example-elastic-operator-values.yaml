@@ -1,0 +1,15 @@
+replicaCount: 1
+installCRDs: true
+managedNamespaces: ["lsdmop"]
+createClusterScopedResources: false
+resources:
+  limits:
+    memory: 500Mi
+  requests:
+    cpu: 50m
+    memory: 150Mi
+config:
+  setDefaultSecurityContext: "auto-detect"
+  validateStorageClass: false
+webhook:
+  enabled: false

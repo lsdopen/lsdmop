@@ -1,22 +1,22 @@
-{{- if .Values.lsdmop.elastic.enterprise_search.enabled -}}
+{{- if .Values.elastic.enterprise_search.enabled -}}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ .Release.Name }}-entsearch
   namespace: lsdmop
-{{- with .Values.lsdmop.elastic.enterprise_search.ingress.annotations }}
+{{- with .Values.elastic.enterprise_search.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
-  ingressClassName: {{ .Values.lsdmop.elastic.ingress.className }}
+  ingressClassName: {{ .Values.elastic.ingress.className }}
   tls:
     - hosts:
-        - {{ .Values.lsdmop.elastic.enterprise_search.ingress.url }}
-      secretName: {{ .Values.lsdmop.elastic.ingress.tls.secretName }}
+        - {{ .Values.elastic.enterprise_search.ingress.url }}
+      secretName: {{ .Values.elastic.ingress.tls.secretName }}
   rules:
-    - host: {{ .Values.lsdmop.elastic.enterprise_search.ingress.url }}
+    - host: {{ .Values.elastic.enterprise_search.ingress.url }}
       http:
         paths:
           - path: /

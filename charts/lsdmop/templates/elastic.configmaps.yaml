@@ -27,7 +27,7 @@ data:
   lsdmop-filebeat.ilm.policy.apps.s3.json: |-
 {{ .Files.Get "elastic/lsdmop-filebeat.ilm.policy.apps.s3.json" | indent 4}}
 
-  lsdmop-filebeat.template.{{ .Values.lsdmop.eckVersion }}.json: |-
+  lsdmop-filebeat.template.{{ .Values.eckVersion }}.json: |-
 {{ .Files.Get "elastic/lsdmop-filebeat.template.8.4.1.json" | indent 4}}
 
   lsdmop-filebeat.component.template.infra.json: |-

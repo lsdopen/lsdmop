@@ -2,7 +2,7 @@ LSD MOP Deployed!
 
 Take note of all these details
 
-Kibana URL:      https://{{ .Values.lsdmop.elastic.kibana.ingress.url }}
+Kibana URL:      https://{{ .Values.elastic.kibana.ingress.url }}
 Kibana Username: elastic
 Kibana Password: 
 

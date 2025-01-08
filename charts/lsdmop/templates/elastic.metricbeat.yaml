@@ -1,5 +1,5 @@
 # Elastic Metricbeat {{ .Release.Name }}-metricbeat
-{{- if .Values.lsdmop.elastic.metricbeat.enabled -}}
+{{- if .Values.elastic.metricbeat.enabled -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -177,7 +177,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
       - name: {{ .Release.Name }}-metricbeat
-        image: docker.elastic.co/beats/metricbeat:{{ .Values.lsdmop.elastic.version }}
+        image: docker.elastic.co/beats/metricbeat:{{ .Values.elastic.version }}
         args: [
           "-c", "/etc/metricbeat.yml",
           "-e",
