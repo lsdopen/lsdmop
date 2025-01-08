@@ -16,7 +16,7 @@ spec:
   mode: fleet
   fleetServerEnabled: true
   image: docker.elastic.co/beats/elastic-agent:{{ .Values.elastic.version }}
-  verseion: {{ .Values.elastic.version }}
+  version: {{ .Values.elastic.version }}
   deployment:
     replicas: 2
     podTemplate:
