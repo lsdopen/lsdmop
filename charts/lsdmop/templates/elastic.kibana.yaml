@@ -1,5 +1,5 @@
 # Kibana CRD
-{{- if .Values.lsdmop.elastic.kibana.enabled -}}
+{{- if .Values.elastic.kibana.enabled -}}
 ---
 apiVersion: kibana.k8s.elastic.co/v1
 kind: Kibana
@@ -10,28 +10,28 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     scrape: kb
 spec:
-  version: "{{ .Values.lsdmop.elastic.version }}"
-  count: {{ .Values.lsdmop.elastic.kibana.count }}
+  version: "{{ .Values.elastic.version }}"
+  count: {{ .Values.elastic.kibana.count }}
   elasticsearchRef:
     name: {{ .Release.Name }}
     serviceName: {{ .Release.Name }}-elasticsearch-coordinating-nodes
-{{- if .Values.lsdmop.elastic.enterprise_search.enabled }}
+{{- if .Values.elastic.enterprise_search.enabled }}
   enterpriseSearchRef:
     name: enterprise-search-{{ .Release.Name }}
 {{- end }}
   config:
     elasticsearch.compression: true
-{{- if .Values.lsdmop.elastic.enterprise_search.enabled }}
+{{- if .Values.elastic.enterprise_search.enabled }}
     enterpriseSearch.host: https://enterprise-search-{{ .Release.Name }}-ent-http:3002
 {{- end }}
     monitoring.ui.ccs.enabled: false #prevents a bug 
     xpack.encryptedSavedObjects.encryptionKey: "37LxDnDT9dy*J2DcTE7UQJW6mw@sMmqj"
 
-{{- if .Values.lsdmop.elastic.fleet.enabled }}
+{{- if .Values.elastic.fleet.enabled }}
     xpack.fleet.agents.elasticsearch.hosts: ["https://lsdmop-es-http.lsdmop.svc:9200"]
     xpack.fleet.agents.fleet_server.hosts: 
       - https://fleet-server-lsdmop-agent-http.lsdmop.svc:8220
-      - https://{{ .Values.lsdmop.elastic.fleet.fleetURL }}:443
+      - https://{{ .Values.elastic.fleet.fleetURL }}:443
     xpack.fleet.packages:
       - name: system
         version: latest
@@ -137,7 +137,6 @@ spec:
             cpu: 500m
           limits:
             memory: 2Gi
-            cpu: 4000m
       tolerations:
         - effect: NoSchedule
           key: dedicated
@@ -147,10 +146,10 @@ spec:
       #selfSignedCertificate:
         #disabled: true
       selfSignedCertificate:
-        #secretName: {{ .Values.lsdmop.elastic.kibana.ingress.tls.secretName }}
+        #secretName: {{ .Values.elastic.kibana.ingress.tls.secretName }}
         subjectAltNames:
         #- ip: 160.46.176.15
-        - dns: {{ .Values.lsdmop.elastic.kibana.ingress.url }}
+        - dns: {{ .Values.elastic.kibana.ingress.url }}
         
 ---
 {{- end }}

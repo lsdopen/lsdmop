@@ -1,20 +1,28 @@
-{{- if .Values.lsdmop.elastic.enterprise_search.enabled -}}
+{{- if .Values.elastic.enterprise_search.enabled -}}
 ---
 apiVersion: enterprisesearch.k8s.elastic.co/v1
 kind: EnterpriseSearch
 metadata:
-  name: enterprise-search-{{ .Release.Name }}
+  name: {{ .Release.Name }}
   namespace: lsdmop
 spec:
   config:
     # define the exposed URL at which users will reach Enterprise Search
-    ent_search.external_url: https://{{ .Values.lsdmop.elastic.enterprise_search.ingress.url }}:443
+    ent_search.external_url: https://{{ .Values.elastic.enterprise_search.ingress.url }}:443
     # define the exposed URL at which users will reach Kibana
     kibana.host: https://{{ .Release.Name }}-kb-http:5601
     # configure app search document size limit
     app_search.engine.document_size.limit: 1024kb  
-  version: "{{ .Values.lsdmop.elastic.version }}"
-  count: {{ .Values.lsdmop.elastic.enterprise_search.count }}
+  version: "{{ .Values.elastic.version }}"
+  count: {{ .Values.elastic.enterprise_search.count }}
   elasticsearchRef:
     name: {{ .Release.Name }}
+  podTemplate:
+    spec:
+      containers:
+        - name: enterprise-search
+          resources: {{ .Values.elastic.enterprise_search.resources }}
+          env:
+            - name: JAVA_OPTS
+              value: -Xms3500m -Xmx3500m
 {{- end }}

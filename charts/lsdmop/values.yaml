@@ -1,63 +1,24 @@
-# Elastic Operator
-# To get a latest values you can run:
-# helm show values elastic/eck-operator
-eck-operator:
-  # installCRDs must be disabled because CRDs are put into the Helm chart
-  installCRDs: false
-  managedNamespaces: ["lsdmop"]
-  createClusterScopedResources: false
-  replicaCount: 1
-  resources:
-    limits:
-      cpu: 1
-      memory: 1Gi
-    requests:
-      cpu: 100m
-      memory: 150Mi
-  # tracing:
-  #   # enabled specifies whether APM tracing is enabled for the operator.
-  #   enabled: false
-  #   # config is a map of APM Server configuration variables that should be set in the environment.
-  #   config:
-  #     ELASTIC_APM_SERVER_URL: http://localhost:8200
-  #     ELASTIC_APM_SERVER_TIMEOUT: 30s
-  config:
-    setDefaultSecurityContext: "auto-detect"
-    validateStorageClass: false
-  webhook:
-    enabled: false    
+curl:
+  image: docker.io/curlimages/curl:7.74.0
 
-# LSDobserve
-lsdmop:
-  # There are your options clusterType: openshift | gke | rancher
-  clusterType: "rancher"
-  kibanaURL: &anchorkibanaURL "kibana.domain.example"
-  elasticURL: &anchorelasticURL "elastic.domain.example"
-  apmURL: &anchorapmURL "apm.domain.example"
-  fleetURL: &anchorfleetURL "fleet.domain.example"
-  logstashJavaOpts: &anchorlogstashJavaOpts "-Xms1g -Xmx1g"
-  storageClass: &anchorstorageClass "ebs-gp3"
-  #storageClass: &anchorstorageClass "local"
-  curl:
-    image: docker.io/curlimages/curl:7.74.0
-  elastic:
-    enabled: true
-    license:
-      enabled: false
-      key: ""
-    autoscaling:
-      enabled: false
-    version: "8.4.1"
-    ingress:
-      annotations: {}
-      className: "nginx"
-      tls:
-        secretName: elastic-ingress-tls
-      url: *anchorelasticURL
-    dedicatedCoordinatingNodes: false
-    serviceAccount:
-      annotations: {}    
-    nodeSets: {}
+elastic:
+  enabled: true
+  license:
+    enabled: false
+    key: ""
+  autoscaling:
+    enabled: false
+  version: "8.16.1"
+  ingress:
+    annotations: {}
+    className: "nginx"
+    tls:
+      secretName: elastic-ingress-tls
+    url: ""
+  dedicatedCoordinatingNodes: false
+  serviceAccount:
+    annotations: {}
+  nodeSets: {}
 #       data-hot:
 #         count: 3
 #         node_attributes:
@@ -67,7 +28,6 @@ lsdmop:
 #             cpu: 1500m
 #             memory: 30
 #           limits:
-#             cpu: 4000m
 #             memory: 30
 #         tolerations:
 #         - effect: NoSchedule
@@ -88,7 +48,6 @@ lsdmop:
 #             cpu: 1500m
 #             memory: 30
 #           limits:
-#             cpu: 4000m
 #             memory: 30
 #         tolerations:
 #         - effect: NoSchedule
@@ -106,183 +65,118 @@ lsdmop:
 #             cpu: 500m
 #             memory: 16
 #           limits:
-#             cpu: 4000m
 #             memory: 16
 #         tolerations: []
 #         storagesize: 1Gi
 #         storageClassName: ebs-gp3
 #         roles: ["ml"]
-    hostAliases: []
-      # - hostnames:
-      #     - ad.lsdopen.io
-      #   ip: xxx.xxx.xxx.xx
+  hostAliases: []
+    # - hostnames:
+    #     - ad.lsdopen.io
+    #   ip: xxx.xxx.xxx.xx
 
-    # Active Directory Integration
-    ad:
-      enabled: false
-      bindpassword: ""
-      # A map of the different realms as supported by Elastic: https://www.elastic.co/guide/en/elasticsearch/reference/8.8/realms.html
-      realms: {}
-        # active_directory:
-        #   ad_example:
-        #     bind_dn: >-
-        #       CN=svc_account,OU=Service
-        #       Accounts,DC=lsdopen,DC=io
-        #     bind_password: ${AD_BIND_PASSWORD}
-        #     domain_name: lsdopen.io
-        #     enabled: true
-        #     group_search:
-        #       base_dn: DC=lsdopen,DC=io
-        #     order: 1
-        #     ssl:
-        #       verification_mode: none
-        #     unmapped_groups_as_roles: false
-        #     url: >-
-        #       ldaps://ad.lsdopen.io:636, ldaps://ad.lsdopen.io:636,
-        #     user_search:
-        #       base_dn: DC=lsdopen,DC=io
-        #       filter: (userPrincipalName={0})
-      
+  # Active Directory Integration
+  ad:
+    enabled: false
+    bindpassword: ""
+    # A map of the different realms as supported by Elastic: https://www.elastic.co/guide/en/elasticsearch/reference/8.8/realms.html
+    realms: {}
+      # active_directory:
+      #   ad_example:
+      #     bind_dn: >-
+      #       CN=svc_account,OU=Service
+      #       Accounts,DC=lsdopen,DC=io
+      #     bind_password: ${AD_BIND_PASSWORD}
+      #     domain_name: lsdopen.io
+      #     enabled: true
+      #     group_search:
+      #       base_dn: DC=lsdopen,DC=io
+      #     order: 1
+      #     ssl:
+      #       verification_mode: none
+      #     unmapped_groups_as_roles: false
+      #     url: >-
+      #       ldaps://ad.lsdopen.io:636, ldaps://ad.lsdopen.io:636,
+      #     user_search:
+      #       base_dn: DC=lsdopen,DC=io
+      #       filter: (userPrincipalName={0})
 
-    #Kibana
-    kibana:
+
+  #Kibana
+  kibana:
+    enabled: true
+    count: "2"
+    ingress:
+      url: ""
       enabled: true
-      count: "2"
-      ingress:
-        url: *anchorkibanaURL
-        enabled: true
-        className: nginx
-        annotations: {}
-        tls:
-          secretName: kibana-ingress-tls
+      className: nginx
+      annotations: {}
+      tls:
+        secretName: kibana-ingress-tls
 
-    #Enterprise Search
-    enterprise_search:
-      enabled: false
-      count: "1"
-      ingress:
-        url: enterprise.domain.example
-        enabled: true
-        className: nginx
-        annotations: {}
-        tls:
-          secretName: enterprise-search-ingress-tls
-
-    #Filebeat 
-    filebeat:
+  #Enterprise Search
+  enterprise_search:
+    enabled: false
+    count: "1"
+    ingress:
+      url: enterprise.domain.example
       enabled: true
-      serviceAccount:
-        annotations: {}
+      className: nginx
+      annotations: {}
+      tls:
+        secretName: enterprise-search-ingress-tls
+    resources:
+      requests:
+        cpu: 500m
+        memory: 500Mi
+      limits:
+        memory: 500Mi
 
-    #Cloudwatch Input Source for Filebeat
-    filebeatCloudwatch:
-      enabled: false
-      roleArn: ""
-      logArns: []
+  #Filebeat
+  filebeat:
+    enabled: false
+    serviceAccount:
+      annotations: {}
 
-
-    ## Metricbeat as a Daemonset to collect metrics from Nodes
-    metricbeat:
-      enabled: true
-    ## Fleet agents as a Daemonset to collect metrics/logs from Nodes (replaces metricbeat and filebeat)
-    fleet:
-      enabled: true
-      fleetURL: *anchorfleetURL
-      ingress:
-        className: nginx
-        annotations: {}
-        tls:
-          secretName: fleet-ingress-tls
-        url: *anchorfleetURL
-
-    ## Metricbeat to connect to Prometheus
-    metricbeatPrometheus:
-      enabled: false
-
-    #APM servers  
-
-    #New gen Fleet based APM servers - cannot be enabled if apm is enabled
-    fleetapm:
-      enabled: true
-      ingress:
-        className: nginx      
-        annotations: {}
-        tls:
-          secretName: apm-ingress-tls
-        url: *anchorapmURL
+  #Cloudwatch Input Source for Filebeat
+  filebeatCloudwatch:
+    enabled: false
+    roleArn: ""
+    logArns: []
 
 
-    #S3 bucket storage for snapshots    
-    s3snapshot:
-      enabled: true
-      bucket: "elastic-storage"
+  ## Metricbeat as a Daemonset to collect metrics from Nodes
+  metricbeat:
+    enabled: false
+  ## Fleet agents as a Daemonset to collect metrics/logs from Nodes (replaces metricbeat and filebeat)
+  fleet:
+    enabled: false
+    fleetURL: ""
+    ingress:
+      className: nginx
+      annotations: {}
+      tls:
+        secretName: fleet-ingress-tls
+      url: ""
+
+  ## Metricbeat to connect to Prometheus
+  metricbeatPrometheus:
+    enabled: false
+
+  #APM servers
+
+  #New gen Fleet based APM servers - cannot be enabled if apm is enabled
+  fleetapm:
+    enabled: false
+    ingress:
+      className: nginx
+      annotations: {}
+      tls:
+        secretName: apm-ingress-tls
+      url: ""
 
 
-# Logstash
-logstash:
-  image: "docker.elastic.co/logstash/logstash"
-  imageTag: 8.8.1
-  replicas: "0"
-  logstashJavaOpts: *anchorlogstashJavaOpts
-  resources:
-    requests:
-      cpu: "100m"
-      memory: "1536Mi"
-    limits:
-      cpu: "1000m"
-      memory: "1536Mi"
-  volumeClaimTemplate: {}
-  service: 
-    type: ClusterIP
-    loadBalancerIP: ""
-    ports:
-      - name: beats
-        port: 5044
-        protocol: TCP
-        targetPort: 5044
-  logstashPatternDir: "/usr/share/logstash/patterns/"
-  logstashConfig: 
-    logstash.yml: |
-      http.host: "0.0.0.0"
-      monitoring.enabled: true
-      monitoring.elasticsearch.username: elastic
-      monitoring.elasticsearch.password: ${ELASTIC_PASSWORD}
-      monitoring.elasticsearch.hosts: [ "https://lsdmop-es-http:9200" ]
-      monitoring.elasticsearch.ssl.certificate_authority: /usr/share/logstash/certs/tls.crt
-      pipeline.ordered: false
-    pipelines.yml: |
-      - pipeline.id: main
-        path.config: "/usr/share/logstash/pipeline"
-      - pipeline.id: lsdmop
-        path.config: "/usr/share/logstash/pipeline/lsdmop"
-  secretMounts:
-    - name: elastic-ca-certs
-      secretName: lsdmop-es-http-ca-internal
-      path: /usr/share/logstash/certs
-      defaultMode: 420
-  extraEnvs:
-    - name: ELASTIC_PASSWORD
-      valueFrom:
-        secretKeyRef:
-          name: lsdmop-es-elastic-user
-          key: elastic
-  extraVolumes: |
-    - configMap:
-        defaultMode: 420
-        name: logstash-pipeline
-      name: logstash-pipeline
-    - configMap:
-        defaultMode: 420
-        name: logstash-pipeline-lsdmop
-      name: logstash-pipeline-lsdmop
-    - configMap:
-        defaultMode: 420
-        name: logstash-patterns
-      name: logstash-patterns
-  extraVolumeMounts: |
-    - mountPath: /usr/share/logstash/pipeline
-      name: logstash-pipeline
-    - mountPath: /usr/share/logstash/pipeline/lsdmop
-      name: logstash-pipeline-lsdmop
-    - mountPath: /usr/share/logstash/patterns
-      name: logstash-patterns
+  #S3 bucket storage for snapshots
+  s3snapshot:
+    enabled: false
+    bucket: "elastic-storage"

@@ -1,11 +1,9 @@
 # Elasticsearch Ingress
-{{- if .Values.lsdmop.elastic.fleet.enabled -}}
-{{- if or (eq .Values.lsdmop.clusterType "gke") (eq .Values.lsdmop.clusterType "rancher") -}}
----
+{{- if .Values.elastic.fleet.enabled -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-{{- with .Values.lsdmop.elastic.fleet.ingress.annotations }}
+{{- with .Values.elastic.fleet.ingress.annotations }}
   annotations:
 {{ toYaml . | indent 4 }}
 {{- end }}  
@@ -15,13 +13,13 @@ metadata:
   name: fleet-server-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
 spec:
-  ingressClassName: {{ .Values.lsdmop.elastic.fleet.ingress.className }}
+  ingressClassName: {{ .Values.elastic.fleet.ingress.className }}
   tls:
     - hosts:
-        - {{ .Values.lsdmop.elastic.fleet.ingress.url }}
-      secretName: {{ .Values.lsdmop.elastic.fleet.ingress.tls.secretName }}
+        - {{ .Values.elastic.fleet.ingress.url }}
+      secretName: {{ .Values.elastic.fleet.ingress.tls.secretName }}
   rules:
-  - host: {{ .Values.lsdmop.elastic.fleet.ingress.url }}
+  - host: {{ .Values.elastic.fleet.ingress.url }}
     http:
       paths:
       - backend:
@@ -32,5 +30,4 @@ spec:
         path: /
         pathType: ImplementationSpecific
 ---
-{{- end }}
 {{- end }}
