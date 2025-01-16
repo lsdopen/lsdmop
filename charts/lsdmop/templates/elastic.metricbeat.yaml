@@ -1,6 +1,4 @@
-# Elastic Metricbeat {{ .Release.Name }}-metricbeat
 {{- if .Values.elastic.metricbeat.enabled -}}
----
 apiVersion: v1
 kind: ConfigMap
 metadata:

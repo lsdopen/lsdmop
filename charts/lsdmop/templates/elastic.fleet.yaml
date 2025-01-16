@@ -1,6 +1,4 @@
-# Elastic Metricbeat {{ .Release.Name }}-metricbeat
 {{- if .Values.elastic.fleet.enabled -}}
----
 apiVersion: agent.k8s.elastic.co/v1alpha1
 kind: Agent
 metadata:

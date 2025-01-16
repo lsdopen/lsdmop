@@ -1,5 +1,4 @@
 {{- if .Values.elastic.enabled -}}
----
 apiVersion: batch/v1
 kind: Job
 metadata:
