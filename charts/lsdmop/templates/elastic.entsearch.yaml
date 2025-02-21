@@ -20,7 +20,8 @@ spec:
     spec:
       containers:
         - name: enterprise-search
-          resources: {{ .Values.elastic.enterprise_search.resources }}
+          resources:
+            {{ .Values.elastic.enterprise_search.resources | toYaml | indent 12 | trim }}
           env:
             - name: JAVA_OPTS
               value: -Xms3500m -Xmx3500m
