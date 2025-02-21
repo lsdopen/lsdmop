@@ -127,10 +127,10 @@ elastic:
         secretName: enterprise-search-ingress-tls
     resources:
       requests:
-        cpu: 500m
-        memory: 500Mi
+        cpu: 1
+        memory: 4Gi
       limits:
-        memory: 500Mi
+        memory: 4Gi
 
   #Filebeat
   filebeat:
