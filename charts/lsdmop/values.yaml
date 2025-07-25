@@ -3,6 +3,7 @@ curl:
 
 elastic:
   enabled: true
+  annotations: {}
   license:
     enabled: false
     key: ""
