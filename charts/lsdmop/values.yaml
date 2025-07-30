@@ -67,7 +67,7 @@ elastic:
 #           limits:
 #             memory: 16
 #         tolerations: []
-#         storagesize: 1Gi
+#         storageSize: 1Gi
 #         storageClassName: ebs-gp3
 #         roles: ["ml"]
   hostAliases: []
