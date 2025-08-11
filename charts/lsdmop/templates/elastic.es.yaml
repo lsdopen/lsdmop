@@ -77,7 +77,7 @@ spec:
           topologySpreadConstraints:
           - labelSelector:
               matchLabels:
-                elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
+                elasticsearch.k8s.elastic.co/cluster-name: {{ $.Release.Name }}
             maxSkew: 1
             minDomains: {{ $nodeSet.count }}
             topologyKey: kubernetes.io/hostname
@@ -85,7 +85,7 @@ spec:
 {{- if $nodeSet.enableZoneTopologySpread }}
           - labelSelector:
               matchLabels:
-                elasticsearch.k8s.elastic.co/cluster-name: {{ .Release.Name }}
+                elasticsearch.k8s.elastic.co/cluster-name: {{ $.Release.Name }}
                 elasticsearch.k8s.elastic.co/statefulset-name: lsdmop-es-{{ $name }}
             maxSkew: 1
             minDomains: 3
