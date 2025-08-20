@@ -70,7 +70,7 @@ elastic:
 #         tolerations: []
 #         storageSize: 1Gi
 #         storageClassName: ebs-gp3
-#         roles: ["ml"]
+#         roles: ["ml", "remote_cluster_client"]
   hostAliases: []
     # - hostnames:
     #     - ad.lsdopen.io
