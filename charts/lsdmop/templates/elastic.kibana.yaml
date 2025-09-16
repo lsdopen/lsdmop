@@ -135,10 +135,6 @@ spec:
             cpu: 500m
           limits:
             memory: 2Gi
-      tolerations:
-        - effect: NoSchedule
-          key: dedicated
-          operator: Exists
   http:
     tls:
       #selfSignedCertificate:
