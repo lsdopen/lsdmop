@@ -26,12 +26,14 @@ spec:
         composableIndexTemplates:
           logs-app-template:
             index_patterns: ["logs-aq-*"]
-            data_stream: {}
+            data_stream:
+              timestamp_field:
+                name: "@timestamp"
             composed_of: ["aq-mappings", "aq-settings"] 
             priority: 200    
 
       
-      
+ 
       
       xpack.security.authc.realms:
         native:

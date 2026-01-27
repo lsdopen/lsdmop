@@ -9,7 +9,7 @@ elastic:
     key: ""
   autoscaling:
     enabled: false
-  version: "8.16.1"
+  version: "8.16.1" #overridden upstream by Terraform
   ingress:
     annotations: {}
     className: "nginx"
