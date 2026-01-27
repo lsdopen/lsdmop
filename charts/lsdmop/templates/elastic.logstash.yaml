@@ -1,0 +1,213 @@
+
+apiVersion: logstash.k8s.elastic.co/v1alpha1
+kind: Logstash
+metadata:
+  name: logstash-lsdmop
+  namespace: lsdmop
+spec:
+  count: 0
+  version: {{ .Values.elastic.version }}
+  elasticsearchRefs:
+    - clusterName: eck
+      name: lsdmop
+  podTemplate:
+    spec:
+      serviceAccountName: elastic-agent #for testing
+      serviceAccount: elastic-agent
+      # initContainers:
+      # - name: download-postgres
+      #   command: ["/bin/sh"]
+      #   args: ["-c", "curl -o /data/postgresql.jar -L https://jdbc.postgresql.org/download/postgresql-42.6.0.jar"]
+      #   volumeMounts:
+      #     - name: workdir
+      #       mountPath: /data
+      initContainers:
+      - name: sleep-debug 
+        command: ["/bin/sh"]
+        args: ["-c", "sleep 1"] #set this for debug
+        volumeMounts:
+          - name: workdir
+            mountPath: /data      
+      containers:
+        - name: logstash
+          volumeMounts:
+            - name: workdir
+              mountPath: /usr/share/logstash/jars    
+          resources:
+            limits:
+              #cpu: '2'
+              memory: 2Gi
+            requests:
+              cpu: '2'
+              memory: 512Mi    
+      tolerations:
+        - key: node-role.kubernetes.io/elastic-general
+          operator: Exists
+          effect: NoSchedule
+      # affinity:
+      #   nodeAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       nodeSelectorTerms:
+      #         - matchExpressions:
+      #             - key: node-role.kubernetes.io/elastic-general
+      #               operator: Exists          
+
+  volumeClaimTemplates:
+    - metadata:
+        name: workdir
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 50Mi
+          storageClassName: standard
+  pipelines:
+
+    - pipeline.id: eas1
+      config.string: |
+        input {
+
+
+          http {
+            
+          }
+        }
+       
+  
+
+        output {
+          elasticsearch {
+            hosts => [ "https://lsdmop-es-http.lsdmop.svc:9200" ]
+            ssl_verification_mode => "none"
+            user => "${ECK_ES_USER}"
+            password => "${ECK_ES_PASSWORD}"
+            #ssl_certificate_authorities => "${ECK_ES_SSL_CERTIFICATE_AUTHORITY}"
+            #document_id => "%{message_id}"
+            #index => "" 
+            data_stream => "true"
+            data_stream_type => "logs"
+            data_stream_dataset => "allquiet"
+            data_stream_namespace => "prod"                
+          }
+
+        }
+      
+
+
+    - pipeline.id: nam1
+      config.string: |
+        input {
+
+
+          syslog {
+            port => 32642
+            #codec => cef
+            #syslog_field => "syslog"
+            #grok_pattern => "<%{POSINT:priority}>%{SYSLOGTIMESTAMP:timestamp} CUSTOM GROK HERE"
+          }
+
+        }
+
+
+
+
+        output {
+          elasticsearch {
+            hosts => [ "https://lsdmop-es-http.lsdmop.svc:9200" ]
+            ssl_verification_mode => "none"
+            user => "${ECK_ES_USER}"
+            password => "${ECK_ES_PASSWORD}"
+            #ssl_certificate_authorities => "${ECK_ES_SSL_CERTIFICATE_AUTHORITY}"
+            #document_id => "%{message_id}"
+            #index => "" 
+            data_stream => "true"
+            data_stream_type => "logs"
+            data_stream_dataset => "nam"
+            data_stream_namespace => "prod" 
+            pipeline => "nam-b2b"                
+          }
+
+        }
+      
+
+  # HOW TO SPECIFIY SERVICES FOR LOGSTASH IN THE LOGSTASH CRD
+  # services:
+  #   - name: logstash-eas
+  #     service:
+  #       spec:
+  #         type: ClusterIP
+  #         ports:
+  #           - port: 12345
+  #             name: "eas"
+  #             protocol: TCP
+  #             targetPort: 12345 
+
+  #   - name: logstash-eas
+  #     service:
+  #       spec:
+  #         type: nodePort
+  #         ports:
+  #           - port: 12345
+  #             name: "eas"
+  #             protocol: TCP
+  #             targetPort: 12345 
+
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: logstash
+  name: logstash-{{ .Release.Name }}-ls-eas
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: NodePort
+  selector:
+    common.k8s.elastic.co/type: "logstash"
+  ports:
+    - name: tcp-eas
+      port: 32640
+      targetPort: 32640  
+      protocol: TCP
+      nodePort: 32640
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: logstash
+  name: logstash-{{ .Release.Name }}-ls-aaf
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: NodePort
+  selector:
+    common.k8s.elastic.co/type: "logstash"
+  ports:
+    - name: tcp-aaf
+      port: 32641
+      targetPort: 32641
+      protocol: TCP
+      nodePort: 32641
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: logstash
+  name: logstash-{{ .Release.Name }}-ls-nam
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: NodePort
+  selector:
+    common.k8s.elastic.co/type: "logstash"
+  ports:
+    - name: tcp-nam
+      port: 32642
+      targetPort: 32642
+      protocol: TCP
+      nodePort: 32642          

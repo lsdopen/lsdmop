@@ -1,0 +1,58 @@
+apiVersion: stackconfigpolicy.k8s.elastic.co/v1alpha1
+kind: StackConfigPolicy
+metadata:
+  name: lsdmop-stack-config-policy
+  namespace: lsdmop
+spec:
+  resourceSelector:
+    # matchLabels:
+    #   env: my-label
+  elasticsearch:
+    # clusterSettings:
+    #   indices.recovery.max_bytes_per_sec: "100mb"
+    config:
+
+      indexTemplates:
+        componentTemplates:
+          aq-mappings:
+            template:
+              mappings:
+                properties:
+                  "@timestamp": { type: "date" }
+          aq-settings:
+            template:
+              settings:
+                number_of_shards: 1
+        composableIndexTemplates:
+          logs-app-template:
+            index_patterns: ["logs-aq-*"]
+            data_stream: {}
+            composed_of: ["aq-mappings", "aq-settings"] 
+            priority: 200    
+
+      
+      
+      
+      xpack.security.authc.realms:
+        native:
+          native1:
+            order: 0
+            enabled: true
+        saml:
+          saml1:
+            enabled: true
+            attributes.principal: "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/username"
+            attributes.groups: "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/groups"
+            attributes.name: "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname"
+            attributes.mail: "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
+            enabled: true
+            idp.entity_id: https://login.lsdopen.io/nidp/saml2/metadata
+            idp.metadata.path: >-
+              https://login.lsdopen.io/nidp/saml2/metadata?PID=https://kibana-lsdmop.apps.lsdopen.io/
+            nameid_format: urn:oasis:names:tc:SAML:2.0:nameid-format:unspecified
+            order: 2
+            sp.acs: >-
+              https://kibana-lsdmop.apps.lsdopen.io/api/security/saml/callback
+            sp.entity_id: https://kibana-lsdmop.apps.lsdopen.io/
+            sp.logout: https://kibana-lsdmop.apps.lsdopen.io/logout
+
