@@ -10,31 +10,29 @@ spec:
   elasticsearch:
     # clusterSettings:
     #   indices.recovery.max_bytes_per_sec: "100mb"
+
+
+    indexTemplates:
+      componentTemplates:
+        aq-mappings:
+          template:
+            mappings:
+              properties:
+                "@timestamp": { type: "date" }
+        aq-settings:
+          template:
+            settings:
+              number_of_shards: 1
+      composableIndexTemplates:
+        aq-app-template:
+          index_patterns: ["logs-aq-*"]
+          data_stream:
+            timestamp_field:
+              name: "@timestamp"
+          composed_of: ["aq-mappings", "aq-settings"] 
+          priority: 200  
+
     config:
-
-      indexTemplates:
-        componentTemplates:
-          aq-mappings:
-            template:
-              mappings:
-                properties:
-                  "@timestamp": { type: "date" }
-          aq-settings:
-            template:
-              settings:
-                number_of_shards: 1
-        composableIndexTemplates:
-          logs-app-template:
-            index_patterns: ["logs-aq-*"]
-            data_stream:
-              timestamp_field:
-                name: "@timestamp"
-            composed_of: ["aq-mappings", "aq-settings"] 
-            priority: 200    
-
-      
- 
-      
       xpack.security.authc.realms:
         native:
           native1:
