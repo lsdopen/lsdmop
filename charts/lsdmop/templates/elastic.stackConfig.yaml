@@ -12,25 +12,38 @@ spec:
     #   indices.recovery.max_bytes_per_sec: "100mb"
 
 
+    indexLifecyclePolicies:
+      allquiet-ilm:
+        phases:
+          hot:
+            actions:
+              rollover:
+                max_size: 5gb
+            min_age: 7d
     indexTemplates:
       componentTemplates:
         aq-mappings:
           template:
             mappings:
               properties:
-                "@timestamp": { type: "date" }
+                '@timestamp':
+                  type: date
         aq-settings:
           template:
             settings:
+              index.lifecycle.name: allquiet-ilm
+              number_of_replicas: 0
               number_of_shards: 1
       composableIndexTemplates:
-        aq-app-template:
-          index_patterns: ["logs-aq-*"]
-          data_stream:
-            timestamp_field:
-              name: "@timestamp"
-          composed_of: ["aq-mappings", "aq-settings"] 
-          priority: 200  
+        allquiet-incidents-template:
+          composed_of:
+            - aq-mappings
+            - aq-settings
+          data_stream: {}
+          index_patterns:
+            - allquiet-incidents-*
+          priority: 200
+
 
     config:
       xpack.security.authc.realms:
