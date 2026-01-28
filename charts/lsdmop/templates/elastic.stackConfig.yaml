@@ -25,114 +25,114 @@ spec:
         aq-mappings:
           template:
             mappings:
-              "properties": 
-                "@timestamp": 
-                  "type": "date"
-                "CorrelationId": 
-                  "type": "text"
-                  "fields": 
-                    "keyword": 
-                      "type": "keyword"
-                      "ignore_above": 256
-                "Customer": 
-                  "type": "text"
-                  "fields": 
-                    "keyword": 
-                      "type": "keyword"
-                      "ignore_above": 256
-                "Description": 
-                  "type": "text"
-                  "fields": 
-                    "keyword": 
-                      "type": "keyword"
-                      "ignore_above": 256
-                "Environment": 
-                  "type": "text"
-                  "fields": 
-                    "keyword": 
-                      "type": "keyword"
-                      "ignore_above": 256
-                "Platform": 
-                  "type": "text"
-                  "fields": 
-                    "keyword": 
-                      "type": "keyword"
-                      "ignore_above": 256
-                "Product": 
-                  "type": "text"
-                  "fields": 
-                    "keyword": 
-                      "type": "keyword"
-                      "ignore_above": 256
-                "Runbook": 
-                  "type": "text"
-                  "fields": 
-                    "keyword": 
-                      "type": "keyword"
-                      "ignore_above": 256
-                "Stage": 
-                  "type": "text"
-                  "fields": 
-                    "keyword": 
-                      "type": "keyword"
-                      "ignore_above": 256
-                "Summary": 
-                  "type": "text"
-                  "fields": 
-                    "keyword": 
-                      "type": "keyword"
-                      "ignore_above": 256
-                "Team": 
-                  "type": "text"
-                  "fields": 
-                    "keyword": 
-                      "type": "keyword"
-                      "ignore_above": 256
-                "Tier": 
-                  "type": "text"
-                  "fields": 
-                    "keyword": 
-                      "type": "keyword"
-                      "ignore_above": 256
-                "URL": 
-                  "type": "text"
-                  "fields": 
-                    "keyword": 
-                      "type": "keyword"
-                      "ignore_above": 256
-                "eventId": 
-                  "type": "text"
-                  "fields": 
-                    "keyword": 
-                      "type": "keyword"
-                      "ignore_above": 256
-                "incidentCreatedAt": 
-                  "type": "date"
+              properties: 
+                '@timestamp': 
+                  type: date
+                CorrelationId: 
+                  type: text
+                  fields: 
+                    keyword: 
+                      type: keyword
+                      ignore_above: 256
+                Customer: 
+                  type: text
+                  fields: 
+                    keyword: 
+                      type: keyword
+                      ignore_above: 256
+                Description: 
+                  type: text
+                  fields: 
+                    keyword: 
+                      type: keyword
+                      ignore_above: 256
+                Environment: 
+                  type: text
+                  fields: 
+                    keyword: 
+                      type: keyword
+                      ignore_above: 256
+                Platform: 
+                  type: text
+                  fields: 
+                    keyword: 
+                      type: keyword
+                      ignore_above: 256
+                Product: 
+                  type: text
+                  fields: 
+                    keyword: 
+                      type: keyword
+                      ignore_above: 256
+                Runbook: 
+                  type: text
+                  fields: 
+                    keyword: 
+                      type: keyword
+                      ignore_above: 256
+                Stage: 
+                  type: text
+                  fields: 
+                    keyword: 
+                      type: keyword
+                      ignore_above: 256
+                Summary: 
+                  type: text
+                  fields: 
+                    keyword: 
+                      type: keyword
+                      ignore_above: 256
+                Team: 
+                  type: text
+                  fields: 
+                    keyword: 
+                      type: keyword
+                      ignore_above: 256
+                Tier: 
+                  type: text
+                  fields: 
+                    keyword: 
+                      type: keyword
+                      ignore_above: 256
+                URL: 
+                  type: text
+                  fields: 
+                    keyword: 
+                      type: keyword
+                      ignore_above: 256
+                eventId: 
+                  type: text
+                  fields: 
+                    keyword: 
+                      type: keyword
+                      ignore_above: 256
+                incidentCreatedAt: 
+                  type: date
                 
-                "incidentId": 
-                  "type": "text"
-                  "fields": 
-                    "keyword": 
-                      "type": "keyword"
-                      "ignore_above": 256
-                "incidentSeverity": 
-                  "type": "text"
-                  "fields": 
-                    "keyword": 
-                      "type": "keyword"
-                      "ignore_above": 256
-                "incidentTitle": 
-                  "type": "text"
-                  "fields": 
-                    "keyword": 
-                      "type": "keyword"
-                      "ignore_above": 256
-                "incidentURL": 
-                  "type": "text"
-                  "fields": 
-                    "keyword": 
-                      "type": "keyword"
-                      "ignore_above": 256
+                incidentId: 
+                  type: text
+                  fields: 
+                    keyword: 
+                      type: keyword
+                      ignore_above: 256
+                incidentSeverity: 
+                  type: text
+                  fields: 
+                    keyword: 
+                      type: keyword
+                      ignore_above: 256
+                incidentTitle: 
+                  type: text
+                  fields: 
+                    keyword: 
+                      type: keyword
+                      ignore_above: 256
+                incidentURL: 
+                  type: text
+                  fields: 
+                    keyword: 
+                      type: keyword
+                      ignore_above: 256
         aq-settings:
           template:
             settings:
