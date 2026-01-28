@@ -181,3 +181,11 @@ elastic:
   s3snapshot:
     enabled: false
     bucket: "elastic-storage"
+
+
+  elasticAgentSets:
+    example: 
+      replicas: 0
+      token: "token-goes-here"
+      memlimit: "1024Mi"
+      cpulimit: "1000m"

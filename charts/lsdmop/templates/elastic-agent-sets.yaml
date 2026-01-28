@@ -1,0 +1,213 @@
+{{- range $name, $nodeSet := .Values.elastic.elasticAgentSets }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elastic-agent-{{ $name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: elastic-agent
+    app.kubernetes.io/managed-by: Helm
+    k8slens-edit-resource-version: v1
+  annotations:
+    meta.helm.sh/release-name: lsdmop
+    meta.helm.sh/release-namespace: lsdmop
+spec:
+  replicas: {{ $nodeSet.replicas }}
+  selector:
+    matchLabels:
+      app: elastic-agent
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: elastic-agent
+    spec:
+
+    #   initContainers:
+    #   - name: cleanup-tmp-dir
+    #     image: busybox:1.35
+    #     command: ['sh', '-c']
+    #     args:
+    #     - |
+    #       echo "Starting cleanup of /usr/share/elastic-agent/state"
+    #       if [ -d "/usr/share/elastic-agent/state" ]; then
+    #         echo "Directory /usr/share/elastic-agent/state exists, removing contents..."
+    #         rm -rf /usr/share/elastic-agent/state/*
+    #         echo "Cleanup completed successfully"
+    #       else
+    #         echo "Directory /usr/share/elastic-agent/state does not exist, nothing to clean"
+    #       fi
+    #       echo "Init container finished"
+    #     volumeMounts:
+    #       - name: elastic-agent-state
+    #         mountPath: /usr/share/elastic-agent/state
+      volumes:
+        - name: elasticsearch-certs
+          secret:
+            secretName: fleet-server-lsdmop-agent-es-lsdmop-lsdmop-ca
+            defaultMode: 420
+            optional: false
+        - name: fleetserver-certs-1
+          secret:
+            secretName: elastic-agent-lsdmop-agent-fleetserver-ca
+            defaultMode: 420
+            optional: false
+        - name: proc
+          hostPath:
+            path: /proc
+            type: ''
+        - name: cgroup
+          hostPath:
+            path: /sys/fs/cgroup
+            type: ''
+        - name: varlibdockercontainers
+          hostPath:
+            path: /var/lib/docker/containers
+            type: ''
+        - name: varlog
+          hostPath:
+            path: /var/log
+            type: ''
+        - name: etc-full
+          hostPath:
+            path: /etc
+            type: ''
+        - name: var-lib
+          hostPath:
+            path: /var/lib
+            type: ''
+        - name: etc-mid
+          hostPath:
+            path: /etc/machine-id
+            type: File
+        - name: sys-kernel-debug
+          hostPath:
+            path: /sys/kernel/debug
+            type: ''
+        - name: elastic-agent-state
+          hostPath:
+            path: /var/lib/elastic-agent/lsdmop/elastic-agent-{{ $name }}/state
+            type: DirectoryOrCreate
+      containers:
+        - name: elastic-agent
+          image: docker.elastic.co/beats/elastic-agent:{{ $.Values.elastic.version }}
+          command:
+            - /usr/bin/env
+            - bash
+            - '-c'
+            - >
+              #!/usr/bin/env bash
+
+              set -e
+
+              if [[ -f
+              /mnt/elastic-internal/elasticsearch-association/lsdmop/lsdmop/certs/ca.crt
+              ]]; then
+                if [[ -f /usr/bin/update-ca-trust ]]; then
+                  cp /mnt/elastic-internal/elasticsearch-association/lsdmop/lsdmop/certs/ca.crt /etc/pki/ca-trust/source/anchors/
+                  /usr/bin/update-ca-trust
+                elif [[ -f /usr/sbin/update-ca-certificates ]]; then
+                  cp /mnt/elastic-internal/elasticsearch-association/lsdmop/lsdmop/certs/ca.crt /usr/local/share/ca-certificates/
+                  /usr/sbin/update-ca-certificates
+                fi
+              fi
+
+              /usr/bin/tini -- /usr/local/bin/docker-entrypoint
+              -e               
+          env:
+            - name: FLEET_ENROLL
+              value: '1'
+            - name: FLEET_INSECURE
+              value: 'true'
+            - name: FLEET_URL
+              value: https://fleet-server-lsdmop-agent-http.lsdmop.svc:8220
+            - name: FLEET_ENROLLMENT_TOKEN
+              value: {{ $nodeSet.token }}
+            - name: KIBANA_HOST
+              value: http://lsdmop-kb-http:5601
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+
+            - name: ELASTIC_NETINFO
+              value: 'false'
+          resources:
+            limits:
+              cpu: {{ $nodeSet.cpulimit }}
+              memory: {{ $nodeSet.memlimit }}
+            requests:
+              cpu: 100m
+              memory: 400Mi
+          volumeMounts:
+            - name: elasticsearch-certs
+              readOnly: true
+              mountPath: >-
+                /mnt/elastic-internal/elasticsearch-association/lsdmop/lsdmop/certs
+            - name: fleetserver-certs-1
+              readOnly: true
+              mountPath: >-
+                /mnt/elastic-internal/fleetserver-association/lsdmop/fleet-server-lsdmop/certs               
+            - name: proc
+              readOnly: true
+              mountPath: /hostfs/proc
+            - name: cgroup
+              readOnly: true
+              mountPath: /hostfs/sys/fs/cgroup
+            - name: varlibdockercontainers
+              readOnly: true
+              mountPath: /var/lib/docker/containers
+            - name: varlog
+              readOnly: true
+              mountPath: /var/log
+            - name: etc-full
+              readOnly: true
+              mountPath: /hostfs/etc
+            - name: var-lib
+              readOnly: true
+              mountPath: /hostfs/var/lib
+            - name: etc-mid
+              readOnly: true
+              mountPath: /etc/machine-id
+            - name: sys-kernel-debug
+              mountPath: /sys/kernel/debug
+            - name: elastic-agent-state
+              mountPath: /usr/share/elastic-agent/state
+            - name: fleetserver-certs-1
+              readOnly: true
+              mountPath: >-
+                /mnt/elastic-internal/fleetserver-association/lsdmop/fleet-server-lsdmop/certs                
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsUser: 0
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirstWithHostNet
+      serviceAccountName: elastic-agent
+      serviceAccount: elastic-agent
+      hostNetwork: false
+      securityContext:
+        runAsUser: 0
+      schedulerName: default-scheduler
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 26%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+---
+{{- end }}
