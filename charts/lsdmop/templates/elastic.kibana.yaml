@@ -26,7 +26,7 @@ spec:
     xpack.encryptedSavedObjects.encryptionKey: "37LxDnDT9dy*J2DcTE7UQJW6mw@sMmqj"
 
 {{- if .Values.elastic.fleet.enabled }}
-    xpack.fleet.agents.elasticsearch.hosts: ["https://lsdmop-es-http.lsdmop.svc:9200"]
+    xpack.fleet.agents.elasticsearch.hosts: ["https://lsdmop-es-internal-http.lsdmop.svc:9200"]
     xpack.fleet.agents.fleet_server.hosts: 
       - https://fleet-server-lsdmop-agent-http.lsdmop.svc:8220
       - https://{{ .Values.elastic.fleet.fleetURL }}:443
