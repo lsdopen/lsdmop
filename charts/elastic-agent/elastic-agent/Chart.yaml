@@ -1,0 +1,12 @@
+apiVersion: v2
+appVersion: 9.3.2
+dependencies:
+- condition: kube-state-metrics.enabled
+  name: kube-state-metrics
+  repository: https://prometheus-community.github.io/helm-charts
+  version: 6.1.0
+description: Elastic-Agent Helm Chart
+kubeVersion: '>= 1.27.0-0'
+name: elastic-agent
+type: application
+version: 9.3.2-lsd-1.0

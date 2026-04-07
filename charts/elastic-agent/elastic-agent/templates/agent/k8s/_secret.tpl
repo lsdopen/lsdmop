@@ -1,0 +1,85 @@
+{{- define "elasticagent.engine.k8s.secretData" -}}
+{{- $ := index . 0 -}}
+{{- $presetVal := index . 1 -}}
+{{- $agentName := index . 2 }}
+  agent.yml: |-
+    {{- if eq $.Values.agent.fleet.enabled false }}
+    {{- if ($presetVal)._inputs }}
+    {{- /*  elastic-agent config */}}
+    id: {{ $agentName }}
+    {{- with ($presetVal).outputs }}
+    outputs:
+      {{- range $outputName, $outputVal := . -}}
+      {{- include (printf "elasticagent.output.%s.preset.config" ($outputVal).type) (list $ $outputName $outputVal) | nindent 6 }}
+      {{- end }}
+    {{- end }}
+    secret_references: []
+    {{- with ($presetVal).agent }}
+    agent:
+      {{- . | toYaml | nindent 6}}
+    {{- end }}
+    inputs:
+      {{- with ($presetVal)._inputs }}
+      {{- . | toYaml | nindent 6 }}
+      {{- end }}
+    {{- with ($presetVal).providers }}
+    providers:
+      {{- . | toYaml | nindent 6 }}
+    {{- end }}
+    {{- end }}
+    {{- if ($presetVal).otelConfig }}
+    {{- /*  we have also otel config which is directly embedded in the agent config */}}
+    {{- ($presetVal).otelConfig | toYaml | nindent 4 }}
+    {{- end }}
+    {{- else }}
+    fleet:
+      enabled: true
+    {{- with ($presetVal).providers }}
+    providers:
+      {{- . | toYaml | nindent 6 }}
+    {{- end }}
+    {{- end }}
+  {{- if eq $.Values.agent.fleet.enabled true }}
+  {{- if $.Values.agent.fleet.ca.value }}
+  {{ ($.Values.agent.fleet.ca)._key }} : |-
+    {{- ($.Values.agent.fleet.ca).value | nindent 4 }}
+  {{- end }}
+  {{- if $.Values.agent.fleet.agentCert.value }}
+  {{ ($.Values.agent.fleet.agentCert)._key }} : |-
+    {{- ($.Values.agent.fleet.agentCert).value | nindent 4 }}
+  {{- end }}
+  {{- if $.Values.agent.fleet.agentCertKey.value }}
+  {{ ($.Values.agent.fleet.agentCertKey)._key }} : |-
+    {{- ($.Values.agent.fleet.agentCertKey).value | nindent 4 }}
+  {{- end }}
+  {{- if $.Values.agent.fleet.kibanaCA.value }}
+  {{ ($.Values.agent.fleet.kibanaCA)._key }} : |-
+    {{- ($.Values.agent.fleet.kibanaCA).value | nindent 4 }}
+  {{- end }}
+  {{- else }}
+  {{- with ($presetVal).outputs }}
+  {{- range $idx, $outputVal := . }}
+  {{- with (dig "ssl" "certificateAuthorities" list $outputVal) }}
+  {{- range $idx, $certificateAuthoritiy := . }}
+  {{- if $certificateAuthoritiy.value }}
+  {{ $certificateAuthoritiy._key }} : |-
+    {{- $certificateAuthoritiy.value | nindent 4 }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- if ne ( . | dig "ssl" "certificate" "value" "not_found") "not_found"  }}
+  {{ .ssl.certificate._key }} : |-
+    {{- .ssl.certificate.value | nindent 4 }}
+  {{- end }}
+  {{- if ne ( . | dig "ssl" "key" "value" "not_found") "not_found"  }}
+  {{ .ssl.key._key }} : |-
+    {{- .ssl.key.value | nindent 4 }}
+  {{- end }}
+  {{- if ne ( . | dig "ssl" "key_passphrase" "value" "not_found") "not_found"  }}
+  {{ .ssl.key_passphrase._key }} : |-
+    {{- .ssl.key_passphrase.value | nindent 4 }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+{{- end }}

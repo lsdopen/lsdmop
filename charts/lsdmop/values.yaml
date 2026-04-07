@@ -9,36 +9,38 @@ elastic:
     key: ""
   autoscaling:
     enabled: false
-  version: "8.16.1" #overridden upstream by Terraform
+  version: "9.3.1" #overridden upstream by Terraform
   ingress:
     annotations: {}
     className: "nginx"
     tls:
       secretName: elastic-ingress-tls
-    url: ""
+    url: "es-lsdmop"
   dedicatedCoordinatingNodes: false
   serviceAccount:
     annotations: {}
-  nodeSets: {}
-#       data-hot:
-#         count: 3
-#         node_attributes:
-#           data: hot
-#         resources:
-#           requests:
-#             cpu: 1500m
-#             memory: 30
-#           limits:
-#             memory: 30
-#         tolerations:
-#         - effect: NoSchedule
-#           key: dedicated
-#           operator: Equal
-#           value: elastic-hot
-#         storagesize: 560Gi
-#         storageClassName: ebs-gp3
-#         nodeSelector: {}
-#         roles: ["master", "data_hot", "transform", "remote_cluster_client", "ingest"]
+  nodeSets: 
+      data-hot:
+        enableZoneTopologySpread: false
+        count: 1
+        node_attributes:
+          data: hot
+        resources:
+          requests:
+            cpu: 1000m
+            memory: 4Gi
+          limits:
+            memory: 4Gi
+            cpu: 2000m
+        tolerations:
+        - effect: NoSchedule
+          key: dedicated
+          operator: Equal
+          value: elastic-hot
+        storageSize: 560Gi
+        storageClassName: standard
+        nodeSelector: {}
+        roles: ["master", "data", "transform", "remote_cluster_client", "ingest", "data_content"]
 #       warm:
 #         count: 2
 #         node_attributes:
@@ -55,7 +57,7 @@ elastic:
 #           key: dedicated
 #           operator: Equal
 #           value: elastic-warm
-#         storagesize: 2760Gi
+#         storageSize: 2760Gi
 #         storageClassName: ebs-gp3
 #         nodeSelector: {}
 #         roles: ["master", "data_warm", "transform", "remote_cluster_client", "ingest"]
@@ -106,9 +108,9 @@ elastic:
   #Kibana
   kibana:
     enabled: true
-    count: "2"
+    count: "1"
     ingress:
-      url: ""
+      url: "kb-lsdmop"
       enabled: true
       className: nginx
       annotations: {}
@@ -151,14 +153,14 @@ elastic:
     enabled: false
   ## Fleet agents as a Daemonset to collect metrics/logs from Nodes (replaces metricbeat and filebeat)
   fleet:
-    enabled: false
-    fleetURL: ""
+    enabled: true
+    fleetURL: "fleet-lsdmop"
     ingress:
       className: nginx
       annotations: {}
       tls:
         secretName: fleet-ingress-tls
-      url: ""
+      url: "fleet-lsdmop"
 
   ## Metricbeat to connect to Prometheus
   metricbeatPrometheus:
