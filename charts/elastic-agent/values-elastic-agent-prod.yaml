@@ -188,11 +188,11 @@ agent:
       tolerations:
         - key: node-role
           operator: Equal
-          value: web
+          value: <toleration1>
           effect: NoSchedule
         - key: node-role
           operator: Equal
-          value: <somevalue>
+          value: <toleration2>
           effect: NoSchedule        
       statePersistence: HostPath
       extraEnvs:
