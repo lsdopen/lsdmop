@@ -597,6 +597,6 @@ agent:
       nodeSelector:
         kubernetes.io/os: linux
 kube-state-metrics:
-  enabled: true
+  enabled: false
   fullnameOverride: "kube-state-metrics"
   replicas: 1
