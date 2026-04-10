@@ -9,4 +9,4 @@ description: Elastic-Agent Helm Chart
 kubeVersion: '>= 1.27.0-0'
 name: elastic-agent
 type: application
-version: 9.3.2-lsd-1.0
+version: 109.3.2
