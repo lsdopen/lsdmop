@@ -4849,6 +4849,26 @@ entries:
     urls:
     - https://github.com/lsdopen/lsdmop/releases/download/lsdmop-connector-0.1.0/lsdmop-connector-0.1.0.tgz
     version: 0.1.0
+  lsdmop-opentelemetry-collector:
+  - apiVersion: v2
+    appVersion: 0.149.0
+    created: "2026-04-16T12:45:49.911012648Z"
+    description: OpenTelemetry Collector Helm chart for Kubernetes
+    digest: 3e97441a60417fb8996767698f2fc55f741d4b60c56e1954cbb06b0e3aeffab5
+    home: https://opentelemetry.io/
+    icon: https://opentelemetry.io/img/logos/opentelemetry-logo-nav.png
+    maintainers:
+    - name: dmitryax
+    - name: jaronoff97
+    - name: TylerHelmuth
+    name: lsdmop-opentelemetry-collector
+    sources:
+    - https://github.com/open-telemetry/opentelemetry-collector
+    - https://github.com/open-telemetry/opentelemetry-collector-contrib
+    type: application
+    urls:
+    - https://github.com/lsdopen/lsdmop/releases/download/lsdmop-opentelemetry-collector-0.0.1/lsdmop-opentelemetry-collector-0.0.1.tgz
+    version: 0.0.1
   lsdmopagent:
   - apiVersion: v2
     appVersion: 1.0.2
@@ -5088,4 +5108,4 @@ entries:
     urls:
     - https://github.com/lsdopen/lsdmop/releases/download/lsdmopagent-2.22.0/lsdmopagent-2.22.0.tgz
     version: 2.22.0
-generated: "2026-04-10T11:51:12.964776696Z"
+generated: "2026-04-16T12:45:49.913163146Z"
