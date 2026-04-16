@@ -1,0 +1,33 @@
+mode: deployment 
+image:
+  repository: "otel/opentelemetry-collector-contrib"
+  tag: "0.112.0" 
+
+config:
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: "0.0.0.0:4317"  
+        http:
+          endpoint: "0.0.0.0:4318"  
+
+  exporters:
+    otlp:
+      endpoint: "http://lsdmop-apm-http:8200"  
+      tls:
+        insecure: true
+
+  service:
+    pipelines:
+      traces:
+        receivers: [otlp]
+        exporters: [otlp]
+      metrics:
+        receivers: [otlp]
+        exporters: [otlp]
+      logs:
+        receivers: [otlp]
+        exporters: [otlp]
+
+
