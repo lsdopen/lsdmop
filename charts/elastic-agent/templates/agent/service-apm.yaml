@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lsdmop-apm-http
+  namespace: lsdmopagent
+  labels:
+    apm.k8s.elastic.co/name: lsdmop
+  selfLink: /api/v1/namespaces/lsdmop/services/lsdmop-apm-http
+spec:
+  ports:
+    - name: https
+      protocol: TCP
+      port: 8200
+      targetPort: 8200
+  selector:
+    agent.k8s.elastic.co/name: agent-pernode-elastic-agent
+  type: ClusterIP
+  sessionAffinity: None
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  internalTrafficPolicy: Cluster
