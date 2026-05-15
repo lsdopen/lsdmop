@@ -13,6 +13,16 @@ entries:
     - https://github.com/lsdopen/lsdmop/releases/download/elastic-agent-9.3.2-lsd-1.0/elastic-agent-9.3.2-lsd-1.0.tgz
     version: 9.3.2-lsd-1.0
   - apiVersion: v2
+    created: "2026-05-15T11:04:02.599320875Z"
+    description: Elastic-Agent Helm Chart
+    digest: 00e5b19e20ab91593505da4b9eefd5163d55fd40b02019c63ea2cd7085922045
+    kubeVersion: '>= 1.27.0-0'
+    name: elastic-agent
+    type: application
+    urls:
+    - https://github.com/lsdopen/lsdmop/releases/download/elastic-agent-1.0.4/elastic-agent-1.0.4.tgz
+    version: 1.0.4
+  - apiVersion: v2
     created: "2026-05-15T09:59:44.208270884Z"
     description: Elastic-Agent Helm Chart
     digest: c5741285045105c51249fb30020c78fdc450135b193554495b46b050fea080de
@@ -5118,4 +5128,4 @@ entries:
     urls:
     - https://github.com/lsdopen/lsdmop/releases/download/lsdmopagent-2.22.0/lsdmopagent-2.22.0.tgz
     version: 2.22.0
-generated: "2026-05-15T09:59:44.209310419Z"
+generated: "2026-05-15T11:04:02.600311245Z"
