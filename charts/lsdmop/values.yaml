@@ -154,6 +154,7 @@ elastic:
   ## Fleet agents as a Daemonset to collect metrics/logs from Nodes (replaces metricbeat and filebeat)
   fleet:
     enabled: true
+    output.throughput.enabled: false
     fleetURL: "fleet-lsdmop"
     ingress:
       className: nginx

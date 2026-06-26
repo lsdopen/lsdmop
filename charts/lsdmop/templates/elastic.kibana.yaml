@@ -18,6 +18,17 @@ spec:
     name: enterprise-search-{{ .Release.Name }}
 {{- end }}
   config:
+{{- if .Values.elastic.fleet.output.throughput.enabled }}
+    xpack.fleet.outputs:
+      - config:
+          bulk_max_size: 4096
+          worker: 4
+          queue.mem.events: 12800
+          queue.mem.flush.min_events: 4096
+          queue.mem.flush.timeout: 10s
+          compression_level: 9
+          idle_connection_timeout: 15s
+{{- end }}
     elasticsearch.compression: true
 {{- if .Values.elastic.enterprise_search.enabled }}
     enterpriseSearch.host: https://enterprise-search-{{ .Release.Name }}-ent-http:3002
