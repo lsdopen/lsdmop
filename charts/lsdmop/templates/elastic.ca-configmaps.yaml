@@ -55,4 +55,20 @@ data:
 {{ index $entSecret.data "tls.crt" | b64dec | indent 4 }}
 {{- end }}
 {{- end }}
+{{- if .Values.elastic.fleet.enabled }}
+{{- $fleetSecret := (lookup "v1" "Secret" .Release.Namespace (printf "fleet-server-%s-agent-http-ca-internal" .Release.Name)) }}
+{{- if $fleetSecret }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-fleet-ca
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  ca.crt: |
+{{ index $fleetSecret.data "tls.crt" | b64dec | indent 4 }}
+{{- end }}
+{{- end }}
 {{- end }}
