@@ -1,0 +1,37 @@
+{{- if and .Values.elastic.enabled .Values.elastic.ingress.gatewayAPI.enabled }}
+---
+apiVersion: gateway.networking.k8s.io/v1alpha3
+kind: BackendTLSPolicy
+metadata:
+  name: {{ .Release.Name }}-es-backend-tls
+  namespace: {{ .Release.Namespace }}
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: {{ .Release.Name }}-elasticsearch-ingress
+  validation:
+    caCertificateRefs:
+      - name: {{ .Release.Name }}-es-http-ca-internal
+        group: ""
+        kind: Secret
+    hostname: {{ .Release.Name }}-elasticsearch-ingress
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ .Release.Name }}-elasticsearch
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: elasticsearch
+spec:
+  parentRefs:
+    - name: {{ .Values.elastic.ingress.gatewayAPI.gatewayName }}
+      namespace: {{ .Values.elastic.ingress.gatewayAPI.gatewayNamespace | default .Release.Namespace }}
+  hostnames:
+    - {{ .Values.elastic.ingress.url }}
+  rules:
+    - backendRefs:
+        - name: {{ .Release.Name }}-elasticsearch-ingress
+          port: 9200
+{{- end }}

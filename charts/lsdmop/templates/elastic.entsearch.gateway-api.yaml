@@ -1,0 +1,37 @@
+{{- if and .Values.elastic.enterprise_search.enabled .Values.elastic.ingress.gatewayAPI.enabled }}
+---
+apiVersion: gateway.networking.k8s.io/v1alpha3
+kind: BackendTLSPolicy
+metadata:
+  name: {{ .Release.Name }}-ent-backend-tls
+  namespace: {{ .Release.Namespace }}
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: enterprise-search-{{ .Release.Name }}-ent-http
+  validation:
+    caCertificateRefs:
+      - name: {{ .Release.Name }}-ent-http-ca-internal
+        group: ""
+        kind: Secret
+    hostname: enterprise-search-{{ .Release.Name }}-ent-http
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ .Release.Name }}-entsearch
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: enterprise-search
+spec:
+  parentRefs:
+    - name: {{ .Values.elastic.ingress.gatewayAPI.gatewayName }}
+      namespace: {{ .Values.elastic.ingress.gatewayAPI.gatewayNamespace | default .Release.Namespace }}
+  hostnames:
+    - {{ .Values.elastic.enterprise_search.ingress.url }}
+  rules:
+    - backendRefs:
+        - name: enterprise-search-{{ .Release.Name }}-ent-http
+          port: 3002
+{{- end }}

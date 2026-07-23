@@ -11,11 +11,16 @@ elastic:
     enabled: false
   version: "9.3.1" #overridden upstream by Terraform
   ingress:
+    enabled: true
     annotations: {}
     className: "nginx"
     tls:
       secretName: elastic-ingress-tls
     url: "es-lsdmop"
+    gatewayAPI:
+      enabled: false       # when true, creates HTTPRoute + BackendTLSPolicy instead of Ingress
+      gatewayName: ""      # name of the Gateway to attach HTTPRoutes to
+      gatewayNamespace: "" # namespace of the Gateway (defaults to release namespace)
   dedicatedCoordinatingNodes: false
   serviceAccount:
     annotations: {}

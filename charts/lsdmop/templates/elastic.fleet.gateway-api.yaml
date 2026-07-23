@@ -1,0 +1,20 @@
+{{- if and .Values.elastic.fleet.enabled .Values.elastic.ingress.gatewayAPI.enabled }}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: fleet-server-{{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: fleet
+spec:
+  parentRefs:
+    - name: {{ .Values.elastic.ingress.gatewayAPI.gatewayName }}
+      namespace: {{ .Values.elastic.ingress.gatewayAPI.gatewayNamespace | default .Release.Namespace }}
+  hostnames:
+    - {{ .Values.elastic.fleet.ingress.url }}
+  rules:
+    - backendRefs:
+        - name: fleet-server-lsdmop-agent-http
+          port: 8220
+{{- end }}
