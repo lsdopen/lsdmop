@@ -1,0 +1,37 @@
+{{- if and .Values.elastic.kibana.enabled .Values.elastic.ingress.gatewayAPI.enabled }}
+---
+apiVersion: gateway.networking.k8s.io/v1alpha3
+kind: BackendTLSPolicy
+metadata:
+  name: {{ .Release.Name }}-kb-backend-tls
+  namespace: {{ .Release.Namespace }}
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: {{ .Release.Name }}-kb-http
+  validation:
+    caCertificateRefs:
+      - name: {{ .Release.Name }}-kb-http-ca-internal
+        group: ""
+        kind: Secret
+    hostname: {{ .Release.Name }}-kb-http
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ .Release.Name }}-kb
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: kibana
+spec:
+  parentRefs:
+    - name: {{ .Values.elastic.ingress.gatewayAPI.gatewayName }}
+      namespace: {{ .Values.elastic.ingress.gatewayAPI.gatewayNamespace | default .Release.Namespace }}
+  hostnames:
+    - {{ .Values.elastic.kibana.ingress.url }}
+  rules:
+    - backendRefs:
+        - name: {{ .Release.Name }}-kb-http
+          port: 5601
+{{- end }}
