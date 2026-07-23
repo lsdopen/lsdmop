@@ -1,0 +1,58 @@
+{{/*
+  CA Certificate ConfigMaps for Gateway API BackendTLSPolicy.
+
+  ECK stores CA certificates in Secrets (tls.crt key), but Traefik's
+  BackendTLSPolicy implementation only supports caCertificateRefs
+  pointing to ConfigMaps. These ConfigMaps mirror the CA cert data
+  from the ECK-managed Secrets so that BackendTLSPolicy can reference them.
+
+  See: https://doc.traefik.io/traefik/v3.6/reference/install-configuration/providers/kubernetes/kubernetes-gateway
+*/}}
+{{- if and .Values.elastic.enabled .Values.elastic.ingress.gatewayAPI.enabled }}
+{{- $esSecret := (lookup "v1" "Secret" .Release.Namespace (printf "%s-es-http-ca-internal" .Release.Name)) }}
+{{- if $esSecret }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-es-ca
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  ca.crt: |
+{{ index $esSecret.data "tls.crt" | b64dec | indent 4 }}
+{{- end }}
+{{- if .Values.elastic.kibana.enabled }}
+{{- $kbSecret := (lookup "v1" "Secret" .Release.Namespace (printf "%s-kb-http-ca-internal" .Release.Name)) }}
+{{- if $kbSecret }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-kb-ca
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  ca.crt: |
+{{ index $kbSecret.data "tls.crt" | b64dec | indent 4 }}
+{{- end }}
+{{- end }}
+{{- if .Values.elastic.enterprise_search.enabled }}
+{{- $entSecret := (lookup "v1" "Secret" .Release.Namespace (printf "%s-ent-http-ca-internal" .Release.Name)) }}
+{{- if $entSecret }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-ent-ca
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  ca.crt: |
+{{ index $entSecret.data "tls.crt" | b64dec | indent 4 }}
+{{- end }}
+{{- end }}
+{{- end }}

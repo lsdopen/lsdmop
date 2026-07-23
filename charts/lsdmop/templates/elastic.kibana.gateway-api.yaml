@@ -12,9 +12,9 @@ spec:
       name: {{ .Release.Name }}-kb-http
   validation:
     caCertificateRefs:
-      - name: {{ .Release.Name }}-kb-http-ca-internal
+      - name: {{ .Release.Name }}-kb-ca
         group: ""
-        kind: Secret
+        kind: ConfigMap
     hostname: {{ .Release.Name }}-kb-http
 ---
 apiVersion: gateway.networking.k8s.io/v1
