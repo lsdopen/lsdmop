@@ -15,6 +15,6 @@ spec:
     - {{ .Values.elastic.fleet.ingress.url }}
   rules:
     - backendRefs:
-        - name: fleet-server-lsdmop-agent-http
+        - name: fleet-server-{{ .Release.Name }}-agent-http
           port: 8220
 {{- end }}
