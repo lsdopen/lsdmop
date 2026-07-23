@@ -12,9 +12,9 @@ spec:
       name: {{ .Release.Name }}-apm-http
   validation:
     caCertificateRefs:
-      - name: {{ .Release.Name }}-es-http-ca-internal
+      - name: {{ .Release.Name }}-es-ca
         group: ""
-        kind: Secret
+        kind: ConfigMap
     hostname: {{ .Release.Name }}-apm-http
 ---
 apiVersion: gateway.networking.k8s.io/v1
