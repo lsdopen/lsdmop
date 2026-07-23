@@ -12,9 +12,9 @@ spec:
       name: enterprise-search-{{ .Release.Name }}-ent-http
   validation:
     caCertificateRefs:
-      - name: {{ .Release.Name }}-ent-http-ca-internal
+      - name: {{ .Release.Name }}-ent-ca
         group: ""
-        kind: Secret
+        kind: ConfigMap
     hostname: enterprise-search-{{ .Release.Name }}-ent-http
 ---
 apiVersion: gateway.networking.k8s.io/v1
