@@ -1,6 +1,6 @@
 {{- if and .Values.elastic.enabled .Values.elastic.ingress.gatewayAPI.enabled }}
 ---
-apiVersion: gateway.networking.k8s.io/v1alpha3
+apiVersion: gateway.networking.k8s.io/v1
 kind: BackendTLSPolicy
 metadata:
   name: {{ .Release.Name }}-es-backend-tls
