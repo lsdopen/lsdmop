@@ -68,6 +68,27 @@ entries:
   lsdmop:
   - apiVersion: v2
     appVersion: 1.0.2
+    created: "2026-07-23T11:24:14.408172745Z"
+    description: A Helm chart for LSDMOP
+    digest: 76043d82450ac112a45a3b6cf7a01df7178e49fb0ae583a4bfde76bb576f889b
+    home: https://github.com/lsdopen/charts
+    keywords:
+    - lsdmop
+    - kubernetes
+    - prometheus
+    - elastic
+    maintainers:
+    - email: support@lsdopen.io
+      name: LSD
+      url: https://lsdopen.io
+    name: lsdmop
+    sources:
+    - https://github.com/lsdopen
+    urls:
+    - https://github.com/lsdopen/lsdmop/releases/download/lsdmop-6.4.0/lsdmop-6.4.0.tgz
+    version: 6.4.0
+  - apiVersion: v2
+    appVersion: 1.0.2
     created: "2026-06-26T10:58:34.467139425Z"
     description: A Helm chart for LSDMOP
     digest: baa5b12d26b71d60849af0e7abe261904fef3b933ef3ee4d289dd9a9be9444d0
@@ -5149,4 +5170,4 @@ entries:
     urls:
     - https://github.com/lsdopen/lsdmop/releases/download/lsdmopagent-2.22.0/lsdmopagent-2.22.0.tgz
     version: 2.22.0
-generated: "2026-06-26T10:58:34.468280562Z"
+generated: "2026-07-23T11:24:14.409472376Z"
