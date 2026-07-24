@@ -1,4 +1,5 @@
 {{ if .Values.elastic.fleetapm.enabled }}
+{{- if not .Values.elastic.ingress.gatewayAPI.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -28,4 +29,5 @@ spec:
                 port:
                   number: 8200
 
+{{- end }}
 {{- end }}

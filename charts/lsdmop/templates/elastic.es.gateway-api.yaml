@@ -26,12 +26,32 @@ metadata:
     app: elasticsearch
 spec:
   parentRefs:
-    - name: {{ .Values.elastic.ingress.gatewayAPI.gatewayName }}
-      namespace: {{ .Values.elastic.ingress.gatewayAPI.gatewayNamespace | default .Release.Namespace }}
+    - name: {{ .Values.elastic.ingress.gatewayAPI.privateGateway.name }}
+      namespace: {{ .Values.elastic.ingress.gatewayAPI.privateGateway.namespace | default .Release.Namespace }}
   hostnames:
     - {{ .Values.elastic.ingress.url }}
   rules:
     - backendRefs:
         - name: {{ .Release.Name }}-elasticsearch-ingress
           port: 9200
+{{- if .Values.elastic.ingress.gatewayAPI.publicGateway.name }}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ .Release.Name }}-elasticsearch-public
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: elasticsearch
+spec:
+  parentRefs:
+    - name: {{ .Values.elastic.ingress.gatewayAPI.publicGateway.name }}
+      namespace: {{ .Values.elastic.ingress.gatewayAPI.publicGateway.namespace | default .Release.Namespace }}
+  hostnames:
+    - {{ .Values.elastic.ingress.publicUrl | default (printf "elastic-public.%s" .Values.elastic.ingress.url) }}
+  rules:
+    - backendRefs:
+        - name: {{ .Release.Name }}-elasticsearch-ingress
+          port: 9200
+{{- end }}
 {{- end }}

@@ -26,8 +26,8 @@ metadata:
     app: kibana
 spec:
   parentRefs:
-    - name: {{ .Values.elastic.ingress.gatewayAPI.gatewayName }}
-      namespace: {{ .Values.elastic.ingress.gatewayAPI.gatewayNamespace | default .Release.Namespace }}
+    - name: {{ .Values.elastic.ingress.gatewayAPI.privateGateway.name }}
+      namespace: {{ .Values.elastic.ingress.gatewayAPI.privateGateway.namespace | default .Release.Namespace }}
   hostnames:
     - {{ .Values.elastic.kibana.ingress.url }}
   rules:

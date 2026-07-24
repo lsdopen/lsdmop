@@ -17,10 +17,15 @@ elastic:
     tls:
       secretName: elastic-ingress-tls
     url: "es-lsdmop"
+    publicUrl: ""
     gatewayAPI:
-      enabled: false       # when true, creates HTTPRoute + BackendTLSPolicy instead of Ingress
-      gatewayName: ""      # name of the Gateway to attach HTTPRoutes to
-      gatewayNamespace: "" # namespace of the Gateway (defaults to release namespace)
+      enabled: false
+      privateGateway:
+        name: ""
+        namespace: ""
+      publicGateway:
+        name: ""
+        namespace: ""
   dedicatedCoordinatingNodes: false
   serviceAccount:
     annotations: {}
