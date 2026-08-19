@@ -13,6 +13,21 @@ entries:
     - https://github.com/lsdopen/lsdmop/releases/download/elastic-agent-9.3.2-lsd-1.0/elastic-agent-9.3.2-lsd-1.0.tgz
     version: 9.3.2-lsd-1.0
   - apiVersion: v2
+    created: "2026-08-19T13:00:49.547497902Z"
+    dependencies:
+    - condition: kube-state-metrics.enabled
+      name: kube-state-metrics
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 6.1.0
+    description: Elastic-Agent Helm Chart
+    digest: 3a707a2d52683c1bdb4652e250fa5b5bfd920e864bba37247ee2ccd921ca9afa
+    kubeVersion: '>= 1.27.0-0'
+    name: elastic-agent
+    type: application
+    urls:
+    - https://github.com/lsdopen/lsdmop/releases/download/elastic-agent-1.0.6/elastic-agent-1.0.6.tgz
+    version: 1.0.6
+  - apiVersion: v2
     created: "2026-08-19T12:38:25.408106561Z"
     dependencies:
     - condition: kube-state-metrics.enabled
@@ -5311,4 +5326,4 @@ entries:
     urls:
     - https://github.com/lsdopen/lsdmop/releases/download/lsdmopagent-2.22.0/lsdmopagent-2.22.0.tgz
     version: 2.22.0
-generated: "2026-08-19T12:38:25.409854463Z"
+generated: "2026-08-19T13:00:49.549427959Z"
