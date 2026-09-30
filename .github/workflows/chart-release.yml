@@ -28,6 +28,11 @@ jobs:
         with:
           version: v3.8.1
 
+      - name: Add Helm repositories
+        run: |
+          helm repo add argoproj https://argoproj.github.io/argo-helm
+          helm repo update
+
       - name: Update Helm dependencies
         run: |
           for chart in charts/*/; do
