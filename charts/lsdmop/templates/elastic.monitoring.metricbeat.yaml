@@ -37,7 +37,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: {{ .Release.Name }}-metricbeat
-  {{- with .Values.elastic.filebeat.serviceAccount.annotations }}
+  {{- with .Values.elastic.metricbeat.serviceAccount.annotations }}
   annotations:
   {{ toYaml . | indent 4 }}
   {{- end }}

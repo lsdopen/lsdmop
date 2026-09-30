@@ -164,6 +164,8 @@ elastic:
   ## Metricbeat as a Daemonset to collect metrics from Nodes
   metricbeat:
     enabled: false
+    serviceAccount:
+      annotations: {}
   ## Fleet agents as a Daemonset to collect metrics/logs from Nodes (replaces metricbeat and filebeat)
   fleet:
     enabled: true
