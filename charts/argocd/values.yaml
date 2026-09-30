@@ -1,0 +1,4 @@
+# Configuration for the official argo-cd dependency.
+# See https://github.com/argoproj/argo-helm/tree/main/charts/argo-cd
+argo-cd:
+  enabled: true
