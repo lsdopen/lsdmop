@@ -32,7 +32,7 @@ elastic:
   nodeSets: 
       data-hot:
         enableZoneTopologySpread: false
-        count: 2
+        count: 1
         node_attributes:
           data: hot
         resources:
