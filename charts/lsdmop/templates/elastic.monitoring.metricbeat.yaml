@@ -7,7 +7,7 @@ spec:
   type: metricbeat
   version: {{ .Values.elastic.version }}
   elasticsearchRef:
-    name: lsdmop
+    name: {{ .Release.Name }}
   config:
     metricbeat:
       autodiscover:

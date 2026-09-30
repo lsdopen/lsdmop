@@ -51,9 +51,9 @@ spec:
   type: filebeat
   version: {{ .Values.elastic.version }}
   elasticsearchRef:
-    name: lsdmop
+    name: {{ .Release.Name }}
   kibanaRef:
-    name: lsdmop
+    name: {{ .Release.Name }}
   config:
     filebeat:
       autodiscover:
