@@ -9,7 +9,7 @@ metadata:
   name: elastic-beat-autodiscover
 rules:
   - apiGroups:
-      - ""
+      - "*"
     resources:
       - nodes
       - namespaces
@@ -31,6 +31,9 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: {{ .Release.Name }}-filebeat
+    namespace: {{ .Release.Namespace }}
+  - kind: ServiceAccount
+    name: {{ .Release.Name }}-metricbeat
     namespace: {{ .Release.Namespace }}
 ---
 apiVersion: v1
