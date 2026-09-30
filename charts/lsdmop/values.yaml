@@ -144,11 +144,10 @@ elastic:
         memory: 1Gi
       limits:
         memory: 1Gi
-
+  
   logstash:
     replicas: 1
-
-
+    
   #Filebeat
   filebeat:
     enabled: false
