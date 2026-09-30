@@ -8,7 +8,7 @@ spec:
   count: {{ .Values.elastic.logstash.replicas }}
   version: {{ .Values.elastic.version }}
   elasticsearchRefs:
-    - clusterName: 
+    - clusterName: {{ .Release.Name }}
       name: {{ .Release.Name }}
   podTemplate:
     spec:
@@ -61,7 +61,7 @@ spec:
         resources:
           requests:
             storage: 50Mi
-          storageClassName: standard
+          #storageClassName: standard
 
 
   pipelines:
