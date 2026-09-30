@@ -9,7 +9,7 @@ metadata:
   name: elastic-beat-autodiscover
 rules:
   - apiGroups:
-      - ""
+      - "*"
     resources:
       - nodes
       - namespaces
