@@ -37,11 +37,11 @@ elastic:
           data: hot
         resources:
           requests:
-            cpu: 1000m
+            cpu: '1'
             memory: 4Gi
           limits:
             memory: 4Gi
-            cpu: 2000m
+            cpu: '1'
         tolerations:
         - effect: NoSchedule
           key: dedicated

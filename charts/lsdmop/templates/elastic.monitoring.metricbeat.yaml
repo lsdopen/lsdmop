@@ -30,6 +30,9 @@ roleRef:
   name: elastic-beat-autodiscover
 subjects:
   - kind: ServiceAccount
+    name: {{ .Release.Name }}-filebeat
+    namespace: {{ .Release.Namespace }}
+  - kind: ServiceAccount
     name: {{ .Release.Name }}-metricbeat
     namespace: {{ .Release.Namespace }}
 ---
