@@ -1,0 +1,12 @@
+apiVersion: v2
+name: argocd
+description: Deploys Argo CD using the official argo-cd Helm chart.
+type: application
+version: 0.1.0
+appVersion: "v3.5.3"
+kubeVersion: ">=1.25.0-0"
+dependencies:
+  - name: argo-cd
+    version: "10.9.4"
+    repository: https://argoproj.github.io/argo-helm
+    condition: argo-cd.enabled
