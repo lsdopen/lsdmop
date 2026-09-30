@@ -83,10 +83,10 @@ elastic:
 #         storageSize: 1Gi
 #         storageClassName: ebs-gp3
 #         roles: ["ml", "remote_cluster_client"]
-  hostAliases: []
-    # - hostnames:
-    #     - ad.lsdopen.io
-    #   ip: xxx.xxx.xxx.xx
+  hostAliases:
+    - hostnames:
+        - ad.lsdopen.io
+      ip: 127.0.0.1
 
   # Active Directory Integration
   ad:

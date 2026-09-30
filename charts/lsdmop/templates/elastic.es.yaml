@@ -107,16 +107,19 @@ spec:
             {{ $.Values.elastic.hostAliases | toYaml | indent 12 | trim  }}
           initContainers:
             - name: set-s3-bucket-web-token-dir
+              resources: {}
               command:
               - mkdir
               - -p
               - /usr/share/elasticsearch/config/repository-s3
             - name: remove-s3-bucket-web-token-symlink
+              resources: {}
               command:
               - rm
               - -rf
               - /usr/share/elasticsearch/config/repository-s3/aws-web-identity-token-file
             - name: set-s3-bucket-web-token-symlink
+              resources: {}
               command:
               - ln
               - -s
