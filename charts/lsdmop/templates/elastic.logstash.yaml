@@ -2,14 +2,14 @@
 apiVersion: logstash.k8s.elastic.co/v1alpha1
 kind: Logstash
 metadata:
-  name: logstash-lsdmop
-  namespace: lsdmop
+  name: logstash-{{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
 spec:
-  count: 0
+  count: {{ .Values.elastic.logstash.replicas }}
   version: {{ .Values.elastic.version }}
   elasticsearchRefs:
-    - clusterName: eck
-      name: lsdmop
+    - clusterName: 
+      name: {{ .Release.Name }}
   podTemplate:
     spec:
       serviceAccountName: elastic-agent #for testing
@@ -64,7 +64,7 @@ spec:
           storageClassName: standard
   pipelines:
 
-    - pipeline.id: eas1
+    - pipeline.id: pipeline1
       config.string: |
         input {
 
@@ -95,7 +95,7 @@ spec:
       
 
 
-    - pipeline.id: nam1
+    - pipeline.id: pipeline2
       config.string: |
         input {
 
@@ -168,7 +168,7 @@ spec:
   selector:
     common.k8s.elastic.co/type: "logstash"
   ports:
-    - name: tcp-eas
+    - name: tcp-0
       port: 32640
       targetPort: 32640  
       protocol: TCP
@@ -187,7 +187,7 @@ spec:
   selector:
     common.k8s.elastic.co/type: "logstash"
   ports:
-    - name: tcp-aaf
+    - name: tcp-1
       port: 32641
       targetPort: 32641
       protocol: TCP
@@ -206,7 +206,7 @@ spec:
   selector:
     common.k8s.elastic.co/type: "logstash"
   ports:
-    - name: tcp-nam
+    - name: tcp-2
       port: 32642
       targetPort: 32642
       protocol: TCP
