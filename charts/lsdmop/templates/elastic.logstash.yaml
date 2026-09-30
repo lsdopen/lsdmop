@@ -62,6 +62,8 @@ spec:
           requests:
             storage: 50Mi
           storageClassName: standard
+
+
   pipelines:
 
     - pipeline.id: pipeline1
@@ -87,7 +89,7 @@ spec:
             #index => "" 
             data_stream => "true"
             data_stream_type => "logs"
-            data_stream_dataset => "allquiet"
+            data_stream_dataset => "ls0"
             data_stream_namespace => "prod"                
           }
 
@@ -123,7 +125,7 @@ spec:
             #index => "" 
             data_stream => "true"
             data_stream_type => "logs"
-            data_stream_dataset => "nam"
+            data_stream_dataset => "ls1"
             data_stream_namespace => "prod" 
             pipeline => "nam-b2b"                
           }
@@ -161,7 +163,7 @@ kind: Service
 metadata:
   labels:
     app: logstash
-  name: logstash-{{ .Release.Name }}-ls-eas
+  name: logstash-{{ .Release.Name }}-ls-0
   namespace: {{ .Release.Namespace }}
 spec:
   type: NodePort
@@ -180,7 +182,7 @@ kind: Service
 metadata:
   labels:
     app: logstash
-  name: logstash-{{ .Release.Name }}-ls-aaf
+  name: logstash-{{ .Release.Name }}-ls-1
   namespace: {{ .Release.Namespace }}
 spec:
   type: NodePort
@@ -199,7 +201,7 @@ kind: Service
 metadata:
   labels:
     app: logstash
-  name: logstash-{{ .Release.Name }}-ls-nam
+  name: logstash-{{ .Release.Name }}-ls-2
   namespace: {{ .Release.Namespace }}
 spec:
   type: NodePort
