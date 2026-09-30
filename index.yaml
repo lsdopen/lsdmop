@@ -1,5 +1,22 @@
 apiVersion: v1
 entries:
+  argocd:
+  - apiVersion: v2
+    appVersion: v3.5.3
+    created: "2026-09-30T15:12:05.958966147Z"
+    dependencies:
+    - condition: argo-cd.enabled
+      name: argo-cd
+      repository: https://argoproj.github.io/argo-helm
+      version: 10.9.4
+    description: Deploys Argo CD using the official argo-cd Helm chart.
+    digest: ada2faf265186544cc0c41f18aa31d18235a479d1938aa3ab6d37603551ad21d
+    kubeVersion: '>=1.25.0-0'
+    name: argocd
+    type: application
+    urls:
+    - https://github.com/lsdopen/lsdmop/releases/download/argocd-0.1.0/argocd-0.1.0.tgz
+    version: 0.1.0
   elastic-agent:
   - apiVersion: v2
     appVersion: 9.3.2
@@ -96,6 +113,27 @@ entries:
     - https://github.com/lsdopen/lsdmop/releases/download/elastic-agent-1.0.0/elastic-agent-1.0.0.tgz
     version: 1.0.0
   lsdmop:
+  - apiVersion: v2
+    appVersion: 1.0.2
+    created: "2026-09-30T15:12:06.448671458Z"
+    description: A Helm chart for LSDMOP
+    digest: 26cb2f2b2e292fed4d58c34267aab88964bb698a001fa7f66010e172425a20f7
+    home: https://github.com/lsdopen/charts
+    keywords:
+    - lsdmop
+    - kubernetes
+    - prometheus
+    - elastic
+    maintainers:
+    - email: support@lsdopen.io
+      name: LSD
+      url: https://lsdopen.io
+    name: lsdmop
+    sources:
+    - https://github.com/lsdopen
+    urls:
+    - https://github.com/lsdopen/lsdmop/releases/download/lsdmop-7.1.0/lsdmop-7.1.0.tgz
+    version: 7.1.0
   - apiVersion: v2
     appVersion: 1.0.2
     created: "2026-09-30T12:06:36.71485032Z"
@@ -5347,4 +5385,4 @@ entries:
     urls:
     - https://github.com/lsdopen/lsdmop/releases/download/lsdmopagent-2.22.0/lsdmopagent-2.22.0.tgz
     version: 2.22.0
-generated: "2026-09-30T12:06:36.715710691Z"
+generated: "2026-09-30T15:12:06.451220082Z"
