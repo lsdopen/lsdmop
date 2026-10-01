@@ -16,7 +16,7 @@ spec:
   image: docker.elastic.co/elastic-agent/elastic-agent:{{ .Values.elastic.version }}
   version: {{ .Values.elastic.version }}
   deployment:
-    replicas: 1
+    replicas: 2
     podTemplate:
       spec:
         serviceAccountName: elastic-agent
