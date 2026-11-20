@@ -33,28 +33,28 @@ elastic:
   dedicatedCoordinatingNodes: false
   serviceAccount:
     annotations: {}
-  nodeSets: 
-      data-hot:
-        enableZoneTopologySpread: false
-        count: 1
-        node_attributes:
-          data: hot
-        resources:
-          requests:
-            cpu: '1'
-            memory: 4Gi
-          limits:
-            memory: 4Gi
-            cpu: '2'
-        tolerations:
-        - effect: NoSchedule
-          key: dedicated
-          operator: Equal
-          value: elastic-hot
-        storageSize: 560Gi
-        storageClassName: standard
-        nodeSelector: {}
-        roles: ["master", "data", "transform", "remote_cluster_client", "ingest", "data_content"]
+  nodeSets: {}
+#     data-hot:
+#       enableZoneTopologySpread: false
+#       count: 1
+#       node_attributes:
+#         data: hot
+#       resources:
+#         requests:
+#           cpu: '1'
+#           memory: 4Gi
+#         limits:
+#           memory: 4Gi
+#           cpu: '2'
+#       tolerations:
+#       - effect: NoSchedule
+#         key: dedicated
+#         operator: Equal
+#         value: elastic-hot
+#       storageSize: 560Gi
+#       storageClassName: standard
+#       nodeSelector: {}
+#       roles: ["master", "data", "transform", "remote_cluster_client", "ingest", "data_content"]
 #       warm:
 #         count: 2
 #         node_attributes:
