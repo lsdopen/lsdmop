@@ -3,6 +3,10 @@ curl:
 
 elastic:
   enabled: true
+  operator:
+    # Deploy the bundled ECK operator. Set to false when the operator is
+    # installed separately (e.g. the standalone eck-operator Helm release).
+    enabled: true
   annotations: {}
   license:
     enabled: false
