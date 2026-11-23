@@ -19,8 +19,22 @@ spec:
 {{- end }}
   config:
 {{- if .Values.elastic.fleet.output.throughput.enabled }}
+    # Kibana validates xpack.fleet.outputs as full preconfigured outputs, so the
+    # default output must be defined completely (id, name, type, hosts) for the
+    # tuning below to be accepted. This takes over Kibana's default output.
     xpack.fleet.outputs:
-      - config:
+      - id: fleet-default-output
+        name: default
+        type: elasticsearch
+        is_default: true
+        is_default_monitoring: true
+        hosts:
+          - https://{{ .Release.Name }}-es-internal-http.{{ .Release.Namespace }}.svc:9200
+        ssl:
+          certificate_authorities:
+            # CA of the Elasticsearch cluster, mounted into the Kibana pod by ECK
+            - /usr/share/kibana/config/elasticsearch-certs/ca.crt
+        config:
           bulk_max_size: 4096
           worker: 4
           queue.mem.events: 12800
