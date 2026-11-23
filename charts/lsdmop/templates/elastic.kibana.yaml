@@ -23,25 +23,27 @@ spec:
     # default output must be defined completely (id, name, type, hosts) for the
     # tuning below to be accepted. This takes over Kibana's default output.
     xpack.fleet.outputs:
-      - id: fleet-default-output
-        name: default
-        type: elasticsearch
-        is_default: true
-        is_default_monitoring: true
-        hosts:
-          - https://{{ .Release.Name }}-es-internal-http.{{ .Release.Namespace }}.svc:9200
-        ssl:
-          certificate_authorities:
-            # CA of the Elasticsearch cluster, mounted into the Kibana pod by ECK
-            - /usr/share/kibana/config/elasticsearch-certs/ca.crt
-        config:
+      - config:
           bulk_max_size: 4096
-          worker: 4
-          queue.mem.events: 12800
-          queue.mem.flush.min_events: 4096
-          queue.mem.flush.timeout: 10s
           compression_level: 9
           idle_connection_timeout: 15s
+          queue:
+              mem:
+                  events: 12800
+                  flush:
+                      min_events: 4096
+                      timeout: 10s
+          worker: 4
+        hosts:
+          - https://lsdmop-es-internal-http.lsdmop.svc:9200
+        id: fleet-default-output
+        is_default: true
+        is_default_monitoring: true
+        name: default
+        ssl:
+          certificate_authorities:
+              - /usr/share/kibana/config/elasticsearch-certs/ca.crt
+        type: elasticsearch
 {{- end }}
     elasticsearch.compression: true
 {{- if .Values.elastic.enterprise_search.enabled }}
