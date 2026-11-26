@@ -1,7 +1,10 @@
-{{- if and .Values.elastic.fleetapm.enabled .Values.elastic.ingress.gatewayAPI.enabled }}
+{{- if and .Values.elastic.fleet.enabled .Values.elastic.fleetapm.enabled .Values.elastic.ingress.gatewayAPI.enabled }}
 {{- /*
-  APM is served in plain HTTP on 8200 (the Fleet APM integration policy sets no TLS),
-  so there is no BackendTLSPolicy. The route is public: it attaches to the public
+  APM is served by the fleet-server pods' APM integration, in plain HTTP on 8200
+  (the Fleet APM integration policy sets no TLS), so there is no BackendTLSPolicy.
+  The apm-server Agent's <release>-apm-http Service has nothing listening on 8200, so
+  the route targets the <release>-apm-public-http Service defined below, which selects
+  the fleet-server pods. It renders under the same conditions as the route. The route is public: it attaches to the public
   gateway when one and fleetapm.ingress.publicUrl are set, otherwise to the private
   gateway using fleetapm.ingress.url.
 */ -}}
@@ -29,6 +32,23 @@ spec:
 {{- end }}
   rules:
     - backendRefs:
-        - name: {{ .Release.Name }}-apm-http
+        - name: {{ .Release.Name }}-apm-public-http
           port: 8200
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-apm-public-http
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: apm
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8200
+      targetPort: 8200
+  selector:
+    agent.k8s.elastic.co/name: fleet-server-{{ .Release.Name }}
 {{- end }}
