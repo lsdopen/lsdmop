@@ -1,35 +1,32 @@
 {{- if and .Values.elastic.fleetapm.enabled .Values.elastic.ingress.gatewayAPI.enabled }}
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: BackendTLSPolicy
-metadata:
-  name: {{ .Release.Name }}-apm-backend-tls
-  namespace: {{ .Release.Namespace }}
-spec:
-  targetRefs:
-    - group: ""
-      kind: Service
-      name: {{ .Release.Name }}-apm-http
-  validation:
-    caCertificateRefs:
-      - name: {{ .Release.Name }}-es-ca
-        group: ""
-        kind: ConfigMap
-    hostname: {{ .Release.Name }}-apm-http
+{{- /*
+  APM is served in plain HTTP on 8200 (the Fleet APM integration policy sets no TLS),
+  so there is no BackendTLSPolicy. The route is public: it attaches to the public
+  gateway when one and fleetapm.ingress.publicUrl are set, otherwise to the private
+  gateway using fleetapm.ingress.url.
+*/ -}}
+{{- $publicApm := and .Values.elastic.ingress.gatewayAPI.publicGateway.name .Values.elastic.fleetapm.ingress.publicUrl }}
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: {{ .Release.Name }}-apm
+  name: {{ .Release.Name }}-apm-public
   namespace: {{ .Release.Namespace }}
   labels:
     app: apm
 spec:
   parentRefs:
+{{- if $publicApm }}
+    - name: {{ .Values.elastic.ingress.gatewayAPI.publicGateway.name }}
+      namespace: {{ .Values.elastic.ingress.gatewayAPI.publicGateway.namespace | default .Release.Namespace }}
+  hostnames:
+    - {{ .Values.elastic.fleetapm.ingress.publicUrl }}
+{{- else }}
     - name: {{ .Values.elastic.ingress.gatewayAPI.privateGateway.name }}
       namespace: {{ .Values.elastic.ingress.gatewayAPI.privateGateway.namespace | default .Release.Namespace }}
   hostnames:
     - {{ .Values.elastic.fleetapm.ingress.url }}
+{{- end }}
   rules:
     - backendRefs:
         - name: {{ .Release.Name }}-apm-http

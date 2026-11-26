@@ -183,6 +183,7 @@ elastic:
       tls:
         secretName: fleet-ingress-tls
       url: "fleet-lsdmop"
+      publicUrl: ""
 
   ## Metricbeat to connect to Prometheus
   metricbeatPrometheus:
@@ -199,6 +200,7 @@ elastic:
       tls:
         secretName: apm-ingress-tls
       url: ""
+      publicUrl: ""
 
 
   #S3 bucket storage for snapshots
